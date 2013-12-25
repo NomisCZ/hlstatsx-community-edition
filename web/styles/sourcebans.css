@@ -1,0 +1,439 @@
+body {
+	background-color:#FFF;
+	color:#000;
+	margin-left:0px;
+	margin-right:0px;
+	margin-top:0px;
+	margin-bottom:0px;
+
+}
+
+.content {
+    background-color:#FFF;
+    color:#000;
+	margin-left:8%;
+	margin-right:8%;
+	margin-top:-10px;
+	margin-bottom:20px;	
+}
+
+tr, td, div, span, body {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 8pt;  
+}
+
+a:link {
+	color: #000;
+	text-decoration:none;
+}
+
+a:visited {
+	color: #000;
+	text-decoration:none;
+}
+
+a:active {
+	color: #000;
+	text-decoration:none;
+}
+
+a:hover {
+	color: #AEAEAE;
+	text-decoration:none;
+}
+#ingame .headerblock a:visited {
+	color: #FFFFFF;
+}
+
+a:focus {
+	text-decoration:none;
+}
+
+ul {
+	margin-left: 6px;
+	padding-left: 6px;
+}
+
+li {
+	margin-bottom: 8px;
+}
+     
+img {
+	text-align:center;
+	vertical-align:middle;
+	border: none;
+}
+ 
+.fHeading {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 8pt;
+	font-weight: bold;   
+}
+
+.fSmall {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 7pt;
+	font-color: #FFF; 
+}
+
+.fTitle {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight:bold;
+}
+
+.fNormal {
+	font-family: Verdana, Arial, Tahoma, Trebuchet MS, Sans-Serif, Georgia, Courier, Times New Roman, Serif;
+	font-size: 10px;
+	font-weight: bold;   
+	padding-left: 12%; 
+}
+     
+.bg1 {
+       background-color:#F3F3F3;
+}   
+                           
+.bg2 {
+       background-color:#FFF;
+}     
+
+.data-table {
+	background-color:#FFF;
+	border: 1px solid #AEAEAE;
+	border-collapse: collapse; 
+	width: 100%;  
+}
+
+.data-table  td {
+	padding: 4px;
+	text-align: left;
+	border: 1px solid #AEAEAE;
+	border-bottom: 0px;	 
+}
+	 
+.data-table-row {
+	background-color:#282828;	
+	border:1px solid #AEAEAE;
+	color:#FFFFFF;
+	vertical-align: bottom; 
+}
+
+.data-table-head  {
+	background-image:url(../styles/sourcebans/detail_head.png);
+	background-repeat: repeat-x;
+	background-color: #282828;
+	border:1px solid #AEAEAE;
+	color:#FFFFFF;
+	vertical-align: bottom; 
+}
+
+.data-table-head a:link {
+	color:#FFFFFF;
+}
+
+.data-table-head a:active {
+	color:#FFFFFF;
+}
+
+.data-table-head a:visited {
+	color:#AEAEAE;
+}
+
+.data-table-head a:hover {
+	color:#AEAEAE;
+}
+
+.gmapstab a:link {
+	color:#000;
+	text-decoration:none;
+}
+
+.gmapstab a:active {
+	color:#000;
+	text-decoration:none;
+}
+
+.dgmapstab a:visited {
+	color:#000;
+	text-decoration:none;
+}
+
+.gmapstab a:hover {
+	color:#AEAEAE;
+}
+
+.game-table-row {
+	border: 1px solid #AEAEAE;
+	background-color: #FFFFFF; 
+	border-bottom: 0px; 
+}
+
+.game-table-row-hover {
+	background-color: #eaebeb;
+	border-bottom: 0px; 
+	color:#FFFFFF;
+}
+
+.game-table-cell {
+	color: #000000;
+	vertical-align: middle;
+	padding: 4px;  
+	border: 1px solid #AEAEAE; 
+}
+
+.game-table-cell a {
+	color: black; 
+}
+
+.livestats-table {
+	border: 1px solid #AEAEAE;
+	border-collapse: collapse;
+	width: 100%; 
+}
+
+.livestats-table td {
+	border: 0;
+	padding: 1px;
+	text-align: center; 
+}
+
+.location a:link {
+	color: #FFFFFF; 
+	text-decoration:none; 
+}   
+
+.location a:visited {
+	color: #FFFFFF; 
+	text-decoration:none;
+}
+
+.location a:active {
+	color: #FFFFFF; 
+	text-decoration:none; 
+}   
+
+.location a:hover {
+	color: #AEAEAE; 
+	text-decoration:none; 
+}
+
+.location {
+	height: 22px;
+	background-image:url(../styles/sourcebans/table_location.png);
+	width: 100%; 
+	color: #FFFFFF;
+}
+
+.location_under {
+	height: 15px;
+	background-image:url(../styles/sourcebans/location_under.png);
+	width: 100%; 
+}
+
+.location ul {
+	list-style-type: none;
+	list-style-image: none;
+	padding-top: 5px;
+	padding-left: 13%;
+	margin: 0 auto;
+	color: #FFFFFF; 
+}
+
+.location li {
+	margin-left: 5px;
+	display: inline; 
+
+}
+
+.header_gameslist {
+	padding-right: 10%;
+	padding-top: 22px;
+} 
+
+.header_gameslist img {
+	padding: 0 2px;
+	padding-bottom:20px;
+}
+
+ul.header_gameslist {
+	list-style: none;
+}
+
+.header_gameslist img#gameslist-active-game{
+	background-image: url(../styles/sourcebans/underline.png);
+	background-position: bottom center;
+	background-repeat: no-repeat;
+}
+
+.block {
+	margin: 0 auto; 
+}
+
+.subblock {
+	margin: 0 auto;
+	width: 95%; 
+}
+
+.navbar img {
+	margin-left: 2px;
+	margin-right: 2px; 
+}
+
+.navbar {
+	list-style-type: none;
+	list-style-image: none;
+	margin: 0;
+	padding: 0;
+	text-align: center;
+	padding-bottom: 10px; 
+}
+
+.navbar li {
+	margin-right: 12px;
+	display: inline;  
+}
+
+.headerblock {
+	background: url(../styles/sourcebans/title-background.png);
+	border:0px;
+	height:86px;
+	width: 100%; 
+	position:relative; 
+}
+
+.title {
+	margin-left: 13%;
+	padding-top: 12px;
+}
+
+.tableicon {
+	margin-bottom: 0px;
+	margin-left: 4px;
+	margin-right: 4px;
+	margin-top: 0px; 
+}
+
+.headertabs ul {
+	list-style-type: none;
+	list-style-image: none;
+	margin: 0;
+	padding: 0;
+}
+
+.headertabs li {
+	margin: 0px;
+	display: inline; 
+
+}
+
+.headertabs {
+	margin-left: 13%;
+	padding-top: 14px;
+	bottom:0px;  
+
+}
+
+.bargraph {
+	height: 10px;
+}
+
+.errorhead {
+	background-color: #CC0000;
+	color: white;
+	font-family: arial, helvetica, sans-serif;
+	font-size: 12pt;
+	font-weight: bold;
+}
+
+.errortext {
+	background-color: white;
+	color: black;
+	font-family: arial, helvetica, sans-serif;
+	font-size: 12pt;
+}
+
+.gmapstab td {
+	border: 0;
+	padding: 0;
+}
+
+.gmapstab a {
+	color:black;
+	text-decoration:underline;
+}
+
+.gmapstabtitle {
+	color:blue;
+	font-weight:bold;
+	text-align:left;
+}
+
+/* Subsection Tabs
+--------------------*/
+#main ul.subsection_tabs {
+	list-style:none;
+	margin:0;
+	padding:0;
+	clear:both;
+	border-bottom:1px solid #ccc;
+	height:18px;
+	clear:both;
+}
+
+#main ul.subsection_tabs li {
+	float:left;
+	margin-right:7px;
+	padding-top:2px;
+	text-align:center;
+}
+
+#main ul.subsection_tabs li a {
+	display:block;
+	height:16px;
+	padding:0 6px 0 6px;
+	background-color:#fff;
+	color:#666;
+	width:120px;
+	font-weight:bold;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 8pt;	
+}
+
+#main ul.subsection_tabs li a:hover {
+	color:#666;
+}
+
+#main ul.subsection_tabs li a.active {
+	background-color:#ddd;
+}
+
+#main ul.register_tabs {
+	border-bottom:none;
+}
+
+#main ul.register_tabs li a.active {
+	background-color:#6d7a81;
+	color:#fff;
+}
+
+/** ================ Footer ================ **/
+
+
+a.footer_link:link,
+a.footer_link:visited {
+	color: #000;
+	text-decoration: none; 
+	}
+	
+a.footer_link:hover {
+	text-decoration: underline;
+	color: #AEAEAE;
+	}
+
+#footer {
+	clear:both;
+	color: #000;
+	width: 80%;
+	margin-left:10%;
+	background-repeat: repeat-x;
+}

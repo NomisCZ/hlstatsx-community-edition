@@ -1,0 +1,331 @@
+body {
+	background-color:#1c1b18;
+	color:#ffffff;
+	margin-left:10px;
+	margin-right:10px;
+	margin-top:10px;
+	margin-bottom:10px;
+}
+
+tr, td, div, span, body {
+	font-family:Verdana, Arial, sans-serif;
+	font-size: 8pt;
+}
+
+a:link {
+	color:#FF6600;
+	text-decoration:none;
+}
+
+a:visited {
+	color:#FF6600;
+	text-decoration:none;
+}
+
+a:active {
+	color:#00FF00;
+	text-decoration:none;
+}
+
+a:hover {
+	color: #FF6600;
+	text-decoration:none;
+}
+
+a:focus {
+	text-decoration:none;
+}
+
+ul {
+	margin-left: 6px;
+	padding-left: 6px;
+}
+
+li {
+	margin-bottom: 8px;
+}
+     
+img {
+	text-align:center;
+	vertical-align:middle;
+	border: none;
+}
+ 
+.fHeading {
+	font-family:Verdana, Arial, sans-serif;
+	font-size: 8pt;
+	font-weight: bold;
+}
+
+.fSmall {
+	font-family:Verdana, Arial, sans-serif;
+	font-size: 7pt;
+}
+
+.fTitle {
+	font-family:Arial, sans-serif;
+	font-size: 12pt;
+	font-weight:bold;
+}          
+     
+.bg1 {
+	background-color:#395076;
+}                              
+     
+.bg2 {
+	background-color:#1c1b18;
+}     
+
+.wpnbg {
+	background-color:#f87128;
+}     
+     
+.data-table {
+	border-style: solid;
+	border-width: 2px;
+	border-color: #f87128;
+	border-collapse: collapse;
+	width: 100%;
+}
+
+.data-table  td {
+	border-style: solid;
+	border-width: 1px;
+	border-color: #f87128;
+	padding: 4px;
+	text-align: left;
+}
+	 
+.data-table-head  {
+	background-color:#1C1B18;
+	color:#f87128;
+	vertical-align: bottom;
+}
+
+.game-table-row {
+	background-color: white;
+}
+
+.game-table-row-hover {
+	background-color: #eaebeb;
+}
+
+.game-table-cell {
+	color: black;
+	vertical-align: middle;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #f87128;
+	padding: 4px;
+}
+
+.game-table-cell a {
+	color: black;
+}
+
+.livestats-table {
+	border-style: solid;
+	border-width: 2px;
+	border-color: #f87128;
+	border-collapse: collapse;
+	width: 100%;
+}
+
+.livestats-table td {
+	border: 0;
+	padding: 1px;
+	text-align: center;
+}
+
+.location a:link {
+	color: #FF6600;
+}     
+
+.location a:hover {
+	color: #FFFFFF;
+}
+
+.location {
+	background-color: #395076;
+	height: 22px;
+}
+
+.location ul {
+	list-style-type: none;
+	list-style-image: none;
+	padding: 4px;
+	margin: 0;
+	color: #FF6600;
+}
+
+.location li {
+	margin-left: 5px;
+	display: inline;
+}
+     
+.block {
+	margin: 0 auto;
+}
+
+.subblock {
+	margin: 0 auto;
+	width: 95%;
+}
+
+.navbar img {
+	margin-left: 4px;
+	margin-right: 4px;
+}
+
+.navbar {
+	list-style-type: none;
+	list-style-image: none;
+	margin: 0;
+	padding: 0;
+	text-align: center;
+	padding-bottom: 20px;
+}
+
+.navbar li {
+	margin-right: 20px;
+	display: inline;
+}
+
+.headerblock {
+	border:0px solid #A8B090;
+	height:50px;
+	position:relative;
+}
+
+
+.tableicon {
+	margin-bottom: 0px;
+	margin-left: 4px;
+	margin-right: 4px;
+	margin-top: 0px;
+}
+
+.headertabs ul {
+	list-style-type: none;
+	list-style-image: none;
+	margin: 0;
+	padding: 0;
+}
+
+.headertabs li {
+	margin-left: 2px;
+	margin-right: 0px;
+	display: inline;
+}
+
+.headertabs {
+	position:absolute;
+	bottom:0px;
+	right:6px;
+}
+
+.bargraph {
+	height: 10px;
+}
+
+.errorhead {
+	background-color: #CC0000;
+	color: white;
+	font-family: arial, helvetica, sans-serif;
+	font-size: 12pt;
+	font-weight: bold;
+}
+
+.errortext {
+	background-color: white;
+	color: black;
+	font-family: arial, helvetica, sans-serif;
+	font-size: 12pt;
+}
+
+.gmapstab td {
+	border: 0;
+	padding: 0;
+}
+
+.gmapstab a {
+	color:black;
+	text-decoration:underline;
+}
+
+.gmapstabtitle {
+	color:blue;
+	font-weight:bold;
+	text-align:left;
+}
+
+/* Subsection Tabs
+--------------------*/
+#main ul.subsection_tabs {
+	list-style:none;
+	margin:0;
+	padding:0;
+	clear:both;
+	border-bottom:1px solid #ccc;
+	height:18px;
+	clear:both;
+}
+
+#main ul.subsection_tabs li {
+	float:left;
+	margin-right:7px;
+	padding-top:2px;
+	text-align:center;
+}
+
+#main ul.subsection_tabs li a {
+	display:block;
+	height:16px;
+	padding:0 6px 0 6px;
+	background-color:#fff;
+	color:#666;
+	width:120px;
+	font-weight:bold;
+	font-family:Verdana, Arial, sans-serif;
+	font-size: 8pt;	
+}
+
+#main ul.subsection_tabs li a:hover {
+	color:#666;
+}
+
+#main ul.subsection_tabs li a.active {
+	background-color:#ddd;
+}
+
+#main ul.register_tabs {
+	border-bottom:none;
+}
+
+#main ul.register_tabs li a.active {
+	background-color:#6d7a81;
+	color:#fff;
+}
+
+.header_gameslist {
+	margin: 0 auto;
+	padding-right: 13%;
+} 
+
+#header_gameslist {
+    float: right;
+	position: absolute;
+	top:0;
+	right:0;
+}
+
+ul#header_gameslist{
+	margin: auto;
+	text-align: right;
+}
+
+ul#header_gameslist li{
+	list-style: none;
+	float: left;
+	padding: 0 10px;
+}

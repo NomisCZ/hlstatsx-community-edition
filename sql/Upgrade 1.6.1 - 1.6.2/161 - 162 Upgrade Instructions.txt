@@ -1,0 +1,13 @@
+HLstatsX: Community Edition
+Version 1.6.2
+
+IF YOU ARE CURRENTLY RUNNING 1.6.1 AND ARE UPGRADING TO 1.6.2:
+Upload the web portion of the package to your web site and visit http://path_to_your/stats/updater/.
+You will receive instructions to upgrade your database to the latest revision.
+
+IF YOU ARE NOT RUNNING 1.6.1 AND WANT TO UPGRADE TO 1.6.2:
+Run every upgrade SQL found in the "sql" folder through 1.6.1.  Afterwards upload the "web" folder contents to your web server and go to http://path_to_your/stats/updater/.
+
+
+
+No upgrade.sql will be provided for future releases.

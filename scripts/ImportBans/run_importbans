@@ -1,0 +1,79 @@
+#!/bin/bash
+# HLstatsX Community Edition - Real-time player and clan rankings and statistics
+# Copyleft (L) 2008-20XX Nicholas Hastings (nshastings@gmail.com)
+# http://www.hlxcommunity.com
+#
+# HLstatsX Community Edition is a continuation of 
+# ELstatsNEO - Real-time player and clan rankings and statistics
+# Copyleft (L) 2008-20XX Malte Bayer (steam@neo-soft.org)
+# http://ovrsized.neo-soft.org/
+# 
+# ELstatsNEO is an very improved & enhanced - so called Ultra-Humongus Edition of HLstatsX
+# HLstatsX - Real-time player and clan rankings and statistics for Half-Life 2
+# http://www.hlstatsx.com/
+# Copyright (C) 2005-2007 Tobias Oetzel (Tobi@hlstatsx.com)
+#
+# HLstatsX is an enhanced version of HLstats made by Simon Garner
+# HLstats - Real-time player and clan rankings and statistics for Half-Life
+# http://sourceforge.net/projects/hlstats/
+# Copyright (C) 2001  Simon Garner
+#             
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+# 
+# For support and installation notes visit http://www.hlxcommunity.com
+
+# HLStatsX:CE now has two import ban utilities:
+# 1) ImportBans.pl is the original importing script written in perl.
+#
+# 2) hlstatsxbans.php is written by Peace-Maker and is written in PHP.
+#
+# More information on these scripts can be found in README.
+
+
+# Please select your banning system below using the number that corresponds to the ban system above.
+BANSYSTEM=1
+
+### Nothing needs to be modified below here ###
+
+# verify that you have a logs directory
+if [ ! -d logs ];then
+	mkdir logs
+fi
+
+if [ ! -w logs ];then
+	echo "you need write access to the logs folder"
+	exit 1
+fi
+
+# print info to the log file and run importbans.pl
+echo Importing Bans -- `date +%c` >> logs/log`date +_%Y%m%d`
+
+case $BANSYSTEM in
+	1)
+		echo Using importbans.pl >> logs/log`date +_%Y%m%d` 2>&1
+		./importbans.pl  >> logs/log`date +_%Y%m%d` 2>&1
+	;;
+	2)
+		echo Using hlstatsxbans.php >> logs/log`date +_%Y%m%d` 2>&1
+		/usr/bin/php `pwd`/hlstatsxban.php >> logs/log`date +_%Y%m%d` 2>&1
+	;;
+	*) 
+		echo Warning: BANSYSTEM is not correctly configured.  Please check your configuration.
+	;;
+esac
+echo >> logs/log`date +_%Y%m%d`
+
+
+exit 0

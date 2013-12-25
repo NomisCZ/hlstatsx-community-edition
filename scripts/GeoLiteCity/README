@@ -1,0 +1,17 @@
+Included in this folder are two scripts to import data from the MaxMind (http://www.maxmind.com) from the GeoLiteCity database into your HLX db.
+
+For Linux:
+Edit the GeoLite_Import.sh file to insert your database settings in the top section and then execute.
+
+For Windows:
+Download the HLstatsX CE GeoLiteCity Importer from http://code.google.com/p/hlstatsxcommunity
+
+
+--------------------------------------------------------------
+Alternative method by *XYZ*SaYnt:
+--------------------------------------------------------------
+* For Windows or Linux.
+* Requires python.
+* Generates INSERTs in case LOAD DATA command is disabled
+
+Edit the geoip.py file to insert your database settings in the top section and then execute.

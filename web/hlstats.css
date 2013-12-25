@@ -1,0 +1,82 @@
+.weapon {text-decoration: none;}
+input, textarea, select {font-family: Verdana, Arial, sans-serif;font-size: 11px;}
+input.textbox, input.checkbox {border-width: 1px;}
+input.submit {height: 22px;}
+input.smallsubmit {font-size: 9px;height: 20px;}
+tt { font-family: Arial, Courier New, Courier, fixed; font-size: 12px;}
+
+BODY {font: 10pt Arial; }
+
+TD {font: 11pt Arial; } 
+h2 {font: 11px Arial; } 
+h1 {font: 11px Arial; } 
+h3 {font: 11px Arial; }
+
+.helpwindow {
+  position:fixed;
+  top:10px;
+  left:10px;
+  width:95%;
+  visibility:hidden;
+  border:thin solid red;
+  background-color:#AAAAAA;
+  color:#FFFFFF;
+  font-family: Courier New, Courier, Arial, fixed;
+  font-size:10pt;
+}
+
+table#accordion
+{
+	border-collapse: collapse;
+}
+
+table#accordion tr.toggler td
+{
+	border-width: 0 0 0px 1px; 
+}
+
+#footer {
+    text-align: center; 
+}
+
+
+.header_gameslist {
+	margin: 0 auto;
+	float: right;
+	position: absolute;
+	top:0;
+	right:0;
+}
+
+ul#header_gameslist{
+	margin: auto;
+	text-align: right;
+}
+
+ul#header_gameslist li{
+	list-style: none;
+	float: left;
+	padding: 0 10px;
+}
+
+#ingame .headerblock a:visited  a:link {
+	color: #FFFFFF;
+}
+
+.location .arrow {
+	font-size: 14px;
+}
+
+
+.warning {
+	border: thin solid red;
+	padding: 1em;
+}
+
+.warning .warning-heading {
+	font-size: 2em;
+}
+
+.warning .warning-text {
+	font-size: 1em;
+}

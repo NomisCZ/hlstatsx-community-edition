@@ -1,0 +1,455 @@
+# HLstatsX Community Edition - Real-time player and clan rankings and statistics
+# Copyleft (L) 2008-20XX Nicholas Hastings (nshastings@gmail.com)
+# http://www.hlxcommunity.com
+#
+# HLstatsX Community Edition is a continuation of 
+# ELstatsNEO - Real-time player and clan rankings and statistics
+# Copyleft (L) 2008-20XX Malte Bayer (steam@neo-soft.org)
+# http://ovrsized.neo-soft.org/
+# 
+# ELstatsNEO is an very improved & enhanced - so called Ultra-Humongus Edition of HLstatsX
+# HLstatsX - Real-time player and clan rankings and statistics for Half-Life 2
+# http://www.hlstatsx.com/
+# Copyright (C) 2005-2007 Tobias Oetzel (Tobi@hlstatsx.com)
+#
+# HLstatsX is an enhanced version of HLstats made by Simon Garner
+# HLstats - Real-time player and clan rankings and statistics for Half-Life
+# http://sourceforge.net/projects/hlstats/
+# Copyright (C) 2001  Simon Garner
+#             
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+# 
+# For support and installation notes visit http://www.hlxcommunity.com
+
+
+# HLstatsX CE release version number
+
+$g_version = "<Unable to Detect>";
+my %db_stmt_cache = ();
+
+%g_eventTables = (
+	"TeamBonuses",
+		["playerId", "actionId", "bonus"],
+	"ChangeRole",
+		["playerId", "role"],
+	"ChangeName",
+		["playerId", "oldName", "newName"],
+	"ChangeTeam",
+		["playerId", "team"],
+	"Connects",
+		["playerId", "ipAddress", "hostname", "hostgroup"],
+	"Disconnects",
+		["playerId"],
+	"Entries",
+		["playerId"],
+	"Frags",
+		["killerId", "victimId", "weapon", "headshot", "killerRole", "victimRole", "pos_x","pos_y","pos_z", "pos_victim_x","pos_victim_y","pos_victim_z"],
+	"PlayerActions",
+		["playerId", "actionId", "bonus", "pos_x","pos_y","pos_z"],
+	"PlayerPlayerActions",
+		["playerId", "victimId", "actionId", "bonus", "pos_x","pos_y","pos_z", "pos_victim_x","pos_victim_y","pos_victim_z"],
+	"Suicides",
+		["playerId", "weapon", "pos_x","pos_y","pos_z"],
+	"Teamkills",
+		["killerId", "victimId", "weapon", "pos_x","pos_y","pos_z", "pos_victim_x","pos_victim_y","pos_victim_z"],
+	"Rcon",
+		["type", "remoteIp", "password", "command"],
+	"Admin",
+		["type", "message", "playerName"],
+	"Statsme",
+		["playerId", "weapon", "shots", "hits", "headshots", "damage", "kills", "deaths"],
+	"Statsme2",
+		["playerId", "weapon", "head", "chest", "stomach", "leftarm", "rightarm", "leftleg", "rightleg"],
+	"StatsmeLatency",
+		["playerId", "ping"],
+	"StatsmeTime",
+		["playerId", "time"],
+	"Latency",
+		["playerId", "ping"],
+	"Chat",
+		["playerId", "message_mode", "message"]
+);
+
+
+##
+## Common Functions
+##
+
+sub number_format {
+  local $_  = shift;
+  1 while s/^(-?\d+)(\d{3})/$1,$2/;
+  return $_;
+}
+
+sub date_format {
+  my $timestamp = shift;
+  return sprintf('%dd %02d:%02d:%02dh', 
+                  $timestamp / 86400, 
+                  $timestamp / 3600 % 24, 
+                  $timestamp / 60 % 60, 
+                  $timestamp % 60 
+                 );     
+}
+
+
+
+#
+# void error (string errormsg)
+#
+# Dies, and optionally mails error messages to $g_mailto.
+#
+
+sub error
+{
+	my $errormsg = $_[0];
+	
+	if ($g_mailto && $g_mailpath)
+	{
+		system("echo \"$errormsg\" | $g_mailpath -s \"HLstatsX:CE crashed `date`\" $g_mailto");
+	}
+
+	die("$errormsg\n");
+}
+
+
+#
+# string quoteSQL (string varQuote)
+#
+# Escapes all quote characters in a variable, making it suitable for use in an
+# SQL query. Returns the escaped version.
+#
+
+sub quoteSQL
+{
+	my $varQuote = $_[0];
+
+	$varQuote =~ s/\\/\\\\/g;	# replace \ with \\
+	$varQuote =~ s/'/\\'/g;		# replace ' with \'
+	
+	return $varQuote;
+}
+
+#
+# void doConnect
+#
+# Connects to the HLstatsX database
+#
+
+sub doConnect
+{
+	$db_conn = DBI->connect(
+		"DBI:mysql:$db_name:$db_host",
+		$db_user, $db_pass, { mysql_enable_utf8 => 1 }
+	);
+	while(!$db_conn) {
+		&printEvent("MYSQL", "\nCan't connect to MySQL database '$db_name' on '$db_host'\n" .
+			"Server error: $DBI::errstr\n");
+		sleep(5);
+		$db_conn = DBI->connect(
+			"DBI:mysql:$db_name:$db_host",
+			$db_user, $db_pass, { mysql_enable_utf8 => 1 }
+		);
+	}
+	$db_conn->do("SET NAMES 'utf8'");
+	&printEvent("MYSQL", "Connecting to MySQL database '$db_name' on '$db_host' as user '$db_user' ... connected ok", 1);
+	%db_stmt_cache = ();
+}
+
+#
+# result doQuery (string query)
+#
+# Executes the SQL query 'query' and returns the result identifier.
+#
+
+sub doQuery
+{
+	my ($query, $callref) = @_;
+	if(!$db_conn->ping()) {
+		&printEvent("HLSTATSX", "Lost database connection. Trying to reconnect...", 1);
+		&doConnect();
+	}
+
+	my $result = $db_conn->prepare($query) or die("Unable to prepare query:\n$query\n$DBI::errstr\n$callref");
+	$result->execute or die("Unable to execute query:\n$query\n$DBI::errstr\n$callref");
+	
+	return $result;
+}
+
+sub execNonQuery
+{
+	my ($query) = @_;
+	if(!$db_conn->ping()) {
+		&printEvent("HLSTATSX", "Lost database connection. Trying to reconnect...", 1);
+		&doConnect();
+	}
+	#&printEvent("DEBUG","execNonQuery:\n".$query);
+	$db_conn->do($query);
+}
+
+sub execCached {
+	my ($query_id,$query, @bind_args) = @_;
+	
+	if(!$db_conn->ping()) {
+		&printEvent("HLSTATSX", "Lost database connection. Trying to reconnect...", 1);
+		&doConnect();
+	}
+	
+	if(!$db_stmt_cache{$query_id}) {
+		$db_stmt_cache{$query_id} = $db_conn->prepare($query) or die("Unable to prepare query ($query_id):\n$query\n$DBI::errstr");
+		#&printEvent("HLSTATSX", "Prepared a statement ($query_id) for the first time.", 1);
+	} 
+	$db_stmt_cache{$query_id}->execute(@bind_args) or die ("Unable to execute query ($query_id):\n$query\n$DBI::errstr");
+	return $db_stmt_cache{$query_id};
+}
+
+#
+# string resolveIp (string ip, boolean quiet)
+#
+# Do a DNS reverse-lookup on an IP address and return the hostname, or empty
+# string on error.
+#
+
+sub resolveIp
+{
+	my ($ip, $quiet) = @_;
+	my ($host) = "";
+	
+	unless ($g_dns_resolveip)
+	{
+		return "";
+	}
+	
+	
+	eval
+	{
+		$SIG{ALRM} = sub { die "DNS Timeout\n" };
+		alarm $g_dns_timeout;	# timeout after $g_dns_timeout sec
+		$host = gethostbyaddr(inet_aton($ip), AF_INET);
+		alarm 0;
+	};
+	
+	if ($@)
+	{
+		my $error = $@;
+		chomp($error);
+    	printEvent("DNS", "Resolving hostname (timeout $g_dns_timeout sec) for IP \"$ip\" - $error ", 1);
+		$host = "";		# some error occurred
+	}
+	elsif (!defined($host))
+	{
+    	printEvent("DNS", "Resolving hostname (timeout $g_dns_timeout sec) for IP \"$ip\" - No Host ", 1);
+		$host = "";		# ip did not resolve to any host
+	} else {
+		$host = lc($host);	# lowercase
+		printEvent("DNS", "Resolving hostname (timeout $g_dns_timeout sec) for IP \"$ip\" - $host ", 1);
+	}
+	chomp($host);
+	return $host;
+}
+
+
+#
+# object queryHostGroups ()
+#
+# Returns result identifier.
+#
+
+sub queryHostGroups
+{
+	return &doQuery("
+		SELECT
+			pattern,
+			name,
+			LENGTH(pattern) AS patternlength
+		FROM
+			hlstats_HostGroups
+		ORDER BY
+			patternlength DESC,
+			pattern ASC
+	");
+}
+
+
+#
+# string getHostGroup (string hostname[, object result])
+#
+# Return host group name if any match, or last 2 or 3 parts of hostname.
+#
+
+sub getHostGroup
+{
+	my ($hostname, $result) = @_;
+	my $hostgroup = "";
+	
+	# User can define special named hostgroups in hlstats_HostGroups, i.e.
+	# '.adsl.someisp.net' => 'SomeISP ADSL'
+	
+	$result = &queryHostGroups()  unless ($result);
+	$result->execute();
+	
+	while (my($pattern, $name) = $result->fetchrow_array())
+	{
+		$pattern = quotemeta($pattern);
+		$pattern =~ s/\\\*/[^.]*/g;	# allow basic shell-style globbing in pattern
+		if ($hostname =~ /$pattern$/)
+		{
+			$hostgroup = $name;
+			last;
+		}
+	}
+	$result->finish;
+	
+	if (!$hostgroup)
+	{
+		#
+		# Group by last 2 or 3 parts of hostname, i.e. 'max1.xyz.someisp.net' as
+		# 'someisp.net', and 'max1.xyz.someisp.net.nz' as 'someisp.net.nz'.
+		# Unfortunately some countries do not have categorical SLDs, so this
+		# becomes more complicated. The dom_nosld array below contains a list of
+		# known country codes that do not use categorical second level domains.
+		# If a country uses SLDs and is not listed below, then it will be
+		# incorrectly grouped, i.e. 'max1.xyz.someisp.yz' will become
+		# 'xyz.someisp.yz', instead of just 'someisp.yz'.
+		#
+		# Please mail sgarner@hlstats.org with any additions.
+		#
+		
+		my @dom_nosld = (
+			"ca", # Canada
+			"ch", # Switzerland
+			"be", # Belgium
+			"de", # Germany
+			"ee", # Estonia
+			"es", # Spain
+			"fi", # Finland
+			"fr", # France
+			"ie", # Ireland
+			"nl", # Netherlands
+			"no", # Norway
+			"ru", # Russia
+			"se", # Sweden
+		);
+		
+		my $dom_nosld = join("|", @dom_nosld);
+		
+		if ($hostname =~ /([\w-]+\.(?:$dom_nosld|\w\w\w))$/)
+		{
+			$hostgroup = $1;
+		}
+		elsif ($hostname =~ /([\w-]+\.[\w-]+\.\w\w)$/)
+		{
+			$hostgroup = $1;
+		}
+		else
+		{
+			$hostgroup = $hostname;
+		}
+	}
+	
+	return $hostgroup;
+}
+
+
+#
+# void doConf (object conf, hash directives)
+#
+# Walk through configuration directives, setting values of global variables.
+#
+
+sub doConf
+{
+	my ($conf, %directives) = @_;
+	
+	while (($directive, $variable) = each(%directives))
+	{
+        if ($directive eq "Servers") {
+ 	      %$variable = $conf->get($directive);
+        } else {
+  		  $$variable = $conf->get($directive);
+	    }
+	}
+
+}
+
+#
+# void setOptionsConf (hash optionsconf)
+#
+# Walk through configuration directives, setting values of global variables.
+#
+
+sub setOptionsConf
+{
+	my (%optionsconf) = @_;
+	
+	while (($thekey, $theval) = each(%optionsconf))
+	{
+		if($theval)
+		{
+  			$$thekey = $theval;
+		}
+	}
+
+}
+
+
+#
+# string abbreviate (string thestring[, int maxlength)
+#
+# Returns thestring abbreviated to maxlength-3 characters plus "...", unless
+# thestring is shorter than maxlength.
+#
+
+sub abbreviate
+{
+	my ($thestring, $maxlength) = @_;
+	
+	$maxlength = 12  unless ($maxlength);
+	
+	if (length($thestring) > $maxlength)
+	{
+		$thestring = substr($thestring, 0, $maxlength - 3);
+		return "$thestring...";
+	}
+	else
+	{
+		return $thestring;
+	}
+}
+
+
+#
+# void printEvent (int code, string description)
+#
+# Logs event information to stdout.
+#
+
+sub printEvent
+{
+	my ($code, $description, $update_timestamp, $force_output) = @_;
+	if ( (($g_debug > 0) && ($g_stdin == 0))|| (($g_stdin == 1) && ($force_output == 1)) ) {
+		my ($sec,$min,$hour,$mday,$mon,$year) = localtime(time());
+		my $timestamp = sprintf("%04d-%02d-%02d %02d:%02d:%02d", $year+1900, $mon+1, $mday, $hour, $min, $sec);
+		if ($update_timestamp == 0) {
+			$timestamp = $ev_timestamp; 
+		}  
+		if (is_number($code)) {
+			printf("%s: %21s - E%03d: %s\n", $timestamp, $s_addr, $code, $description);
+		} else {
+			printf("%s: %21s - %s: %s\n", $timestamp, $s_addr, $code, $description);
+		}  
+	}
+}
+
+1;

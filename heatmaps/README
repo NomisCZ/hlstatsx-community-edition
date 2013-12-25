@@ -1,0 +1,14 @@
+HLstatsX Community Edition
+Heatmap Generation Installation Instructions
+
+WARNING: Heatmap generation will consume alot of processor time.  Please be sure to plan accordingly!
+300k kills on one map will take ~10min to generate on one 2.4Ghz core processor.
+
+Install:
+	- change user, password, database and path to your "web" folder in config.inc.php
+	- download the appropriate heatmap pack from www.hlxcommunity.com and put into "src"
+
+To generate heatmaps:
+	- run: php generate.php
+
+report problems to hlx forums or irc

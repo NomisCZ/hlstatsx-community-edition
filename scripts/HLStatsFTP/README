@@ -1,0 +1,31 @@
+hlstats-ftp.pl README
+
+Utility written by Woody.
+
+This utility can be used to grab log files from a remote game server through FTP and then use the HLStatsX Daemon to enter
+the data into the database.  You must have perl installed to use this utility.
+
+The script "remembers" the modification time (mtime) of the last log file that has been processed, and when run again,
+only processes files with a later mtime.
+
+*** NOTE ***
+To use this utility you must copy it into the same folder your hlstats.pl (the daemon) is in.
+You probably want to configure this as a cronjob as well.
+
+
+Usage:
+   hlstats-ftp.pl --help
+   hlstats-ftp.pl --version
+   hlstats-ftp.pl --gs-ip=GSIP --gs-port=GSPORT [--ftp-ip=FTPIP] --ftp-usr=FTPUSR --ftp-pwd=FTPPWD --ftp-dir=FTPDIR [--quiet]
+
+Options:
+   --help                  display this help and exit  
+   --version               output version information and exit
+   --gs-ip=IP              game server IP address
+   --gs-port=PORT          game server port
+   --ftp-ip=IP             ftp log server IP address, if different from
+                           game server IP address (--gs-ip)
+   --ftp-usr=USERNAME      ftp log server user name
+   --ftp-pwd=PASSWORD      ftp log server password
+   --ftp-dir=DIRECTORY     ftp log server directory
+   --quiet                 quiet operation, i.e. no output

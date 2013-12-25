@@ -1,0 +1,151 @@
+#!/bin/bash
+# HLstatsX Community Edition - Real-time player and clan rankings and statistics
+# Copyleft (L) 2008-20XX Nicholas Hastings (nshastings@gmail.com)
+# http://www.hlxcommunity.com
+#
+# HLstatsX Community Edition is a continuation of 
+# ELstatsNEO - Real-time player and clan rankings and statistics
+# Copyleft (L) 2008-20XX Malte Bayer (steam@neo-soft.org)
+# http://ovrsized.neo-soft.org/
+# 
+# ELstatsNEO is an very improved & enhanced - so called Ultra-Humongus Edition of HLstatsX
+# HLstatsX - Real-time player and clan rankings and statistics for Half-Life 2
+# http://www.hlstatsx.com/
+# Copyright (C) 2005-2007 Tobias Oetzel (Tobi@hlstatsx.com)
+#
+# HLstatsX is an enhanced version of HLstats made by Simon Garner
+# HLstats - Real-time player and clan rankings and statistics for Half-Life
+# http://sourceforge.net/projects/hlstats/
+# Copyright (C) 2001  Simon Garner
+#             
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+# 
+# For support and installation notes visit http://www.hlxcommunity.com
+
+# If you wish to run this script as a daemon script (in /etc/init.d, etc.)
+# you must configure the "confdir" variable below.
+# The other variables are optional and really should not be modified.
+
+# Set the path to the scripts folder (you should not need to modify this.)
+confdir=.
+
+# Set the configuration file for the daemon (you should not need to modify this.)
+conffile=hlstats.conf
+# Set the filename of the daemon to use (you should not need to modify this.)
+daemonfile=proxy-daemon.pl
+# Set where you want to log to.  This is a directory inside of the confdir setting.
+# (You should not need to modify this.)
+logdir=logs
+# Set the format of the log file
+logfile=proxy`date +_%Y%m%d_%H-%M-%S`
+# Set where to store PID files
+piddir=${confdir}
+
+# verify that we can see the daemon file
+if [ ! -f ${confdir}/${daemonfile} ]; then
+	echo "Can't see the daemon.  (${daemonfile})"
+	exit 1
+fi
+
+# verify that you have write access to the directories
+if [ ! -w ${confdir} ]; then
+	echo "you need write access to ${confdir}"
+	exit 1
+fi
+
+# verify that you have a logs directory
+if [ ! -d ${confdir}/${logdir} ];then
+	mkdir ${confdir}/${logdir}
+fi
+
+if [ ! -w ${confdir}/${logdir} ];then
+	echo "you need write access to ${confdir}/${logdir}"
+	exit 1
+fi
+
+# Grab out original directory so we can return after
+origdir=`pwd`
+
+# Move into configured directory
+cd ${confdir}
+
+case "$1" in
+	start)
+		# verify that we have a .conf file
+		if [ ! -f ${conffile} ]; then
+			echo "You're missing your configuration file.  (${conffile})"
+			exit 1
+		fi
+		echo "Starting HLstatsX:CE...";
+		if [ -f ${piddir}/proxy-daemon.pid ]; then
+			kill -0 `cat ${piddir}/proxy-daemon.pid` >/dev/null 2>&1
+			if [ "$?" == "0" ]; then
+				echo "HLstatsX:CE already running!"
+			else
+				rm -rf ${piddir}/proxy-daemon.pid
+				./${daemonfile} --configfile=${conffile} > ${logdir}/${logfile} 2>&1 &
+				echo $! >${piddir}/proxy-daemon.pid
+				echo "PID file created"
+				echo "Started successfully"
+			fi
+		else
+			./${daemonfile} --configfile=${conffile} > ${logdir}/${logfile} 2>&1 &
+			echo $! >${piddir}/proxy-daemon.pid
+			echo "PID file created"
+			echo "Started successfully"
+		fi
+    ;;
+	
+	stop)
+		echo "Stopping HLstatsX:CE..."
+		kill -9 `cat ${piddir}/proxy-daemon.pid` >/dev/null 2>&1
+		if [ "$?" == "0" ]; then
+			rm -rf ${piddir}/proxy-daemon.pid
+			echo "Stopped successfully"
+		else
+			echo "No HLstatsX:CE running!"
+		fi
+	;;
+
+	restart)
+		echo "Restarting HLstatsX:CE..."
+		kill -9 `cat ${piddir}/proxy-daemon.pid` >/dev/null 2>&1
+		if [ "$?" == "0" ]; then
+			rm -rf ${piddir}/proxy-daemon.pid
+			./${daemonfile} --configfile=${conffile} > ${logdir}/${logfile} 2>&1 &
+			echo $! >${piddir}/proxy-daemon.pid
+			echo "PID file created"
+			echo "Restarted successfully"
+		else    
+			echo "HLstatsX:CE"
+			if [ -f ${piddir}/proxy-daemon.pid ]; then
+				rm -rf ${piddir}/proxy-daemon.pid
+			fi
+			./${daemonfile} --configfile=${conffile} > ${logdir}/${logfile} 2>&1 &
+			echo $! >${piddir}/proxy-daemon.pid
+			echo "PID file created"
+			echo "Started successfully"
+		fi
+	;;
+	
+   *)
+		echo "Usage: ./run_hlstats [ start | stop | restart ]"
+	;;
+esac
+
+# Return to original directory
+cd ${origdir}
+
+exit 0

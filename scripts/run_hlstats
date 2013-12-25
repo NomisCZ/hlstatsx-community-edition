@@ -1,0 +1,791 @@
+#!/bin/bash
+# HLstatsX Community Edition - Real-time player and clan rankings and statistics
+# Copyleft (L) 2008-20XX Nicholas Hastings (nshastings@gmail.com)
+# http://www.hlxce.com
+#
+# HLstatsX Community Edition is a continuation of 
+# ELstatsNEO - Real-time player and clan rankings and statistics
+# Copyleft (L) 2008-20XX Malte Bayer (steam@neo-soft.org)
+# http://ovrsized.neo-soft.org/
+# 
+# ELstatsNEO is an very improved & enhanced - so called Ultra-Humongus Edition of HLstatsX
+# HLstatsX - Real-time player and clan rankings and statistics for Half-Life 2
+# http://www.hlstatsx.com/
+# Copyright (C) 2005-2007 Tobias Oetzel (Tobi@hlstatsx.com)
+#
+# HLstatsX is an enhanced version of HLstats made by Simon Garner
+# HLstats - Real-time player and clan rankings and statistics for Half-Life
+# http://sourceforge.net/projects/hlstats/
+# Copyright (C) 2001  Simon Garner
+#             
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+# 
+# For support and installation notes visit http://www.hlxcommunity.com
+
+#------------------------------------------------------------------------------
+# Usage
+# Information on how to use this script can be found on our wiki:
+# http://wiki.hlxce.com
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
+# Script Configuration
+# These parameters allow you to adjust various functions of the daemon.
+# In general, they should not need to be modified.
+# Please visit our wiki for more information: http://wiki.hlxce.com
+
+#------------------------------------------------------------------------------
+# SCRIPTPATH:
+# File system path to daemon and supporting files
+# NOTE: This is only needed if the other scripts files will be in another directory.
+# In general, NO TOUCHY! :)
+SCRIPTPATH=.
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
+# CONFFILE:
+# Specifies the configuration file (relative to SCRIPTPATH) to use for the daemon
+CONFFILE=hlstats.conf
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
+# DAEMON:
+# Specifies the daemon Perl script to be used
+DAEMON=hlstats.pl
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
+# LOGDIR:
+# Specifies the location to store logs
+LOGDIR=${SCRIPTPATH}/logs
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
+# LOGDATE:
+# Specifies the date format to use in log file names
+LOGDATE_FORMAT=%Y-%m-%d_%H-%M-%S
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
+# PIDDIR:
+# Specifies location to store daemon PID files
+PIDDIR=${SCRIPTPATH}
+#------------------------------------------------------------------------------
+
+
+#------------------------------------------------------------------------------
+# Nothing to modify below here
+WEBSITE=http://www.hlxce.com
+WIKI=http://wiki.hlxce.com
+
+# Start output
+echo 
+echo "HLstatsX:CE daemon control"
+echo "${WEBSITE}"
+echo "---------------------------"
+
+# Change to directory of script
+cd `dirname ${0}`
+
+# Perform some initial checks before we encounter later errors
+# Check if we can write to the SCRIPTPATH
+if [ ! -w ${SCRIPTPATH} ]; then
+	echo "CRITICAL ERROR: Could not write to SCRIPTPATH: ${SCRIPTPATH}"
+	echo "Verify you have write access to this directory."
+	echo "Visit our wiki for more information: ${WIKI}."
+	exit 1
+fi
+
+# Check if the daemon perl script exists
+if [ ! -f ${SCRIPTPATH}/${DAEMON} ]; then
+	echo "CRITICAL ERROR: Cannot access the daemon: ${DAEMON}"
+	echo "Verify that the daemon, and corresponding files, exist in ${SCRIPTPATH}"
+	echo "Visit our wiki for more information: ${WIKI}."
+	exit 1
+fi
+
+# Verify shebang line in daemon
+SHEBANG=`head -n1 ${SCRIPTPATH}/${DAEMON}`
+if [[ ${SHEBANG} =~ ^#! ]]; then
+  SHEBANG_BINARY=`echo "${SHEBANG}" | sed 's/^#!//'`
+  if [ ! -f ${SHEBANG_BINARY} ]; then
+    echo "CRITICAL ERROR: The path to Perl is incorrect in ${DAEMON}."
+    echo "Current Perl path in shebang: ${SHEBANG_BINARY}"
+    echo "Visit our wiki for more information: ${WIKI}."
+    echo 
+    echo "Potential paths for Perl: "
+    echo `which perl`
+    exit 1
+  fi
+else
+    echo "CRITICAL ERROR: The shebang line is incorrectly configured.  Please verify that your shebang line is correct in ${DAEMON}."
+    echo "Current shebang line: ${SHEBANG}"
+    echo "Visit our wiki for more information: ${WIKI}."
+    exit 1
+fi
+
+# Create logdir if needed
+if [ ! -d ${LOGDIR} ]; then
+	mkdir ${LOGDIR}
+fi
+
+# Make sure we can write to logdir
+if [ ! -w ${LOGDIR} ]; then
+	echo "CRITICAL ERROR: Could not write to the log folder: ${LOGDIR}"
+	echo "Verify that you have write access to the log folder."
+	echo "Visit our wiki for more information: ${WIKI}."
+	exit 1
+fi
+
+# Daemon control functions
+function start_daemon {
+	# This function handles the creation of a new daemon process.
+	# This function requires one parameter: PORT
+	# Returns:
+	#	0 - Daemon started
+	#	1 - Daemon failed to start
+	#	2 - Daemon already running
+	
+	if [ ! $1 ]; then
+		echo "CRITICAL ERROR: No port was received on function start_daemon"
+		exit 1
+	else
+		local PORT=$1
+	fi
+	
+	local LOG=${LOGDIR}/hlstats_${PORT}_`date +${LOGDATE_FORMAT}`
+	
+	local PID=`get_pid ${PORT}`
+	# Check if a PID exists for this port number
+	if [ "${PID}" != "" ]; then
+		# PID exists -- check if the daemon is running.
+		kill -0 ${PID} &> /dev/null
+		if [ $? -eq 0 ]; then
+			# Daemon running -- nothing to do.
+			return 2
+		else
+			# Daemon not running -- remove pid.
+			remove_pidfile ${PORT}
+		fi
+	fi
+	
+	# Start the daemon on requested port
+	echo -ne "Attempting to start HLstatsX:CE daemon on port ${PORT}..."
+	${SCRIPTPATH}/${DAEMON} --configfile=${CONFFILE} --port=${PORT} &> ${LOG} &
+	# Store PID in memory until we verify Daemon has launched
+	PID=$!
+
+	# Perform one quick check to see if PID is running
+	kill -0 ${PID} &> /dev/null
+	if [ $? -eq 0 ]; then
+		create_pidfile ${PORT} ${PID}
+		echo ""
+		return 0
+	else
+		# PID not detected in time, keep checking for 10 more seconds.
+		local i=1
+		while [ $i -le 10 ]
+		do
+			echo -ne " ${i}"
+			sleep 1
+			# Perform a kill check against saved PID
+			kill -0 ${PID} &> /dev/null
+			# Check results of pid test
+			if [ $? -eq 1 ]; then
+				# Process does not exist
+				let i++
+				if [ $i -eq 10 ]; then
+					# Daemon did not respond to start request within 10 seconds.
+					return 1
+				fi
+			else
+				# Daemon started successfully -- commit PID to file
+				create_pidfile ${PORT} ${PID}
+				echo ""
+				return 0
+			fi
+		done
+	fi
+}
+
+function stop_daemon {
+	# This function handles shutting a daemon down.
+	# This function requires one parameter: PORT.
+	
+	# Returns:
+	#	0 - Daemon gracefully stopped 
+	#	1 - Daemon forcefully stopped
+	#	2 - Daemon could not be stopped
+	#	3 - No daemon to stop or PID missing
+	
+	if [ ! $1 ]; then
+		echo "CRITICAL ERROR: No port was received on function stop_daemon"
+		exit 1
+	else
+		local PORT=$1
+	fi
+	
+	local PID=`get_pid ${PORT}`
+		
+	if [ ${PID} -eq 0 ]; then
+		return 3
+	fi
+	
+	# Attempt to stop the daemon
+	echo -n "Attempting graceful shutdown of HLstatsX:CE daemon on port ${PORT} "
+	kill -INT ${PID} &> /dev/null
+	
+	if [ $? -ne 0 ]; then
+		# Daemon is not running, purge the PID.
+		remove_pidfile ${PORT}
+		echo ""
+		return 3
+	else
+		# Found running PID -- perform a quick check before entering loop
+		kill -0 ${PID} &> /dev/null
+		if [ $? -eq 1 ]; then
+			# Daemon stopped, remove PID
+			remove_pidfile ${PORT}
+			echo ""
+			return 0
+		else
+			local i=1
+			while [ $i -le 10 ]
+			do
+				echo -n " ${i}"
+				sleep 1
+				# Perform a kill check against saved PID
+				kill -0 ${PID} &> /dev/null
+				if [ $? -eq 0 ]; then
+					# Daemon still operating
+					let i++
+				else
+					# Daemon stopped, remove PID
+					remove_pidfile ${PORT}
+					echo ""
+					return 0
+				fi
+			done
+		fi
+
+		# Daemon did not respond to shutdown, attempt a forced kill
+		echo ""
+		echo "WARNING: Daemon did not respond to a graceful shut down.  Forcing a shut down on port ${PORT} "
+		local i=1
+		while [ $i -le 5 ]
+		do
+			kill -KILL ${PID} &> /dev/null
+			echo -n " ${i}"
+			sleep 1
+			
+			# Check if PID is still present
+			kill -0 ${PID} &> /dev/null
+
+			if [ $? -eq 0 ]; then
+				# Daemon still operating
+				let i++
+			else
+				# Daemon stopped successfully.
+				remove_pidfile ${PORT}
+				echo ""
+				return 1
+			fi
+		done
+		return 2
+	fi
+}
+
+function reload_daemon {
+	# This function handles reloading a daemon down.
+	# This function requires one parameter: PORT.
+	
+	# Returns:
+	#	0 - Reload sent successfully
+	#	1 - Daemon not running or pid file missing
+	
+	# Sanity check on incoming required parameter
+	if [ ! $1 ]; then
+		echo "CRITICAL ERROR: No port was received on function reload_daemon"
+		exit 1
+	else
+		local PORT=$1
+	fi
+	
+	
+	local PID=`get_pid ${PORT}`
+	# Check to verify the daemon is operational
+	if [ ${PID} -ne 0 ]; then
+		kill -0 ${PID} &> /dev/null
+		if [ $? -eq 0 ]; then
+			kill -HUP ${PID} &> /dev/null
+			return 0
+		else
+			return 1
+		fi
+	else
+		return 1
+	fi
+}
+
+function check_port {
+	# This function verifies user input on the port number
+	# One argument is required
+	
+	# Returns:
+	#	0 - Valid input
+	#	1 - Invalid Input (non-digit or not in UDP port range)
+	
+	if [ $1 ]; then
+		# Perform regex test on input
+		echo ${1} | grep -q '^[0-9]\{1,5\}$'
+		# Check if within range and if grep test was successful.
+		if [ $? -eq 0 ] && [ $1 -le 65535 ] && [ $1 -ge 1 ]; then
+			return 0
+		else
+			return 1
+		fi
+	fi
+}
+
+function get_status {
+	# This function performs a lookup for the PID on specified port and checks status
+	# Parameters:
+	#	1 - port
+	
+	# Returns:
+	#	0 - PID is running
+	#	1 - PID is not running
+	#	2 - Invalid PID
+	
+	if [ $1 ]; then
+		local PID=`get_pid ${1}`
+		if [ "${PID}" != "" ]; then
+			kill -0 ${PID} &> /dev/null
+			if [ $? -eq 0 ]; then
+				return 0
+			else
+				return 1
+			fi
+		else
+			return 2
+		fi
+	fi
+}
+
+function create_pidfile {
+	# This function will handle the creation of a PID file for a corresponding port
+	# Parameters required:
+	#	1 - port number
+	#	2 - PID
+	
+	# Returns:
+	#	0 - PID saved
+	#	1 - Unable to save PID
+	
+	if [[ $1 && $2  ]]; then
+		PIDFILE=${PIDDIR}/hlstats_${1}.pid
+		echo ${2} > ${PIDFILE}
+		
+		if [ "`cat ${PIDFILE}`" -eq "${2}" ]; then
+			return 0
+		else
+			return 1
+		fi
+	fi
+}
+
+function remove_pidfile {
+	# This function will handle the deletion of a PID file for a corresponding port
+	# Parameters required:
+	#	1 - port number
+	
+	# Returns:
+	#	0 - PID removed
+	#	1 - PID does not exist
+	
+	if [ $1 ]; then
+		PIDFILE=${PIDDIR}/hlstats_${1}.pid
+		rm -f ${PIDFILE} &> /dev/null
+		if [ $? -eq 0 ]; then
+			return 0
+		else
+			return 1
+		fi
+	fi
+}
+		
+
+function get_pid {
+	# This function will echo out the found pid and return 0, or return 1 if it finds nothing
+	# Parameters required:
+	#	1 - port number
+	
+	# Output
+	#	Requested PID on return 0
+	
+	# Returns:
+	#	0 - PID number for corresponding process
+	#	1	- No PID file for specified port
+	
+	if [ $1 ]; then
+		PIDFILE=${PIDDIR}/hlstats_${1}.pid
+		PID=`cat ${PIDFILE} 2> /dev/null`
+		if [ $? -eq 0 ]; then
+			echo ${PID}
+			return 0
+		else
+			return 1
+		fi
+	fi
+}
+
+# Cleanup old legacy run_hlstats stuff
+# Check if hlstats.pid exists (original pid from legacy run_hlstats)
+if [ -f ${PIDDIR}/hlstats.pid ]; then
+	echo "WARNING: A old PID file has been detected.  To prevent further troubles this daemon will be shut down."
+	kill -KILL `cat ${PIDDIR}/hlstats.pid` &> /dev/null
+	sleep 1
+	# Check if PID is dead
+	i=1
+	while [ $i -le 5 ]
+	do
+		kill -0 `cat ${PIDDIR}/hlstats.pid` &> /dev/null
+		if [ $? -eq 0 ]; then
+			# Daemon still operating
+			let i++
+			sleep 1
+		else
+			# Daemon stopped successfully.
+			rm -f ${PIDDIR}/hlstats.pid
+			echo ""
+			echo "HLstatsX:CE daemon has been forcefully stopped."
+			echo "Please re-run this script to control your daemon."
+			exit
+		fi
+	done
+fi
+
+# Daemon control case switcher
+case "$1" in
+	start)
+		# Usage: run_hlstats start <# of daemons> <first port number> <port increment number>
+		# All arguments are optional
+		# Defaults: # of Daemons = 1; First port number = 27500; Port increment number = 1
+		NUMDAEMONS=1
+		STARTPORT=27500
+		INCREMENT=1
+
+		# Get user-specified number of daemons
+		if [ $2 ]; then
+			NUMDAEMONS=$2
+		fi
+		
+		if [ $3 ]; then
+			check_port $3
+			if [ $? -eq 0 ]; then
+				STARTPORT=$3
+			else
+				echo "CRITICAL ERROR: An invalid port number was specified."
+				exit 1
+			fi
+		fi
+		
+		if [ $4 ]; then
+			INCREMENT=$4
+		fi
+		
+		# Saving this for a future release -- right now this would prevent people from running run_hlstats every few minutes to make sure their daemon is operational.		
+		#else
+		#	# Lookup the highest currently used port number
+		#		LASTPORT=`ls ${PIDDIR} | egrep 'hlstats_[0-9]{1,5}.pid' | egrep -o '[0-9]{1,5}' | tail -1`
+		#		if [ "${LASTPORT}" != "" ]; then
+		#			# We have currently running daemons, to take the current highest port number and increment it
+		#			let STARTPORT=LASTPORT+INCREMENT
+		#		fi
+		#	
+		#fi
+
+		i=0
+		CURRENTPORT=${STARTPORT}
+		while [ ${i} -lt ${NUMDAEMONS} ]
+		do
+			start_daemon ${CURRENTPORT}
+			case $? in
+				0)
+					echo "Daemon successfully started on port ${CURRENTPORT}"
+					let CURRENTPORT=CURRENTPORT+INCREMENT
+					let i++
+				;;
+				1)
+					echo "CRITICAL ERROR: Unable to start daemon on port ${CURRENTPORT}"
+					exit 1
+				;;
+				2)
+					echo "Daemon is already running on port ${CURRENTPORT}"
+					let CURRENTPORT=CURRENTPORT+INCREMENT
+					let i++
+				;;
+			esac
+		done
+	;;
+	
+	stop)
+		# Usage: run_hlstats stop <port>
+		# All arguments are optional
+		# Defaults: port = ALL
+		
+		if [ $2 ]; then
+			check_port $2
+			if [ $? -eq 0 ]; then
+				PORT=$2
+			else
+				echo "CRITICAL ERROR: An invalid port number was specified."
+				exit 1
+			fi		
+		else
+			PORT=0
+		fi
+		
+		# Stop a single daemon
+		if [ ${PORT} -ne 0 ]; then
+			stop_daemon ${PORT}
+			case $? in
+				0)
+					echo "Daemon gracefully stopped on port ${PORT}"
+					exit 0
+				;;
+				1)
+					echo "Daemon forcefully stopped on port ${PORT}"
+					exit 0
+				;;
+				2)
+					echo "WARNING: Daemon could not be stopped on port ${PORT}"
+					exit 1
+				;;
+				3)
+					echo "No daemon running on port ${PORT} or PID file is missing."
+					exit 1
+				;;
+			esac
+		fi
+		
+		# Stop all daemons
+		PORTS=`ls ${PIDDIR} | egrep 'hlstats_[0-9]{1,5}.pid' | egrep -o '[0-9]{1,5}'`
+		if [ $? -eq 0 ]; then
+			for port in ${PORTS} ; do
+				stop_daemon ${port}
+				case $? in
+					0)
+						echo "Daemon gracefully stopped on port ${port}"
+					;;
+					1)
+						echo "Daemon forcefully stopped on port ${port}"
+					;;
+					2)
+						echo "WARNING: Daemon could not be stopped on port ${port}"
+					;;
+					3)
+						echo "No daemon running on port ${port} or PID file is missing."
+					;;
+				esac
+			done
+		else
+			echo "No daemons found running, or PID files are missing."
+			exit 1
+		fi
+	;;
+	
+	restart)
+		# Usage: run_hlstats restart <port>
+		# All arguments are optional
+		# Defaults: port = ALL
+		
+		if [ $2 ]; then
+			check_port $2
+			if [ $? -eq 0 ]; then
+				PORT=$2
+			else
+				echo "CRITICAL ERROR: An invalid port number was specified."
+				exit 1
+			fi		
+		else
+			PORT=0
+		fi
+		
+		# Handle individual restart request
+		if [ ${PORT} -ne 0 ]; then
+			stop_daemon ${PORT}
+			case $? in
+				0 | 1 | 3)
+					start_daemon ${PORT}
+					if [ $? -eq 0 ]; then
+						echo "Daemon successfully restarted on port ${PORT}"
+						exit 0
+					else
+						echo "CRITICAL ERROR: Failed to restart daemon on port ${PORT}"
+						exit 1
+					fi
+				;;
+				2)
+					echo "WARNING: Daemon could not be stopped on port ${port}"
+					exit 1
+				;;
+			esac
+		fi
+		
+		# Restart all PIDs
+		PORTS=`ls ${PIDDIR} | egrep 'hlstats_[0-9]{1,5}.pid' | egrep -o '[0-9]{1,5}'`
+		if [ $? -eq 0 ]; then
+			for port in ${PORTS} ; do
+				stop_daemon ${port}
+				case $? in
+					0 | 1 | 3)
+						start_daemon ${port}
+						if [ $? -eq 0 ]; then
+							echo "Daemon successfully restarted on port ${port}"
+						else
+							echo "WARNING: Failed to restart daemon on port ${port}"
+						fi
+					;;
+					2)
+						echo "WARNING: Daemon could not be stopped on port ${port}"
+						exit 1
+					;;
+				esac
+			done
+		else
+			echo "WARNING: No HLstatsX:CE daemons currently running."
+			exit 1
+		fi
+	;;
+	
+	reload)
+		# Usage: run_hlstats reload <port>
+		# All arguments are optional
+		# Defaults: port = ALL
+
+		if [ $2 ]; then
+			check_port $2
+			if [ $? -eq 0 ]; then
+				PORT=$2
+			else
+				echo "CRITICAL ERROR: An invalid port number was specified."
+				exit 1
+			fi		
+		else
+			PORT=0
+		fi
+		
+		# Handle individual reload request
+		if [ ${PORT} -ne 0 ]; then
+			reload_daemon ${PORT}
+			if [ $? -eq 0 ]; then
+				echo "Successfully reloaded daemon running on port ${PORT}"
+				exit 0
+			else
+				echo "WARNING: Unable to reload daemon on port ${PORT} (daemon might not be running)"
+				exit 1
+			fi
+		fi
+		
+		# Reload all PIDs
+		PORTS=`ls ${PIDDIR} | egrep 'hlstats_[0-9]{1,5}.pid' | egrep -o '[0-9]{1,5}'`
+		if [ "${PORTS}" != "" ]; then
+			for port in ${PORTS} ; do
+				reload_daemon ${port}
+				if [ $? -eq 0 ]; then
+					echo "Successfully reloaded daemon running on port ${port}"
+				else
+					echo "WARNING: Unable to reload daemon on port ${port} (daemon might not be running)"
+				fi
+			done
+		else
+			echo "WARNING: No HLstatsX:CE daemons currently running."
+			exit 1
+		fi		
+	;;
+	
+	status)
+		# Usage: run_hlstats status <port>
+		# All arguments are optional
+		# Defaults: port = ALL
+		
+		if [ $2 ]; then
+			check_port $2
+			if [ $? -eq 0 ]; then
+				PORT=$2
+			else
+				echo "CRITICAL ERROR: An invalid port number was specified."
+				exit 1
+			fi		
+		else
+			PORT=0
+		fi
+
+		# Handle individual status request
+		if [ ${PORT} -ne 0 ]; then
+			get_status ${PORT}
+			case $? in
+				0)
+					echo "Daemon on port ${PORT} is currently running."
+					exit 0
+				;;
+				1)
+					echo "A stale process was found for daemon on port ${PORT}."
+					exit 0
+				;;
+				2)
+					echo "There is no daemon running on port ${PORT}."
+					exit 0
+				;;
+			esac
+		fi
+		
+		# Reload all PIDs
+		PORTS=`ls ${PIDDIR} | egrep 'hlstats_[0-9]{1,5}.pid' | egrep -o '[0-9]{1,5}'`
+		if [ "${PORTS}" != "" ]; then
+			for port in ${PORTS} ; do
+				get_status ${port}
+				case $? in
+					0)
+						echo "Daemon on port ${port} is currently running."
+					;;
+					1)
+						echo "A stale process was found for daemon on port ${port}.  It has been removed."
+					;;
+					2)
+						echo "There is no daemon running on port ${port}."
+					;;
+				esac
+			done
+		else
+			echo "WARNING: No HLstatsX:CE daemons currently running."
+			exit 1
+		fi
+	;;
+		
+	*)
+		echo "Usage"
+		echo "All optional arguments are in <>.  The default is in ()."
+		echo ""
+		echo -e "\trun_hlstats start   <number of daemons (1)> <starting port number (27500)> <port increment (1)>"
+		echo -e "\trun_hlstats stop    <port # of daemon to stop (ALL)>"
+		echo -e "\trun_hlstats status  <port # of daemon to check status of (ALL)>"
+		echo -e "\trun_hlstats restart <port # of daemon to restart (ALL)>"
+		echo -e "\trun_hlstats reload  <port # of daemon to reload (ALL)>"
+	;;
+esac
+exit
+

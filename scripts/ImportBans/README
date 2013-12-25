@@ -1,0 +1,55 @@
+HLStatsX:CE Import Ban Options
+----------------------
+Description:
+HLStatsX:CE has two different scripts to use to import bans from your banning system:
+
+1) ImportBans
+ImportBans.pl is a perl script and is the original importing script.
+It only imports bans and does not unban a player if they're unbanned from your ban system.
+This script supports SourceBans, AMXBans, BeetleMod, and GlobalBan.
+You must have perl installed to use this script.
+
+2) hlstatsxbans
+Hlstatsxbans is written by Peace-Maker and is written in PHP.
+This script will ban AND UNBAN players as they are banned from your banning system.
+Forum URL: http://forums.interwavestudios.com/topic/167-import-mysql-bans-to-hlxce-bancheater-page/
+This script suports SourceBans, AMXBans, BeetleMod, and GlobalBan.
+You must have PHP installed to use this script.
+
+Configuration:
+Select which ban system you want to use, either ImportBans or HLStatsXBans.  You must then edit the corresponding file.
+
+*run_importbans
+** Open run_importbans in a text editor
+** Configure "BANSYSTEM" for which script you would like to use. 
+
+*ImportBans
+** Open ImportBans.pl in a text editor.
+** Fill in the HLX DB INFO section (should be same as that found in hlstats.conf in the Perl directory)
+** Fill in at least one of the other databases (Sourcebans, AMXBans, BeetlesMod) that you want to import from.
+
+NOTE: You can use any of these databases simultaneously -- fill in the ones you want
+to pull from and those databases will be queried.
+
+*HLStatsXBans
+** Open HLStatsXBans.cfg in a text editor.
+** Fill in the database info for HLX.
+** Fill in at least one of the other databases that you want to import from.
+
+Running:
+You should run the script manually one time to make sure everything is working.
+To run ImportBans, run:
+
+./importbans.pl
+
+To run HLStatsXBans, run:
+
+php hlstatsxbans.php
+
+If everything works, you can either schedule the exact same command you just executed to run at a configured interval or time,
+or use the run_importbans wrapper to get logging (great for console use).
+To use run_importbans, make sure you have edited the file for which script you want to use, and then simply execute:
+
+./run_importbans.
+
+Note: you will not get any output from this script.  Everything is written into your logs/ directory.

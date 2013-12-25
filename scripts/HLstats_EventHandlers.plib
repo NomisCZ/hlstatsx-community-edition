@@ -1,0 +1,3096 @@
+# HLstatsX Community Edition - Real-time player and clan rankings and statistics
+# Copyleft (L) 2008-20XX Nicholas Hastings (nshastings@gmail.com)
+# http://www.hlxcommunity.com
+#
+# HLstatsX Community Edition is a continuation of 
+# ELstatsNEO - Real-time player and clan rankings and statistics
+# Copyleft (L) 2008-20XX Malte Bayer (steam@neo-soft.org)
+# http://ovrsized.neo-soft.org/
+# 
+# ELstatsNEO is an very improved & enhanced - so called Ultra-Humongus Edition of HLstatsX
+# HLstatsX - Real-time player and clan rankings and statistics for Half-Life 2
+# http://www.hlstatsx.com/
+# Copyright (C) 2005-2007 Tobias Oetzel (Tobi@hlstatsx.com)
+#
+# HLstatsX is an enhanced version of HLstats made by Simon Garner
+# HLstats - Real-time player and clan rankings and statistics for Half-Life
+# http://sourceforge.net/projects/hlstats/
+# Copyright (C) 2001  Simon Garner
+#             
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+# 
+# For support and installation notes visit http://www.hlxcommunity.com
+
+sub get_fav_weapon  {
+
+	my ($player)  = @_;
+	my $p_connect_time = $player->{connect_time};
+   
+	my $result = &doQuery("
+		SELECT
+			hlstats_Events_Frags.weapon,
+			COUNT(hlstats_Events_Frags.weapon) AS kills,
+			SUM(hlstats_Events_Frags.headshot=1) as headshots
+		FROM
+			hlstats_Events_Frags,hlstats_Servers
+		WHERE
+			hlstats_Servers.serverId=hlstats_Events_Frags.serverId
+			AND hlstats_Servers.game='".&quoteSQL($g_servers{$s_addr}->{game})."' AND hlstats_Events_Frags.killerId=".$player->{playerid}."
+		GROUP BY
+			hlstats_Events_Frags.weapon
+		ORDER BY
+			kills desc, headshots desc
+		LIMIT 1	
+	");
+	my ($fav_weapon, $fav_weapon_kills, $fav_weapon_headshots) = $result->fetchrow_array;
+	$result->finish;
+
+	my $result = &doQuery("
+		SELECT
+			IFNULL(ROUND((SUM(hlstats_Events_Statsme.hits) / SUM(hlstats_Events_Statsme.shots) * 100), 0), 0) AS acc
+		FROM
+			hlstats_Events_Statsme, hlstats_Servers
+		WHERE
+			hlstats_Servers.serverId=hlstats_Events_Statsme.serverId
+			AND hlstats_Servers.game='".&quoteSQL($g_servers{$s_addr}->{game})."' AND hlstats_Events_Statsme.PlayerId=".$player->{playerid}."
+			AND hlstats_Events_Statsme.weapon='".&quoteSQL($fav_weapon)."'
+		LIMIT 0,1	
+	");
+	my ($fav_weapon_sm_acc) = $result->fetchrow_array;
+	$result->finish;
+
+	my $result = &doQuery("
+		SELECT
+			hlstats_Events_Frags.weapon,
+			COUNT(hlstats_Events_Frags.weapon) AS kills,
+			SUM(hlstats_Events_Frags.headshot=1) as headshots
+		FROM
+			hlstats_Events_Frags,hlstats_Servers
+		WHERE
+			hlstats_Servers.serverId=hlstats_Events_Frags.serverId
+			AND hlstats_Servers.game='".&quoteSQL($g_servers{$s_addr}->{game})."' AND hlstats_Events_Frags.killerId='".$player->{playerid}."'
+			AND (hlstats_Events_Frags.eventTime > FROM_UNIXTIME(".$p_connect_time."))
+		GROUP BY
+			hlstats_Events_Frags.weapon
+		ORDER BY
+			kills desc, headshots desc
+		LIMIT 0, 1	
+	");
+
+	my ($s_fav_weapon, $s_fav_weapon_kills, $s_fav_weapon_headshots) = $result->fetchrow_array;
+	$result->finish;
+	my $s_fav_weapon_sm_acc = 0;
+   
+	if (($s_fav_weapon ne "") && ($s_fav_weapon_kills > 0)) {
+		my $result = &doQuery("
+			SELECT
+				IFNULL(ROUND((SUM(hlstats_Events_Statsme.hits) / SUM(hlstats_Events_Statsme.shots) * 100), 0), 0) AS acc
+			FROM
+				hlstats_Events_Statsme, hlstats_Servers
+			WHERE
+				hlstats_Servers.serverId=hlstats_Events_Statsme.serverId
+				AND hlstats_Servers.game='".&quoteSQL($g_servers{$s_addr}->{game})."' AND hlstats_Events_Statsme.PlayerId='".$player->{playerid}."'
+				AND hlstats_Events_Statsme.weapon='".&quoteSQL($s_fav_weapon)."'
+				AND (hlstats_Events_Statsme.eventTime > FROM_UNIXTIME(".$p_connect_time."))
+			LIMIT 0,1	
+		");
+		($s_fav_weapon_sm_acc) = $result->fetchrow_array;
+		$result->finish;
+	}
+   
+	return ($g_games{$g_servers{$s_addr}->{game}}{weapons}{$fav_weapon}{name}, $fav_weapon_kills, $fav_weapon_sm_acc, $g_games{$g_servers{$s_addr}->{game}}{weapons}{$s_fav_weapon}{name}, $s_fav_weapon_kills, $s_fav_weapon_sm_acc);
+}
+
+sub get_next_ranks
+{
+	my ($player)  = @_;
+
+	my $result = &doQuery("
+		SELECT
+			$g_ranktype,
+			kills / IF(deaths=0,1,deaths) AS kpd
+		FROM
+			hlstats_Players
+		WHERE
+			playerId=" . $player->{playerid}
+	);
+	my ($base, $kpd) = $result->fetchrow_array;
+	$result->finish;
+	my $playerName = $player->{name};
+
+	if (!$base) {
+		$base = 0;
+	}
+
+	my $ranknumber = $player->getRank();
+
+	my $rankword = "";
+	if ($g_ranktype eq "kills") {
+		$rankword = " kills";
+	}
+	my $osd_message = "->1 - Next Players\\n".sprintf("   %02d  %s%s        -      %s", $ranknumber, &number_format($base), $rankword, $playerName)."\\n";
+   
+	my $result = &doQuery("
+		SELECT
+			playerId,
+			lastName,
+			$g_ranktype,
+			kills / IF(deaths=0,1,deaths) AS kpd
+		FROM
+			hlstats_Players
+		WHERE
+			game='".&quoteSQL($player->{game})."'
+			AND $g_ranktype = $base
+			AND hideranking = 0
+			AND kills >= 1
+			AND playerId <> " . $player->{playerid} . "
+		HAVING
+			kpd>=$kpd
+		ORDER BY $g_ranktype, kpd
+		LIMIT 0,10
+	");
+
+	my $player_count = 0;   
+	my $i = $ranknumber;
+	while (($player_count < 11) && (my ($playerId, $lastName, $p_base, $kpd) = $result->fetchrow_array)) {
+		$i--;
+		if (length($lastName) > 20) {
+			$lastName = substr($lastName, 0, 17)."...";
+		}
+		$player_count++;
+		$osd_message .= sprintf("   %02d  %s%s  +%04d  %s", $i, &number_format($p_base), $rankword, &number_format($p_base-$base), $lastName)."\\n";
+	}
+	$result->finish;
+
+	if ($player_count < 11)  {
+		my $result = &doQuery("
+			SELECT
+				playerId,
+				lastName,
+				$g_ranktype,
+				kills / IF(deaths=0,1,deaths) AS kpd
+			FROM
+				hlstats_Players
+			WHERE
+				game='".&quoteSQL($player->{game})."' 
+				AND hideranking = 0
+				AND $g_ranktype > $base
+				AND kills >= 1
+			ORDER BY
+				$g_ranktype,
+				kpd
+			LIMIT 0,10
+		");
+      
+		while (($player_count < 11) && (my ($playerId, $lastName, $p_base, $kpd) = $result->fetchrow_array)) {
+			$i--;
+			if (length($lastName) > 20) {
+				$lastName = substr($lastName, 0, 17)."...";
+			}
+			$osd_message .= sprintf("   %02d  %s%s  +%04d  %s", $i, &number_format($p_base), $rankword, ($p_base-$base), $lastName)."\\n";
+			$player_count++;
+		}
+		$result->finish;
+	}
+   
+	return ($ranknumber, $g_games{$player->{game}}->getTotalPlayers(), $osd_message);
+}
+
+
+sub get_player_rank
+{
+	my ($player)  = @_;
+	
+	my $base = 0;
+	if ($g_ranktype ne "kills") {
+		$base = $player->{skill};
+	} else {
+		$base = $player->{total_kills};
+	}
+   
+	return ($base, $player->getRank(), $g_games{$player->{game}}->getTotalPlayers());
+
+}
+
+sub get_player_data
+{
+	my ($player, $get_rank)  = @_;
+
+	my $result = &doQuery("
+		SELECT
+			skill, kills, deaths, suicides, headshots,
+			IFNULL(ROUND((hits / shots * 100), 0), 0) AS acc,
+			connection_time
+		FROM
+			hlstats_Players
+		WHERE
+			playerId='" . $player->{playerid} . "'
+	");
+    my ($skill, $kills, $deaths, $suicides, $headshots, $acc, $connection_time) = $result->fetchrow_array;
+	$result->finish;
+	
+    my $playerName = $player->{name};
+      
+    if ($deaths > 0) {
+		$kd = sprintf("%.2f", $kills/$deaths);
+    } else {
+		$kd = sprintf("%.2f", $kills);
+    }
+    if ($kills > 0) {
+		$hpk = sprintf("%.0f", (100/$kills) * $headshots);
+    } else {
+		$hpk = sprintf("%.0f", $kills);
+    }
+    
+    if ($kills > 0) {
+		($fav_weapon, $fav_weapon_kills, $fav_weapon_acc, $s_fav_weapon, $s_fav_weapon_kills, $s_fav_weapon_acc) = get_fav_weapon($player);
+    } else {
+		$fav_weapon   = "-";
+		$s_fav_weapon = "-";
+    }  
+    
+    if ($get_rank > 0) {
+		my ($rang_skill, $rank_number, $total_players) = get_player_rank($player);
+		return ($skill, $kills, $deaths, $kd, $suicides, $headshots, $hpk, $acc, $connection_time,$fav_weapon, $fav_weapon_kills, $fav_weapon_acc, $s_fav_weapon, $s_fav_weapon_kills, $s_fav_weapon_acc, $rank_number, $total_players);
+    } else {
+		return ($skill, $kills, $deaths, $kd, $suicides, $headshots, $hpk, $acc, $connection_time, $fav_weapon, $fav_weapon_kills, $fav_weapon_acc, $s_fav_weapon, $s_fav_weapon_kills, $s_fav_weapon_acc);
+    }
+    
+}
+
+sub get_menu_text
+{
+	my ($player, $skill, $kills, $deaths, $kd, $suicides, $headshots, $hpk, $acc, $connection_time, $fav_weapon, $fav_weapon_kills, $fav_weapon_acc, $s_fav_weapon, $s_fav_weapon_kills, $s_fav_weapon_acc, $rank_number, $total_players) = @_;
+
+	my $p_name         = $player->{name};
+	my $p_connect_time = $player->{connect_time};
+
+	my $s_pos_change = "N/A";
+	if ($player->{session_start_pos} > 0)  {
+		$s_pos_change   = ($player->{session_start_pos} - $rank_number);
+		if ($s_pos_change > 0) {
+			$s_pos_change = "+".$s_pos_change;
+		}
+	}
+
+	my $s_skill_change = $player->{session_skill};
+	if ($s_skill_change > 0) {
+		$s_skill_change = "+".$s_skill_change;
+	}
+  
+	my $s_kills        = $player->{session_kills};
+	my $s_deaths       = $player->{session_deaths};
+	my $s_headshots    = $player->{session_headshots};
+	my $s_hits         = $player->{session_hits};
+	my $s_shots        = $player->{session_shots};
+
+	if ($s_deaths > 0) {
+		$s_kd = sprintf("%.2f", $s_kills/$s_deaths);
+	} else {
+		if ($s_kills > 0) {
+			$s_kd = sprintf("%.2f", $s_kills);
+		} else {
+			$s_kd = sprintf("%.2f", 0);
+		} 
+	}
+  
+	if ($s_kills > 0) {
+		$s_hpk = sprintf("%.0f", (100/$s_kills) * $s_headshots);
+	} else {
+		if ($s_headshots > 0) {
+			$s_hpk = sprintf("%.0f", $s_headshots);
+		} else {
+			$s_hpk = sprintf("%.0f", 0);
+		}  
+	}
+
+	if ($s_shots > 0) {
+		$s_acc = sprintf("%.0f", (100/$s_shots) * $s_hits);
+	} else {
+		if ($s_hits > 0) {
+			$s_acc = sprintf("%.0f", $s_hits);
+		} else {
+			$s_acc = sprintf("%.0f", 0);
+		}
+	}
+
+	my $weapon_str =  "   No Fav Weapon\\n";
+	my $acc_str    =  "   $acc% Accuracy\\n";
+	if ($fav_weapon_kills > 0) {
+		$weapon_str = "   ".$fav_weapon_kills." kills with ".$fav_weapon."\\n";
+		$acc_str    = "   $acc% Accuracy (".$fav_weapon." ".$fav_weapon_acc."%)\\n";
+	}
+	if ($acc == 0) {
+		$acc_str = "";
+	}
+
+	$s_weapon_str =  "   No Fav Weapon\\n";
+	$s_acc_str    =  "   $s_acc% Accuracy\\n";
+	if ($s_fav_weapon_kills > 0) {
+		$s_weapon_str = "   ".$s_fav_weapon_kills." kills with ".$s_fav_weapon."\\n";
+		$s_acc_str    = "   $s_acc% Accuracy (".$s_fav_weapon." ".$s_fav_weapon_acc."%)\\n";
+	}
+  
+	if ($s_acc == 0) {
+		$s_acc_str = "";
+	}
+	my $cmd_text = "";
+	
+	if ($g_ranktype eq "kills") {
+		$cmd_text = 	"->1 - Total\\n".
+					"   Position ".&number_format($rank_number)." of ".&number_format($total_players)."\\n".
+                    "   ".&number_format($kills).":".&number_format($deaths)." Frags ($kd)\\n".
+					"   ".&number_format($headshots)." Headshots ($hpk%)\\n".
+					"   ".&number_format($skill)." Points\\n".
+					$weapon_str.
+                    $acc_str.
+                    "   Time ".&date_format($connection_time)."\\n \\n".
+                    "->2 - Session\\n".
+                    "   ".&number_format($s_pos_change)." Positions\\n".
+                    "   ".&number_format($s_kills).":".&number_format($s_deaths)." Frags ($s_kd)\\n".
+                    "   ".&number_format($s_headshots)." Headshots ($s_hpk%)\\n".
+					"   ".&number_format($s_skill_change)." Points\\n".
+                    $s_weapon_str.
+                    $s_acc_str.
+                    "   Time ".&date_format(time() - $p_connect_time)."\\n";
+	} else {
+		$cmd_text = 	"->1 - Total\\n".
+					"   Position ".&number_format($rank_number)." of ".&number_format($total_players)."\\n".
+					"   ".&number_format($skill)." Points\\n".
+                    "   ".&number_format($kills).":".&number_format($deaths)." Frags ($kd)\\n".
+					"   ".&number_format($headshots)." Headshots ($hpk%)\\n".
+					$weapon_str.
+                    $acc_str.
+                    "   Time ".&date_format($connection_time)."\\n \\n".
+                    "->2 - Session\\n".
+                    "   ".&number_format($s_pos_change)." Positions\\n".
+                    "   ".&number_format($s_skill_change)." Points\\n".
+                    "   ".&number_format($s_kills).":".&number_format($s_deaths)." Frags ($s_kd)\\n".
+                    "   ".&number_format($s_headshots)." Headshots ($s_hpk%)\\n".
+                    $s_weapon_str.
+                    $s_acc_str.
+                    "   Time ".&date_format(time() - $p_connect_time)."\\n";
+	}
+	
+		$points = "   ".&number_format($skill)." Points\\n";
+	$s_points = "   ".&number_format($s_skill_change)." Points\\n";
+
+	return $cmd_text;
+}
+
+sub endKillStreak
+{
+	my ($player) = @_;
+	
+	my $killtotal = $player->{kills_per_life};
+	if ($killtotal > $player->{kill_streak}) {
+		$player->{kill_streak} = $killtotal;
+	}	
+	if ($killtotal > 12) {
+		$killtotal = 12;
+	}
+	# octo: I don't think suicides should count as deaths in a row
+	if ($killtotal > 1) {
+		&doEvent_PlayerAction(
+			$player->{userid},
+			$player->{uniqueid},
+			"kill_streak_" . $killtotal
+		);
+	}
+	$player->{kills_per_life} = 0;
+}
+
+#
+# 001. Connect
+#
+
+sub doEvent_Connect
+{	
+	my ($playerId, $playerUniqueId, $ipAddr) = @_;
+
+	my $desc;
+	my $player            = lookupPlayer($s_addr, $playerId, $playerUniqueId);
+	my $playerstr         = &getPlayerInfoString($player, $playerId);
+    my $min_players_rank  = $g_servers{$s_addr}->{min_players_rank};
+	my $hostname;
+	my $hostgroup;
+	
+	if ($player)
+	{
+		if (($g_servers{$s_addr}->{ignore_bots} == 1) && ($player->{is_bot} == 1))
+		{
+			$player->set("connect_time", time());
+			$player->updateDB();
+			$desc = "(IGNORED) BOT: ";
+		} else {
+			$player->set("connect_time", time());
+			my $player_rank = 0;
+			$player_rank = $player->getRank();
+			if ($min_players_rank > 0 || $player_rank == 0) {
+				if ($player_rank > $min_players_rank) {
+					my $steamid = $player->{uniqueid};
+					my $p_steamid = $player->{plain_uniqueid};
+					if ($g_servers{$s_addr}->is_admin($steamid) == 0) {
+						if ($g_servers{$s_addr}->{game_engine} == 1) {
+							$g_servers{$s_addr}->dorcon("kick #$playerId Not a Top $min_players_rank-Player");
+						} else {
+							$g_servers{$s_addr}->dorcon("kickid $p_steamid Not a Top $min_players_rank-Player");
+						}
+					}
+				}
+			}  
+			
+			if ($g_mode eq "LAN")
+			{
+				$player->set("uniqueid", $ipAddr);
+			}
+			
+			&recordEvent(
+				"Connects", 0,
+				$player->{playerid},
+				$ipAddr,
+				$hostname,
+				$hostgroup
+			);
+		}		
+	}
+	else
+	{
+		$desc = "(IGNORED) NOPLAYERINFO: ";
+	}
+	
+	return $desc . $playerstr . " connected, address \"$ipAddr\","
+		. " hostname \"$hostname\", hostgroup \"$hostgroup\"";
+}
+
+
+#
+# 002. Enter Game
+#
+
+sub doEvent_EnterGame
+{
+	my ($playerId, $playerUniqueId) = @_;
+	
+	my $desc;
+	my $player = lookupPlayer($s_addr, $playerId, $playerUniqueId);
+	my $playerstr = &getPlayerInfoString($player, $playerId);
+	my $isbot = $player->{is_bot};
+	
+    my $min_players_rank  = $g_servers{$s_addr}->{min_players_rank};
+    
+	if ($player)
+	{
+		if ($g_mode eq "Normal" && $isbot == 0 && $player->{userid} > 0)
+		{
+			$hostname = &resolveIp($player->{address});
+			$hostgroup = "";
+	
+			if ($hostname)
+			{
+				$hostgroup = &getHostGroup($hostname);
+			}
+			if ($g_stdin == 0 && $g_servers{$s_addr}->{connect_announce} > 0)
+			{
+				my $player_rank = $player->getRank();
+				if ($player->{country} ne "")
+				{					
+					my $msg = "";
+					if ($player_rank == 0)
+					{
+						$msg = sprintf("Player %s has connected from %s", $player->{name},$player->{country});
+					}
+					elsif ($player->{skill} == 1000)
+					{
+						$msg = sprintf("New player %s has connected from %s",$player->{name},$player->{country});
+					}
+					elsif ($g_ranktype ne "kills")
+					{
+						$msg = sprintf("%s (Pos %s with %s points) has connected from %s",$player->{name},$player_rank,$player->{skill},$player->{country});
+					}
+					else
+					{
+						$msg = sprintf("%s (Pos %s with %s kills) has connected from %s",$player->{name},$player_rank,$player->{total_kills},$player->{country});
+					}
+					$g_servers{$s_addr}->messageAll($msg, $player->{playerid}, 1);
+				}
+				else
+				{
+					if ($g_ranktype ne "kills")
+					{
+						$msg = sprintf("%s (Pos %s with %s points) has connected",$player->{name},$player_rank,$player->{skill});
+					}
+					else
+					{
+						$msg = sprintf("%s (Pos %s with %s kills) has connected",$player->{name},$player_rank,$player->{total_kills});
+					}
+					$g_servers{$s_addr}->messageAll($msg, $player->{playerid}, 1);
+				}
+			}
+		}
+		
+		if (($g_servers{$s_addr}->{ignore_bots} == 1) && ($isbot == 1))
+		{
+			$connect_time = $player->{connect_time};
+			if ($connect_time == 0)
+			{
+				$player->set("connect_time", time());
+			}  
+			$player->updateDB();
+			$desc = "(IGNORED) BOT: ";
+		}
+		else
+		{
+			$connect_time = $player->{connect_time};
+			if ($connect_time == 0)
+			{
+				$player->set("connect_time", time());
+				if (($min_players_rank > 0) && ($isbot == 0))
+				{
+					my $player_rank = $player->getRank();
+					if ($player_rank > $min_players_rank || $player_rank == 0)
+					{
+						my $steamid = $player->{uniqueid};
+						my $p_steamid = $player->{plain_uniqueid};
+						if ($g_servers{$s_addr}->is_admin($steamid) == 0)
+						{
+							$g_servers{$s_addr}->dorcon("kickid $p_steamid Not a Top".$min_players_rank."-Player");
+						}
+					}
+				}
+			}
+			if ($isbot == 0)
+			{
+				$player->updateDB();
+				recordEvent(
+					"Entries", 0,
+					$player->{playerid}
+				);
+			}
+		}
+	}
+	else
+	{
+		$desc = "(IGNORED) NOPLAYERINFO: ";
+	}
+	
+	return $desc . $playerstr . " entered the game";
+}
+
+
+#
+# 003. Disconnect
+#
+
+sub doEvent_Disconnect
+{
+	my ($pUserId, $playerUniqueId, $ev_properties) = @_;
+	
+	my $desc;
+	my $player = lookupPlayer($s_addr, $pUserId, $playerUniqueId);
+	my $playerstr = &getPlayerInfoString($player, $pUserId);
+	
+	if ($player)
+	{
+		if (($g_servers{$s_addr}->{ignore_bots} == 1) && (($player->{is_bot} == 1) || ($pUserId < 0)))
+		{
+			$player->updateDB();
+			removePlayer($s_addr, $pUserId, $playerUniqueId);
+			$desc = "(IGNORED) BOT: ";
+		} else {
+			&recordEvent(
+				"Disconnects", 0,
+				$player->{playerid}
+			);
+			
+			&endKillStreak($player);
+			
+			if (($g_global_chat > 0)) {
+				my $p_name    = $player->{name};
+				my $b_message = $p_name." (".$g_servers{$s_addr}->{name}.") disconnected";
+				if ($player->{is_dead} == 1) {
+					$b_message  = "*DEAD* ".$p_name." (".$g_servers{$s_addr}->{name}.") disconnected";
+				}
+				send_global_chat($b_message);
+			}
+		
+			my $p_steamid = $player->{plain_uniqueid};
+			my $p_connect_time = $player->{connect_time};
+			my $p_is_banned = $player->{is_banned};
+        
+			if ($p_connect_time == 0) {
+				$p_connect_time = time();
+			}
+        
+			my $auto_ban = $g_servers{$s_addr}->{auto_ban};
+			# time()-$p_connect_time > 30 to avoid permanent bans changes in 5 min bans
+			# $p_is_banned > 0 for not converting bans to "just" 5 minutes bans
+			if (($auto_ban > 0) && ((time() - $p_connect_time) > 30) && ($p_is_banned == 0) && ($player->{is_bot} == 0))    
+			{
+				if ($g_servers{$s_addr}->is_admin($playerUniqueId) == 0)  {
+					$g_servers{$s_addr}->dorcon("banid 5 $p_steamid");
+				}
+			}
+			$player->updateDB();
+			removePlayer($s_addr, $pUserId, $playerUniqueId);
+		}
+	}
+	else
+	{
+		$desc = "(IGNORED) NOPLAYERINFO: ";
+		if ($playerUniqueId ne "") {
+			if ($ev_properties eq "(reason \"VAC banned from secure server\")") {
+				$desc = "(IGNORED) VAC BANNED PLAYER [".$playerUniqueId."]: ";
+				my $playerid = &getPlayerId($playerUniqueId);
+				if ($playerid) {
+					my $query = "SELECT lastName, hideranking FROM hlstats_Players WHERE playerId=$playerid";
+					my $result = &doQuery($query);
+					($lastName, $hideranking) = $result->fetchrow_array;
+					$result->finish;
+					if ($hideranking < 2)  {
+						my $query = "UPDATE hlstats_Players SET last_event=UNIX_TIMESTAMP(), hideranking=2 WHERE playerId=$playerid";
+						&execNonQuery($query);
+						$desc = "HIDING VAC BANNED PLAYER [".$playerUniqueId.", ".$lastName."]: ";
+					} else {
+						$desc = "VAC BANNED PLAYER [".$playerUniqueId.", ".$lastName."] ALREADY HIDDEN: ";
+					}
+				}
+			} elsif ($ev_properties eq "(reason \"Kicked by Console :  You have been banned, visit www.steambans.com for information.\")") {
+				$desc = "(IGNORED) STEAMBANS BANNED PLAYER [".$playerUniqueId."]: ";
+				my $playerid = &getPlayerId($playerUniqueId);
+				if ($playerid) {
+					my $query      = "SELECT lastName, hideranking FROM hlstats_Players WHERE playerId=$playerid";
+					my $result     = &doQuery($query);
+					($lastName, $hideranking) = $result->fetchrow_array;
+					$result->finish;
+					if ($hideranking < 2)  {
+						my $query = "UPDATE hlstats_Players SET last_event=UNIX_TIMESTAMP(), hideranking=2 WHERE playerId=$playerid";
+						&execNonQuery($query);
+						$desc = "HIDING STEAMBANS BANNED PLAYER [".$playerUniqueId.", ".$lastName."]: ";
+					} else {
+						$desc = "STEANBANS BANNED PLAYER [".$playerUniqueId.", ".$lastName."] ALREADY HIDDEN: ";
+					}
+				}
+			}
+		}
+	}
+
+	return $desc . $playerstr . " disconnected ".$ev_properties;
+}
+
+
+#
+# 004. Suicide
+#
+
+sub doEvent_Suicide
+{	
+	my ($playerId, $playerUniqueId, $weapon, %properties) = @_;
+	
+	$x = undef;
+	$y = undef;
+	$z = undef;
+	
+	if (defined($properties{attacker_position})) {
+		$coords = $properties{attacker_position};
+		# print "\nCoords SUICIDE: ".$coords."\n\n";
+		($x,$y,$z) = split(/ /,$coords);
+	}
+
+	my $desc;
+	my $player = lookupPlayer($s_addr, $playerId, $playerUniqueId);
+	my $playerstr = &getPlayerInfoString($player, $playerId);
+	
+	if ($g_servers{$s_addr}->{num_trackable_players} < $g_servers{$s_addr}->{minplayers})
+	{
+		$desc = "(IGNORED) NOTMINPLAYERS: ";
+	}
+	elsif (checkBonusRound())
+	{
+		$desc = "(IGNORED) BonusRound: ";
+	}
+	elsif (!$player)
+	{
+		$desc = "(IGNORED) NOPLAYERINFO: ";
+	}
+	elsif ($player->{last_team_change}+2 > $ev_remotetime)
+	{
+		$desc = "(IGNORED) TEAMSWITCH: ";
+	}
+	else
+	{
+		if (($g_servers{$s_addr}->{ignore_bots} == 1) && ($player->{is_bot} == 1))
+		{
+			$desc = "(IGNORED) BOT: ";
+		} else {
+			
+			&endKillStreak($player);
+			
+			if ($g_servers{$s_addr}->{play_game} == TF() && defined($properties{customkill})) {
+				if ($properties{customkill} eq "train") {
+					&doEvent_PlayerAction(
+						$player->{userid},
+						$player->{uniqueid},
+						"hit_by_train",
+						$x,
+						$y,
+						$z
+					);
+				} elsif ($properties{customkill} eq "saw") {
+					&doEvent_PlayerAction(
+						$player->{userid},
+						$player->{uniqueid},
+						"death_sawblade",
+						$x,
+						$y,
+						$z
+					);
+				}
+			}
+			
+			&recordEvent(
+				"Suicides", 0,
+				$player->{playerid},
+				$weapon,
+				$x,
+				$y,
+				$z
+			);
+
+			my $suicide_penalty = (-1) * $g_servers{$s_addr}->{suicide_penalty};
+			$player->increment("suicides");
+			$player->increment("skill", $suicide_penalty);
+			$player->increment("session_suicides");
+			$player->increment("session_skill", $suicide_penalty);
+			$player->increment("map_suicides");
+			$g_servers{$s_addr}->increment("suicides");
+			$g_servers{$s_addr}->increment("total_suicides");
+			$player->updateDB();
+		}
+	}
+	
+	return $desc . $playerstr . " committed suicide with \"$weapon\"";
+}
+
+
+#
+# 005. Team Selection
+#
+
+sub doEvent_TeamSelection
+{
+	my ($playerId, $playerUniqueId, $team) = @_;
+	
+	my $desc;
+	my $player = lookupPlayer($s_addr, $playerId, $playerUniqueId);
+	my $playerstr = &getPlayerInfoString($player, $playerId);
+	
+	if ($player)
+	{
+		if (($g_servers{$s_addr}->{ignore_bots} == 1) && ($player->{is_bot} == 1))
+		{
+			$player->set("team", $team);
+			$desc = "(IGNORED) BOT: ";
+		} else {
+			$old_team = $player->{team};
+			if (($old_team eq "CT") || ($old_team eq "TERRORIST"))
+			{
+				$g_servers{$s_addr}->increment("ba_player_switch");
+			}  
+			$player->set("last_team_change",$ev_remotetime);
+			$player->set("team", $team);
+			&recordEvent(
+				"ChangeTeam", 0,
+				$player->{playerid},
+				$team
+			);
+			
+			$player->updateTrackable();
+			$player->updateDB();
+			$g_servers{$s_addr}->updatePlayerCount();
+		}
+	}
+	else
+	{
+		$desc = "(IGNORED) NOPLAYERINFO: ";
+	}
+	
+	return $desc . $playerstr . " joined team \"$team\"";
+}
+
+
+#
+# 006. Role Selection
+#
+
+sub doEvent_RoleSelection
+{
+	my ($playerId, $playerUniqueId, $role) = @_;
+	
+	my $desc;
+	my $player = lookupPlayer($s_addr, $playerId, $playerUniqueId);
+	my $playerstr = &getPlayerInfoString($player, $playerId);
+	
+	if ($player)
+	{
+		if (($g_servers{$s_addr}->{ignore_bots} == 1) && ($player->{is_bot} == 1))
+		{
+			$player->set("role", $role);
+			$desc = "(IGNORED) BOT: ";
+		} else {
+			$player->set("role", $role);
+			&recordEvent(
+				"ChangeRole", 0,
+				$player->{playerid},
+				$role
+			);
+			my $query = "
+				UPDATE
+					hlstats_Roles
+				SET
+					picked=picked+1
+				WHERE 
+					game='" . &quoteSQL($g_servers{$s_addr}->{game}) . "'
+					AND code='" . &quoteSQL($role) . "'
+				";                    
+			&execNonQuery($query);
+			$player->updateDB();
+		}
+	}
+	else
+	{
+		$desc = "(IGNORED) NOPLAYERINFO: ";
+	}
+	
+	return $desc . $playerstr . " changed role to \"$role\"";
+}
+
+
+#
+# 007. Change Name
+#
+
+sub doEvent_ChangeName
+{
+	my ($playerId, $playerUniqueId, $newname) = @_;
+	
+	my $desc;
+	my $player = lookupPlayer($s_addr, $playerId, $playerUniqueId);
+	my $playerstr = &getPlayerInfoString($player, $playerId);
+	
+	if ($player)
+	{
+		if (($g_servers{$s_addr}->{ignore_bots} == 1) && ($player->{is_bot} == 1))
+		{
+			$player->updateDB();
+			removePlayer($s_addr, $playerId, $playerUniqueId);
+			$desc = "(IGNORED) BOT: ";
+		} else {
+			my $name = $player->{name};
+			&recordEvent(
+				"ChangeName", 0,
+				$player->{playerid},
+				$name,
+				$newname
+			);
+
+			if (($g_mode eq "NameTrack") || ($player->{is_bot} == 1))
+			{
+				$player->updateDB();
+				removePlayer($s_addr, $playerId, $playerUniqueId);
+			} else {
+				$player->set("name", $newname);
+				$player->updateDB();
+			}
+		}
+	}
+	else
+	{
+		$desc = "(IGNORED) NOPLAYERINFO: ";
+	}
+	
+	return $desc . $playerstr . " changed name to \"$newname\"";
+}
+
+
+#
+# E008. Frag
+#
+
+sub doEvent_Frag
+{
+	$rcmd = $g_servers{$s_addr}->{broadcasting_command};
+
+	my ($killerId, $killerUniqueId, $victimId, $victimUniqueId, $weapon, $headshot, $x, $y, $z, $vx, $vy, $vz, %properties) = @_;
+
+	# if killer coords were on kill line, use them
+	if (defined($properties{attacker_position})) {
+		$coords = $properties{attacker_position};
+		($x,$y,$z) = split(/ /,$coords);
+	} elsif (defined($properties{killerpos})) { #pvkii
+		$coords = $properties{killerpos};
+		($x,$y,$z) = split(/ /,$coords);
+	} elsif ($g_servers{$s_addr}->{nextkillx} ne "") {
+	# else use coords stored from plugin if available
+		$x = $g_servers{$s_addr}->{nextkillx};
+		$y = $g_servers{$s_addr}->{nextkilly};
+		$z = $g_servers{$s_addr}->{nextkillz};
+	}
+	# reset last kill coords
+	$g_servers{$s_addr}->{nextkillx} = "";
+	$g_servers{$s_addr}->{nextkilly} = "";
+	$g_servers{$s_addr}->{nextkillz} = "";
+	
+		# if killer coords were on kill line, use them
+	if (defined($properties{victim_position})) {
+		$coords = $properties{victim_position};
+		($vx,$vy,$vz) = split(/ /,$coords);
+	} elsif (defined($properties{victimpos})) { #pvkii
+		$coords = $properties{victimpos};
+		($vx,$vy,$vz) = split(/ /,$coords);
+	} elsif ($g_servers{$s_addr}->{nextkillvicx} ne "") {
+	# else use coords stored from plugin if available
+		$vx = $g_servers{$s_addr}->{nextkillvicx};
+		$vy = $g_servers{$s_addr}->{nextkillvicy};
+		$vz = $g_servers{$s_addr}->{nextkillvicz};
+	}
+	# reset last kill coords
+	$g_servers{$s_addr}->{nextkillvicx} = "";
+	$g_servers{$s_addr}->{nextkillvicy} = "";
+	$g_servers{$s_addr}->{nextkillzvic} = "";
+
+	# determine if kill was fake
+	# currently only applicable to TF2's "Dead Ringer"
+	my $isfake = (defined($properties{customkill}) && $properties{customkill} eq "feign_death")?1:0;
+	
+	my $desc;
+	my $killer = lookupPlayer($s_addr, $killerId, $killerUniqueId);
+	my $victim = lookupPlayer($s_addr, $victimId, $victimUniqueId);
+	my $killerstr = &getPlayerInfoString($killer, $killerId);
+	my $victimstr = &getPlayerInfoString($victim, $victimId);
+	
+	my $headshotFromAction = 0;
+
+	if (($g_servers{$s_addr}->{num_trackable_players} < $g_servers{$s_addr}->{minplayers}) && $g_servers{$s_addr}->{play_game} != L4D()) {
+		$desc = "(IGNORED) NOTMINPLAYERS: ";
+	} elsif (checkBonusRound()) {
+		$desc = "(IGNORED) BonusRound: ";
+	} elsif ($killer && $victim) {
+		if (($g_servers{$s_addr}->{ignore_bots} == 1) && (($killer->{is_bot} == 1) || ($victim->{is_bot} == 1))) {
+			$desc = "(IGNORED) BOT: ";
+		} elsif ($g_servers{$s_addr}->{play_game} == L4D() && $killer->{team} eq "Infected" && $victim->{team} eq "Infected") {
+			$desc = "(IGNORED) L4D Infected TK: ";
+		} else {
+		
+			# weapon fixes
+			if ($weapon eq "") {
+				if ($killer->{role} ne "") {
+					$weapon = $killer->{role};
+				} else {
+					$weapon = "world";
+				}
+			} elsif ($g_servers{$s_addr}->{play_game} == ZPS()) {
+				# strip off the 2 at the end of some weapon names in FoF so weapon is right hand is counted the same as same weapon in the left hand
+				if ($weapon eq "broom") {
+					$weapon = "crowbar";
+				}
+			} elsif ($g_servers{$s_addr}->{play_game} == FF()) {
+				if ($weapon eq "BOOM_HEADSHOT") {
+					$weapon = "weapon_sniperrifle";
+					$headshot = 1;
+				} elsif ($weapon eq "grenade_napalmlet") {
+					$weapon = "grenade_napalm";
+				}
+			} elsif ($g_servers{$s_addr}->{play_game} == TFC() && $weapon eq "headshot") {
+				$weapon = "sniperrifle";
+				$headshot = 1;
+			} elsif ($g_servers{$s_addr}->{play_game} == FOF()) {
+				# strip off the 2 at the end of some weapon names in FoF so weapon is right hand is counted the same as same weapon in the left hand
+				$weapon =~ s/2$//;
+				if ($weapon eq "bow") {
+					$weapon = "arrow";
+				}
+			} elsif ($g_servers{$s_addr}->{play_game} == PVKII()) {
+				if (defined($properties{killerclass})) {
+					my $krole = $properties{killerclass};
+					if ($krole ne "" && $krole ne $killer->{role})
+					{
+						&doEvent_RoleSelection(
+							$killer->{"userid"},
+							$killer->{"uniqueid"},
+							$krole
+						);
+					}
+				} 
+				if (defined($properties{victimclass})) {
+					my $vrole = $properties{victimclass};
+					if ($vrole ne "" && $vrole ne $victim->{role})
+					{
+						&doEvent_RoleSelection(
+							$victim->{"userid"},
+							$victim->{"uniqueid"},
+							$vrole
+						);
+					}
+				}
+			} elsif ($g_servers{$s_addr}->{play_game} == TF()) {
+				# Change weapon code for player_penetration to machina and log an action
+				if ($weapon eq "player_penetration") {
+					$weapon = "machina";
+					&doEvent_PlayerAction(
+						$killer->{userid},
+						$killer->{uniqueid},
+						"player_penetration",
+						$x,
+						$y,
+						$z
+					);
+				}
+			}
+			
+			# if plugin marked next kill as headshot for this player, headshot
+			if ($g_servers{$s_addr}->{nextkillheadshot} == $killer->{playerid}) {
+				$headshot = 1;
+				$headshotFromAction = 1;
+			}
+			# reset nextkillheadshot flag at end of sub
+			
+			my $was_tk = &sameTeam($killer->{team}, $victim->{team});
+
+			# This is a fix for TF2 - they report player death after reporting team switch
+			# I don't know how soon after a team switch in other games that you can actually attempt to kill someone
+			if((($was_tk == 1) && ($victim->{last_team_change}+2 > $ev_remotetime)) && ($g_servers{$s_addr}->{play_game} == TF())) {
+				# print "NOT A TEAM KILL - RECENT TEAM SWITCH by " . $victim->{name} . "(Now:" . $ev_remotetime . ") Changed(" . $victim->{last_team_change} .")";
+				$desc = "NOT A TEAM KILL - RECENT TEAM SWITCH";
+				$was_tk=0;
+			}
+			if (($was_tk==0) || ($g_servers{$s_addr}->{game_type} == 1)) {
+				# Frag
+				
+				if($isfake == 0) {
+					#kill streak code by octo
+					
+					$killer->{"kills_per_life"}+=1;
+					$victim->{"deaths_in_a_row"}+=1;	
+					if ($victim->{"deaths_in_a_row"} > $victim->{"death_streak"}) {
+						$victim->set("death_streak", $victim->{"deaths_in_a_row"});
+					}
+
+					# we don't need to update the killer's death_streak since it was done when he is a victim	
+					$killer->{"deaths_in_a_row"} = 0;
+					
+					&endKillStreak($victim);
+
+					&recordEvent(
+						"Frags", 0,
+						$killer->{playerid},
+						$victim->{playerid},
+						$weapon,
+						$headshot,
+						$killer->{role},
+						$victim->{role},
+						$x,
+						$y,
+						$z,
+						$vx,
+						$vy,
+						$vz
+					);
+
+					if ($killer->{role} ne "") {
+						my $query = "
+							UPDATE
+								hlstats_Roles
+							SET
+								kills=kills+1
+							WHERE 
+								game='" . &quoteSQL($g_servers{$s_addr}->{game}) . "'
+								AND code='" . &quoteSQL($killer->{role}) . "'
+							";
+						&execNonQuery($query);
+					}
+
+					if ($victim->{role} ne "") {
+						my $query = "
+							UPDATE
+								hlstats_Roles
+							SET
+								deaths=deaths+1
+							WHERE 
+								game='" . &quoteSQL($g_servers{$s_addr}->{game}) . "'
+								AND code='" . &quoteSQL($victim->{role}) . "'
+							";
+						&execNonQuery($query);
+					}
+
+					$killer->increment("total_kills");
+				} else {
+					$desc = "FEIGN DEATH: ";
+				}
+				
+				my $killerskill = $killer->{skill};
+				my $victimskill = $victim->{skill};
+				
+				if ($g_servers{$s_addr}->{play_game} == L4D())
+				{
+					$killerskill = &calcL4DSkill(
+						$killer->{skill}, 
+						$weapon, 
+						$g_servers{$s_addr}->{difficulty}
+					);
+				}
+				else
+				{
+					($killerskill, $victimskill) = &calcSkill(
+						$g_servers{$s_addr}->{"skill_mode"},
+						$killer->{"skill"}, $killer->{"total_kills"},
+						$victim->{"skill"}, $victim->{"total_kills"},
+						$weapon,
+						$killer->{team}
+					);
+				}
+				
+				$k_name    = $killer->{name};
+				$k_skill   = $killerskill - $killer->{skill};
+				$v_name    = $victim->{name};
+				$v_skill   = $victimskill - $victim->{skill};
+				
+				if ($g_servers{$s_addr}->{broadcasting_events} == 1) {
+					my $killer_add_text = "";
+					if ($killer->{"total_kills"} < $g_player_minkills) {
+						$killer_add_text = " [".$killer->{"total_kills"}."/".$g_player_minkills."]";
+					}
+					my $victim_add_text = "";
+					if ($victim->{"total_kills"} < $g_player_minkills) {
+						$victim_add_text = " [".$victim->{"total_kills"}."/".$g_player_minkills."]";
+					}
+					my $v_skill_text = "";
+					if ($k_skill != ((-1) * $v_skill)) {
+						$v_skill_text = " [".$v_skill."]";
+					}
+					my $k_userid  = $g_servers{$s_addr}->format_userid($killer->{"userid"});
+					my $v_userid  = $g_servers{$s_addr}->format_userid($victim->{"userid"});
+					my $colorparam = $g_servers{$s_addr}->{format_color};
+					my $msg = "";
+					if ($g_servers{$s_addr}->{play_game} == L4D()) {
+						$msg = sprintf("%s (%s)%s got %s points for killing %s",$k_name,&number_format($killerskill),$killer_add_text,$k_skill,$v_name);
+					} else {
+						$msg = sprintf("%s (%s)%s got %s points%s for killing %s (%s)%s",$k_name,&number_format($killerskill),$killer_add_text,$k_skill,$v_skill_text,$v_name,&number_format($victimskill),$victim_add_text);
+					}
+					my @rcmds;
+					if (($killer->{is_bot} == 0) && ($killer->{"display_events"} == 1) && ($killer->{userid} > 0)) {
+						my $cmd_str = sprintf("%s %s%s %s",$rcmd,$k_userid,$colorparam,$g_servers{$s_addr}->quoteparam($msg));
+						push(@rcmds, $cmd_str);
+						if (($g_player_minkills > 20) && (($killer->{"total_kills"} < ($g_player_minkills / 4)) || (($killer->{"total_kills"} < $g_player_minkills) && (($killer->{"total_kills"} % 5) == 0)))) {
+							my $cmd_str = sprintf("%s %s %s",$rcmd,$k_userid,$g_servers{$s_addr}->quoteparam("You need ".&number_format($g_player_minkills-$killer->{"total_kills"})." kills to get regular points"));
+							push(@rcmds, $cmd_str);
+							
+						}
+					}  
+					if (($victim->{is_bot} == 0) && ($victim->{"display_events"} == 1) && ($g_servers{$s_addr}->{play_game} != L4D()) && ($victim->{userid} > 0) && $isfake == 0) {
+						push(@rcmds, sprintf("%s %s%s %s",$rcmd,$v_userid,$colorparam,$g_servers{$s_addr}->quoteparam($msg)));
+					}
+					if (@rcmds) {
+						$g_servers{$s_addr}->dorcon_multi(@rcmds);
+					}
+				}  
+				if($isfake == 0) {
+					$killer->set("skill", $killerskill);
+					$victim->set("skill", $victimskill);
+					
+					$killer->increment("session_skill", $k_skill);
+					$killer->increment("kills");
+					$killer->increment("session_kills");
+					$g_servers{$s_addr}->increment("kills");
+					$g_servers{$s_addr}->increment("total_kills");
+					
+					$update_data = "kills=kills+1";
+					
+					if ($headshot == 1) {
+						$killer->increment("headshots");
+						$killer->increment("session_headshots");
+						$g_servers{$s_addr}->increment("headshots");
+						$g_servers{$s_addr}->increment("total_headshots");
+						$update_data .= ", headshots=headshots+1";
+						
+						if ($headshotFromAction == 0) {
+							&doEvent_PlayerAction(
+									$killer->{"userid"},
+									$killer->{"uniqueid"},
+									"headshot"
+							);
+						}
+					}
+					$victim->increment("deaths");
+					$victim->increment("session_deaths");
+					$victim->increment("session_skill", $v_skill);
+
+					my $query = "
+						UPDATE
+							hlstats_Weapons
+						SET	
+							$update_data 
+						WHERE
+							game='" . &quoteSQL($g_servers{$s_addr}->{game}) . "'
+							AND code='" . &quoteSQL($weapon) . "'
+					";
+					&execNonQuery($query);
+					
+					$query = "
+						INSERT INTO hlstats_Maps_Counts (game, map, kills, headshots)
+						VALUES ('".&quoteSQL($g_servers{$s_addr}->{game})."', '".&quoteSQL($g_servers{$s_addr}->get_map())."', 1, $headshot)
+						ON DUPLICATE KEY UPDATE kills=kills+1".(($headshot)?", headshots=headshots+1":"");
+					&execNonQuery($query);
+					
+					if ($g_servers{$s_addr}->{play_game} == L4D()) {
+						if ($victim->{team} eq "Infected" && $victim->{role} ne "infected" && $victim->{role} ne "") {
+								&doEvent_PlayerAction(
+									$killer->{userid},
+									$killer->{uniqueid},
+									"killed_".lc($victim->{role}),
+									$x,
+									$y,
+									$z
+								);
+						} elsif ($victim->{team} eq "Survivor") {
+								&doEvent_PlayerPlayerAction(
+									$killer->{"userid"},
+									$killer->{"uniqueid"},
+									$victim->{"userid"},
+									$victim->{"uniqueid"},
+									"killed_survivor",
+									$x,
+									$y,
+									$z,
+									$vx,
+									$vy,
+									$vz
+								);
+						}
+					}
+				}
+			} else {
+				# print "was TK";
+				if ($weapon eq "dod_bomb_target") {
+					$desc = "IGNORED BOMBED TEAMKILL DODS ";
+					return $desc . $killerstr . " killed " . $victimstr . " with \"".$weapon."\"";
+				}
+		      
+				# Teamkill
+				&recordEvent(
+					"Teamkills", 0,
+					$killer->{playerid},
+					$victim->{playerid},
+					$weapon,
+					$x,
+					$y,
+					$z,
+					$vx,
+					$vy,
+					$vz
+				);
+				
+				my $tk_penalty = (-1) * $g_servers{$s_addr}->{"tk_penalty"};
+
+				$killer->increment("skill", $tk_penalty);
+				$killer->increment("session_skill", $tk_penalty);
+				$killer->increment('teamkills');
+
+				$k_name = $killer->{name};
+				$k_skill = $killer->{skill};
+				
+				if ($g_servers{$s_addr}->{broadcasting_events} == 1) {
+					my $k_userid  = $g_servers{$s_addr}->format_userid($killer->{userid});
+					my $v_userid  = $g_servers{$s_addr}->format_userid($victim->{userid});
+					my $colorparam = $g_servers{$s_addr}->{format_color};
+					my $msg = sprintf("%s lost %s points (%s) for team-killing",$k_name,$tk_penalty,&number_format($k_skill));
+					
+					my @rcmds;
+					if (($killer->{is_bot} == 0) && ($killer->{display_events} == 1) && ($killer->{userid} > 0)) {
+						my $cmd_str = sprintf("%s %s%s %s",$rcmd,$k_userid, $colorparam, $g_servers{$s_addr}->quoteparam($msg));
+						push (@rcmds, $cmd_str);
+					}
+					if (($victim->{is_bot} == 0) && ($victim->{display_events} == 1) && ($victim->{userid} > 0)) {
+						my $cmd_str = sprintf("%s %s%s %s",$rcmd,$v_userid, $colorparam, $g_servers{$s_addr}->quoteparam($msg));
+						push (@rcmds, $cmd_str);
+					}
+					if (@rcmds) {
+						$g_servers{$s_addr}->dorcon_multi(@rcmds);
+					}					
+				}
+
+				$update_data = "kills=kills+1";
+				if ($headshot == 1) {
+					$update_data .= ", headshots=headshots+1";
+				}
+				my $query = "
+					UPDATE
+						hlstats_Weapons
+					SET	
+						$update_data 
+					WHERE
+						game='" . &quoteSQL($g_servers{$s_addr}->{game}) . "'
+						AND code='" . &quoteSQL($weapon) . "'
+				";
+				&execNonQuery($query);
+				$desc = "TEAMKILL: ";
+			}
+		}
+		if($isfake == 0) {
+			$killer->increment("map_kills");
+			if ($headshot == 1) {
+				$killer->increment("map_headshots");
+			}
+			$killer->updateDB();
+			$victim->increment("map_deaths");
+			$victim->set("is_dead", "1");
+			if ($victim->{auto_type} eq "kill") {
+				&doEvent_Chat("say",
+					$victim->{"userid"},
+					$victim->{"uniqueid"},
+					$victim->{auto_command}
+				);
+				$victim->updateDB();
+			}
+		}
+	} else {
+		$desc = "(IGNORED) NOPLAYERINFO: ";
+	}
+	
+	# reset next kill headshot flag
+	$g_servers{$s_addr}->{nextkillheadshot} = 0;
+
+	return $desc . $killerstr . " killed " . $victimstr . " with \"".$weapon."\"";
+}
+
+
+
+#
+# 010. Player-Player Actions
+#
+
+sub doEvent_PlayerPlayerAction
+{
+	my ($playerId, $playerUniqueId, $victimId, $victimUniqueId, $action, $x, $y, $z, $vx, $vy, $vz, %properties) = @_;
+	$rcmd = $g_servers{$s_addr}->{broadcasting_command};
+	
+	my $desc;
+	my $player = lookupPlayer($s_addr, $playerId, $playerUniqueId);
+	my $victim = lookupPlayer($s_addr, $victimId, $victimUniqueId);
+	my $playerstr = &getPlayerInfoString($player, $playerId);
+	my $victimstr = &getPlayerInfoString($victim, $victimId);
+	if ($playerId == $victimId) {
+		$desc = "(IGNORED) PLAYER SAME AS VICTIM: ";
+	} elsif ($g_servers{$s_addr}->{num_trackable_players} < $g_servers{$s_addr}->{minplayers}) {
+		$desc = "(IGNORED) NOTMINPLAYERS: ";
+	} elsif (checkBonusRound()) {
+		$desc = "(IGNORED) BonusRound: ";
+	} elsif ($player && $victim) {
+		if (($g_servers{$s_addr}->{ignore_bots} == 1) && (($killer->{is_bot} == 1) || ($victim->{is_bot} == 1))) {
+			$desc = "(IGNORED) BOT: ";
+		} else {
+			if ($g_servers{$s_addr}->{play_game} == TF() && $action eq "medic_death") {
+				#do heal points
+				
+				if (defined($properties{ubercharge}) && $properties{ubercharge} == 1) {
+					&doEvent_PlayerAction(
+						$playerId,
+						$playerUniqueId,
+						"killed_charged_medic",
+						$x,
+						$y,
+						$z
+					);
+					&doEvent_PlayerPlayerAction(
+						$playerId,
+						$playerUniqueId,
+						$victimId,
+						$victimUniqueId,
+						"killed_charged_medic",
+						$x,
+						$y,
+						$z,
+						$vx,
+						$vy,
+						$vz
+					);
+				}
+			}
+			
+			my $map = $g_servers{$s_addr}->get_map();
+			if (defined($g_games{$g_servers{$s_addr}->{game}}{actions}{$map."_$action"}) && $g_games{$g_servers{$s_addr}->{game}}{actions}{$map."_$action"}{ppaction}) {
+				&doEvent_PlayerPlayerAction(
+						$playerId,
+						$playerUniqueId,
+						$victimId,
+						$victimUniqueId,
+						$map."_$action",
+						$x,
+						$y,
+						$z,
+						$vx,
+						$vy,
+						$vz
+					);
+			}
+			if (defined($g_games{$g_servers{$s_addr}->{game}}{actions}{$action}) && $g_games{$g_servers{$s_addr}->{game}}{actions}{$action}{ppaction}) {
+				my $actionname = $g_games{$g_servers{$s_addr}->{game}}{actions}{$action}{descr};
+				my $actionid = $g_games{$g_servers{$s_addr}->{game}}{actions}{$action}{id};
+				my $reward_player = $g_games{$g_servers{$s_addr}->{game}}{actions}{$action}{reward_player};
+				my $reward_team = $g_games{$g_servers{$s_addr}->{game}}{actions}{$action}{reward_team};
+				my $team = $g_games{$g_servers{$s_addr}->{game}}{actions}{$action}{team};
+				
+				if (defined($properties{assister_position})) {
+					$coords = $properties{assister_position};
+					($x,$y,$z) = split(/ /,$coords);
+				} elsif (defined($properties{position})) {
+					$coords = $properties{position};
+					($x,$y,$z) = split(/ /,$coords);
+				} elsif (defined($properties{attacker_position})) {
+					$coords = $properties{attacker_position};
+					($x,$y,$z) = split(/ /,$coords);
+				}
+				
+				if (defined($properties{victim_position})) {
+					$coords = $properties{victim_position};
+					($vx,$vy,$vz) = split(/ /,$coords);
+				}
+				
+				&recordEvent(
+					"PlayerPlayerActions", 0,
+					$player->{playerid},
+					$victim->{playerid},
+					$actionid,
+					$reward_player,
+					$x,
+					$y,
+					$z,
+					$vx,
+					$vy,
+					$vz
+				);
+				
+				my $query = "
+					UPDATE
+						hlstats_Actions
+					SET
+						count=count+1 
+					WHERE
+						game='" . &quoteSQL($g_servers{$s_addr}->{game}) . "'
+						AND code = '".&quoteSQL($action)."'
+				";
+				&execNonQuery($query);
+				if ($reward_player != 0) {
+					my $victimreward = $reward_player * -1;
+					$player->increment("skill", $reward_player, 1);
+					$player->increment("session_skill", $reward_player, 1);
+					$victim->increment("skill", $victimreward, 1);
+					$victim->increment("session_skill", $victimreward, 1);
+					
+					if ($g_servers{$s_addr}->{broadcasting_events} == 1) {
+						if ($g_servers{$s_addr}->{broadcasting_player_actions} == 1) {
+							my $verb = "";
+							if ($reward_player < 0) {
+								$verb = "lost";
+							} else {
+								$verb = "got";
+							}
+							my $colorparam = $g_servers{$s_addr}->{format_color};
+							my $coloraction = $g_servers{$s_addr}->{format_action};
+							my $colorend = $g_servers{$s_addr}->{format_actionend};
+							my $p_name    = $player->{name};
+							my $p_skill   = $player->{skill};
+							my $v_name    = $victim->{name};
+							my $v_skill   = $victim->{skill};
+							my $msg = sprintf("%s %s %s points (%s) for %s%s%s against %s (%s)",$p_name,$verb,abs($reward_player), &number_format($p_skill),$coloraction,$actionname,$colorend, $v_name, &number_format($v_skill));
+							my @rcmds;
+							if (($player->{is_bot} == 0) && ($player->{display_events} == 1) && ($player->{userid} > 0)) {
+								my $p_userid  = $g_servers{$s_addr}->format_userid($player->{userid});
+								my $cmd_str = sprintf("%s %s%s %s",$rcmd,$p_userid,$colorparam,$g_servers{$s_addr}->quoteparam($msg));
+								push(@rcmds, $cmd_str);
+							}
+							if (($victim->{is_bot} == 0) && ($victim->{display_events} == 1) && ($victim->{userid} > 0)) {
+								my $v_userid  = $g_servers{$s_addr}->format_userid($victim->{userid});
+								my $cmd_str = sprintf("%s %s%s %s",$rcmd,$v_userid,$colorparam,$g_servers{$s_addr}->quoteparam($msg));
+								push(@rcmds, $cmd_str);
+							}
+							if (@rcmds) {
+								$g_servers{$s_addr}->dorcon_multi(@rcmds);
+							}
+						}
+					}
+				}
+				if ($team && $reward_team != 0) {
+					&rewardTeam($team, $reward_team, $actionid, $actionname, $action);
+				}
+				
+			} else {
+				$desc = "(IGNORED) ";
+			}
+		}
+	} else {
+		$desc = "(IGNORED) NOPLAYERINFO: ";
+	}
+
+	return $desc . $playerstr . " triggered \"".$action."\" against " . $victimstr;
+}
+
+
+#
+# E011. Player Objectives/Actions
+#
+
+sub doEvent_PlayerAction
+{
+	$rcmd = $g_servers{$s_addr}->{broadcasting_command};
+	my ($playerId, $playerUniqueId, $action, $x, $y, $z, %properties) = @_;	
+	my $desc;
+	my $player = lookupPlayer($s_addr, $playerId, $playerUniqueId);
+	my $playerstr = &getPlayerInfoString($player, $playerId);
+	
+	if ($g_servers{$s_addr}->{num_trackable_players} < $g_servers{$s_addr}->{minplayers}) {
+		$desc = "(IGNORED) NOTMINPLAYERS: ";
+	} elsif (checkBonusRound()) {
+		$desc = "(IGNORED) BonusRound: ";
+	} elsif ($player) {
+		if ($action eq "kill assist") {
+			if ($player->{"role"} eq "medic") {
+				$action = "kill_assist_medic";
+			}
+		}
+		if (($g_servers{$s_addr}->{ignore_bots} == 1) && ($player->{is_bot} == 1)) {
+			$desc = "(IGNORED) BOT: ";
+			if ($action eq "Got_The_Bomb") {
+				$player->set("has_bomb", "1", 1);
+			} elsif ($action eq "Dropped_The_Bomb") {
+				$player->set("has_bomb", "0", 1);
+			}
+			$player->updateDB();
+		} else {
+			if ($g_servers{$s_addr}->{play_game} == TF())
+			{
+				my $objectstring = "";
+				if (defined($properties{object})) {
+					$objectstring = "_".lc($properties{object});
+					$objectstring =~ s/\s/_/g;
+				}
+				my $eventstring = "";
+				if (defined($properties{event})) {
+					$eventstring = "_".lc($properties{event});
+					$eventstring =~ s/\s/_/g;
+				}
+				my $ownerstring = "";
+				if (defined($properties{objectowner})) {
+					my $owner = $properties{objectowner};
+					$owner =~ /.+?<STEAM_[0-9]+:([0-9]+:[0-9]+)>.*/;
+					$owner = $1;
+					if ($owner eq $player->{uniqueid}) {
+						$ownerstring = "owner_";
+					}
+				}
+				$action = $ownerstring.$action.$objectstring.$eventstring;
+				
+				if ($action eq "builtobject_obj_sentrygun")
+				{
+					$player->{last_sg_build}=$ev_remotetime;
+				}
+				elsif ($action eq "builtobject_obj_dispenser")
+				{
+					$player->{last_disp_build}=$ev_remotetime;
+				}
+				elsif ($action eq "builtobject_obj_teleporter_entrance")
+				{
+					$player->{last_entrance_build}=$ev_remotetime;
+				}
+				elsif ($action eq "builtobject_obj_teleporter_exit")
+				{
+					$player->{last_exit_build}=$ev_remotetime;
+				}
+				elsif ($action eq "flagevent_defended")
+				{
+					if ($player->{team} eq "Red") {
+						$g_servers{$s_addr}->{lastredflagdefend} = $ev_remotetime;
+					} else {
+						$g_servers{$s_addr}->{lastblueflagdefend} = $ev_remotetime;
+					}
+				}
+				elsif ($action eq "flagevent_dropped")
+				{
+					if ($player->{team} eq "Red" && ($ev_remotetime - $g_servers{$s_addr}->{lastblueflagdefend}) <= 1) {
+						$g_servers{$s_addr}->{lastblueflagdefend} = 0;
+						$action="flagevent_dropped_death";
+					} elsif ($player->{team} eq "Blue" && ($ev_remotetime - $g_servers{$s_addr}->{lastredflagdefend}) <= 1) {
+						$g_servers{$s_addr}->{lastredflagdefend} = 0;
+						$action="flagevent_dropped_death";
+					}
+				}
+				elsif ($action eq "player_extinguished")
+				{
+					$action = $player->{role}."_extinguish";
+				}
+				else
+				{
+					if (($action eq "owner_killedobject_obj_sentrygun" && ($ev_remotetime - $player->{last_sg_build}) > 120) ||
+						($action eq "owner_killedobject_obj_dispenser" && ($ev_remotetime - $player->{last_disp_build}) > 120) ||
+						($action eq "owner_killedobject_obj_teleporter_entrance" && ($ev_remotetime - $player->{last_entrance_build}) > 120) ||
+						($action eq "owner_killedobject_obj_teleporter_exit" && ($ev_remotetime - $player->{last_exit_build}) > 120))
+					{
+						return "(IGNORED) OBJECT MOVED: $playerstr triggered \"$action\"";
+					}
+				}
+			}
+			elsif ($g_servers{$s_addr}->{play_game} == TFC())
+			{
+				if ($action eq "Sentry_Built_Level_1")
+				{
+					$player->{last_sg_build}=$ev_remotetime;
+				}
+				elsif ($action eq "Built_Dispenser")
+				{
+					$player->{last_disp_build}=$ev_remotetime;
+				}
+				elsif ($action eq "Teleporter_Entrance_Finished")
+				{
+					$player->{last_entrance_build}=$ev_remotetime;
+				}
+				elsif ($action eq "Teleporter_Exit_Finished")
+				{
+					$player->{last_exit_build}=$ev_remotetime;
+				}
+				else
+				{
+					if (($action eq "Sentry_Dismantle" && ($ev_remotetime - $player->{last_sg_build}) > 120) ||
+						($action eq "Dispenser_Dismantle" && ($ev_remotetime - $player->{last_disp_build}) > 120) ||
+						($action eq "Teleporter_Entrance_Dismantle" && ($ev_remotetime - $player->{last_entrance_build}) > 120) ||
+						($action eq "Teleporter_Exit_Dismantle" && ($ev_remotetime - $player->{last_exit_build}) > 120))
+					{
+						return "(IGNORED) OBJECT MOVED: " . $playerstr . " triggered \"$action\"";
+					}
+				}
+			}
+			elsif ($g_servers{$s_addr}->{play_game} == FF())
+			{
+				if ($action eq "build_sentrygun")
+				{
+					$player->{last_sg_build}=$ev_remotetime;
+				}
+				elsif ($action eq "build_dispenser")
+				{
+					$player->{last_disp_build}=$ev_remotetime;
+				}
+				else
+				{
+					if (($action eq "sentry_dismantled" && ($ev_remotetime - $player->{last_sg_build}) > 120) ||
+						($action eq "dispenser_dismantled" && ($ev_remotetime - $player->{last_disp_build}) > 120))
+					{
+						return "(IGNORED) OBJECT MOVED: " . $playerstr . " triggered \"$action\"";
+					}
+				}
+			}
+			elsif ($g_servers{$s_addr}->{play_game} == NS())
+			{
+				my $typestring = "";
+				if (defined($properties{type})) {
+					$typestring = "_".lc($properties{type});
+					$typestring =~ s/\s/_/g;
+				}
+				$action .= $typestring;
+			}
+			
+			if (defined($properties{position})) {
+				$coords = $properties{position};
+				($x,$y,$z) = split(/ /,$coords);
+			} elsif (defined($properties{assister_position})) {
+				$coords = $properties{assister_position};
+				($x,$y,$z) = split(/ /,$coords);
+			} elsif (defined($properties{attacker_position})) {
+				$coords = $properties{attacker_position};
+				($x,$y,$z) = split(/ /,$coords);
+			}
+			if ($action eq "headshot") {
+				$g_servers{$s_addr}->{nextkillheadshot} = $player->{playerid}
+			}
+
+			my $map = $g_servers{$s_addr}->get_map();
+			if (defined($g_games{$g_servers{$s_addr}->{game}}{actions}{$map."_$action"}) && $g_games{$g_servers{$s_addr}->{game}}{actions}{$map."_$action"}{paction}) {
+				&doEvent_PlayerAction(
+						$playerId,
+						$playerUniqueId,
+						$map."_$action",
+						$x,
+						$y,
+						$z
+					);
+			}
+			if (defined($g_games{$g_servers{$s_addr}->{game}}{actions}{$action}) && $g_games{$g_servers{$s_addr}->{game}}{actions}{$action}{paction}) {
+				my $actionname = $g_games{$g_servers{$s_addr}->{game}}{actions}{$action}{descr};
+				my $actionid = $g_games{$g_servers{$s_addr}->{game}}{actions}{$action}{id};
+				my $reward_player = $g_games{$g_servers{$s_addr}->{game}}{actions}{$action}{reward_player};
+				my $reward_team = $g_games{$g_servers{$s_addr}->{game}}{actions}{$action}{reward_team};
+				my $team = $g_games{$g_servers{$s_addr}->{game}}{actions}{$action}{team};
+				
+				&recordEvent(
+					"PlayerActions", 0,
+					$player->{playerid},
+					$actionid,
+					$reward_player,
+					$x,
+					$y,
+					$z
+				);
+				my $query = "
+					UPDATE
+						hlstats_Actions
+					SET	
+						count=count+1 
+					WHERE
+						game='" . &quoteSQL($g_servers{$s_addr}->{game}) . "'
+						AND code = '".&quoteSQL($action)."'
+				";
+				&execNonQuery($query);
+				$player->increment("skill", $reward_player);
+				$player->increment("session_skill", $reward_player);
+				$p_name = $player->{name};
+				$p_skill = $player->{skill};
+				
+				
+				if (($g_servers{$s_addr}->{broadcasting_events} == 1) && ($reward_player != 0)) {
+					if ($g_servers{$s_addr}->{broadcasting_player_actions} == 1) {
+						my $p_userid  = $g_servers{$s_addr}->format_userid($player->{userid});
+						if (($player->{is_bot} == 0) && ($player->{display_events} == 1) && ($player->{userid} > 0)) {
+							my $colorparam = $g_servers{$s_addr}->{format_color};
+							my $coloraction = $g_servers{$s_addr}->{format_action};
+							if ($reward_player !=0) {
+								my $verb = "got";
+								if ($reward_player < 0) {
+									$verb = "lost";
+								}
+								my $msg = sprintf("%s %s %s points (%s) for %s%s", $p_name, $verb, abs($reward_player),&number_format($p_skill),$coloraction,$actionname);
+								my $cmd_str = sprintf("%s %s%s %s",$rcmd,$p_userid,$colorparam,$g_servers{$s_addr}->quoteparam($msg));
+								$g_servers{$s_addr}->dorcon($cmd_str);
+							}
+						}
+					}
+				} 
+				if ($action eq "Got_The_Bomb") {
+					$player->set("has_bomb", "1", 1);
+				} elsif ($action eq "Dropped_The_Bomb") {
+					$player->set("has_bomb", "0", 1);
+				}
+				$player->updateDB();
+				
+				if ($reward_team != 0 && $action ne "pointcaptured") {
+					if (!$team) {
+						$team = $player->{team};
+					}
+					# print "Reward Team ($team) giving ($reward_team) for $actionname\n";
+					&rewardTeam($team, $reward_team, $actionid, $actionname, $action);
+				}
+			} else {
+				$desc = "(IGNORED) ";
+			}
+		}
+	} else {
+		$desc = "(IGNORED) NOPLAYERINFO: ";
+	}
+	
+	return $desc . $playerstr . " triggered \"$action\"";
+}
+
+
+#
+# 012. Team Objectives/Actions
+#
+
+sub doEvent_TeamAction
+{
+	$rcmd = $g_servers{$s_addr}->{broadcasting_command};
+	my ($team, $action) = @_;
+	my $desc;
+	if ($g_servers{$s_addr}->{num_trackable_players} < $g_servers{$s_addr}->{minplayers}) {
+		$desc = "(IGNORED) NOTMINPLAYERS: ";
+
+# Team events, such as Round_Win can still occur during Bonus Round		
+#	} elsif (checkBonusRound()) {
+#		$desc = "(IGNORED) BonusRound: ";
+
+	} else {
+		my $map = $g_servers{$s_addr}->get_map();
+		if ((defined($g_games{$g_servers{$s_addr}->{game}}{actions}{$action}) && $g_games{$g_servers{$s_addr}->{game}}{actions}{$action}{taction}) || (defined($g_games{$g_servers{$s_addr}->{game}}{actions}{$map."_$action"}) && $g_games{$g_servers{$s_addr}->{game}}{actions}{$map."_$action"}{taction})) {
+			my $actionname = $g_games{$g_servers{$s_addr}->{game}}{actions}{$action}{descr};
+			my $actionid = $g_games{$g_servers{$s_addr}->{game}}{actions}{$action}{id};
+			my $reward_team = $g_games{$g_servers{$s_addr}->{game}}{actions}{$action}{reward_team};
+			my $actionteam = $g_games{$g_servers{$s_addr}->{game}}{actions}{$action}{team};
+			if ($actionteam eq "") {
+				$actionteam = $team;
+			}
+			#print "T: ".$actionid." - ".$actionname." - ".$actionteam." - ".$reward_player." - ".$reward_team." - ".$team."\n";
+			my $query = "
+				UPDATE
+					hlstats_Actions
+				SET	
+					count=count+1 
+				WHERE
+					game='" . &quoteSQL($g_servers{$s_addr}->{game}) . "'
+					AND code IN ('" . &quoteSQL($g_servers{$s_addr}->get_map() . "_$action") . "', '" . &quoteSQL($action) . "')
+			";
+			&execNonQuery($query);
+			
+			if ($g_servers{$s_addr}->{round_status} == 0) {
+				if ($reward_team != 0) {
+					&rewardTeam($actionteam, $reward_team, $actionid, $actionname, $action);
+				}
+			}
+		} else {
+			$desc = "(IGNORED) ";
+		}
+	}
+	if ($g_servers{$s_addr}->{round_status} == 0) {
+		if (($action eq "CTs_Win")  || ($action eq "Bomb_Defused")) {
+			$g_servers{$s_addr}->increment("round_status");
+			$g_servers{$s_addr}->increment("ct_wins");
+			$g_servers{$s_addr}->increment("map_ct_wins");
+			$g_servers{$s_addr}->add_round_winner("ct");
+			if ($action eq "Bomb_Defused") {
+				$g_servers{$s_addr}->increment("bombs_defused");
+			}  
+		} elsif (($action eq "Terrorists_Win") || ($action eq "Target_Bombed")) {
+			$g_servers{$s_addr}->increment("round_status");
+			$g_servers{$s_addr}->increment("ts_wins");
+			$g_servers{$s_addr}->increment("map_ts_wins");
+			$g_servers{$s_addr}->add_round_winner("ts");
+			if ($action eq "Target_Bombed") {
+				$g_servers{$s_addr}->increment("bombs_planted");
+			}  
+		}
+	}
+	$g_servers{$s_addr}->updateDB();
+	return $desc . "Team \"$team\" triggered \"$action\"";
+}
+
+#
+# 013. World Objectives/Actions
+#
+
+sub doEvent_WorldAction
+{
+	my $rcmd = $g_servers{$s_addr}->{broadcasting_command};
+	my ($action) = @_;
+	my $desc;
+	my $act_players = $g_servers{$s_addr}->{num_trackable_players};
+	my $min_players = $g_servers{$s_addr}->{minplayers};
+	
+	if ($act_players < $min_players) {
+		$desc = "(IGNORED) NOTMINPLAYERS: ";
+		if ($action eq "Round_Start") {
+			$g_servers{$s_addr}->messageAll(sprintf("HLstatsX:CE disabled! Need at least %s active players (%s/%s)", $min_players, $act_players, $min_players),0,1);
+		}
+	} else {
+		my $map = $g_servers{$s_addr}->get_map();
+		if ((defined($g_games{$g_servers{$s_addr}->{game}}{actions}{$action}) && $g_games{$g_servers{$s_addr}->{game}}{actions}{$action}{waction}) || (defined($g_games{$g_servers{$s_addr}->{game}}{actions}{$map."_$action"}) && $g_games{$g_servers{$s_addr}->{game}}{actions}{$map."_$action"}{waction})) {
+			my $actionname = $g_games{$g_servers{$s_addr}->{game}}{actions}{$action}{descr};
+			my $actionid = $g_games{$g_servers{$s_addr}->{game}}{actions}{$action}{id};
+			my $reward_team = $g_games{$g_servers{$s_addr}->{game}}{actions}{$action}{reward_team};
+			my $team = $g_games{$g_servers{$s_addr}->{game}}{actions}{$action}{team};
+			my $query = "
+				UPDATE
+					hlstats_Actions
+				SET	
+					count=count+1 
+				WHERE
+					game='" . &quoteSQL($g_servers{$s_addr}->{game}) . "'
+					AND code IN ('".&quoteSQL($map."_$action")."', '".&quoteSQL($action)."')
+			";
+			&execNonQuery($query);
+			if ($team && $reward_team != 0) {
+				&rewardTeam($team, $reward_team, $actionid, $actionname);
+			}
+		} else {
+			$desc = "(IGNORED) ";
+		}
+	}
+	if ($action eq "Round_End" || $action eq "Round_Win" || $action eq "Mini_Round_Win") {
+		if ($action eq "Round_End") {
+			$g_servers{$s_addr}->analyze_teams();
+		}
+		
+		if (($g_servers{$s_addr}->{lastdisabledbonus}+5) < $ev_remotetime && $g_servers{$s_addr}->{bonusroundignore} > 0) {
+			$g_servers{$s_addr}->set("bonusroundtime_ts", $ev_remotetime);
+			$g_servers{$s_addr}->set("lastdisabledbonus", $ev_remotetime);
+			$g_servers{$s_addr}->set("bonusroundtime_state", 1);
+			if ($act_players >= $min_players) {
+				$g_servers{$s_addr}->messageAll("Round Over - All actions/frags are ignored by HLstatsX:CE until the next round starts",0,1);
+			}
+		}
+
+		while (my($pl, $player) = each(%g_players) ) {
+			if ($player->{connect_time} == 0) {
+				$player->set("connect_time", time());
+			}
+		
+			&endKillStreak($player);
+			
+			if ($player->{auto_type} eq "end") {
+				&doEvent_Chat("say",
+					$player->{"userid"},
+					$player->{"uniqueid"},
+					$player->{auto_command}
+				);
+			}
+			$player->updateDB();
+		}
+	} 
+
+	
+	if ($action eq "Round_Start" || $action eq "Mini_Round_Start") {
+		$g_servers{$s_addr}->set("bonusroundtime_state", 0);
+		if ($action eq "Round_Start") {
+			$g_servers{$s_addr}->set("round_status", 0);
+			$g_servers{$s_addr}->set("ba_player_switch", 0);
+		}
+		
+		while (my($pl, $player) = each(%g_players) )
+		{
+			if ($player->{connect_time} == 0) {
+				$player->set("connect_time", time());
+			}  
+			if ($action eq "Round_Start") {
+				$player->set("is_dead", "0", 1);
+				if ($player->{auto_type} eq "start") {
+					&doEvent_Chat("say",
+						$player->{"userid"},
+						$player->{"uniqueid"},
+						$player->{auto_command}
+					);
+				}
+			}
+			$player->updateDB();
+		}
+	}
+	if ($action eq "Game_Commencing") {
+		$g_servers{$s_addr}->set("round_status", 0);
+		$g_servers{$s_addr}->set("map_started", time());
+		$g_servers{$s_addr}->set("map_rounds", 0);
+		$g_servers{$s_addr}->set("map_ct_wins", 0);
+		$g_servers{$s_addr}->set("map_ts_wins", 0);
+	}
+	$g_servers{$s_addr}->updateDB();
+	return $desc . "World triggered \"$action\" ($act_players/$min_players)";
+}
+
+
+#
+# E014. Chat
+#
+
+sub doEvent_Chat
+{
+	my ($msg_type, $playerId, $playerUniqueId, $message) = @_;
+	$rcmd = $g_servers{$s_addr}->{player_command};
+	
+	my $player = lookupPlayer($s_addr, $playerId, $playerUniqueId);
+	my $playerstr = &getPlayerInfoString($player, $playerId);
+	
+	if (($player) && ($player->{is_bot} == 0)) {
+		$player->updateDB();
+		my $p_userid = $g_servers{$s_addr}->format_userid($player->{userid});
+		my $messagelen = length($message);
+		
+		if ($g_global_chat > 0 || $g_log_chat > 0) {
+			$hlx_command = 0;
+			my $cmd = $message;
+			if (($cmd =~ /^\/?skill$/i) || ($cmd =~ /^\/?rank$/i) || ($cmd =~ /^\/?points$/i) || ($cmd =~ /^\/?place$/i) ||
+				($cmd =~ /^\/?kdratio$/i) || ($cmd =~ /^\/?kdeath$/i) || ($cmd =~ /^\/?kpd$/i) ||
+				($cmd =~ /^\/?session$/i) || ($cmd =~ /^\/?session_data$/i) ||
+				($cmd =~ /^\/?top\d{1,2}?$/i) ||
+				($cmd =~ /^\/?statsme$/i) ||
+				($cmd =~ /^\/?next$/i) ||
+				($cmd =~ /^\/?knife$/i) || ($cmd =~ /^\/?usp$/i)       || ($cmd =~ /^\/?glock$/i)     || ($cmd =~ /^\/?deagle$/i)  || 
+				($cmd =~ /^\/?p228$/i)  || ($cmd =~ /^\/?m3$/i)        || ($cmd =~ /^\/?xm1014$/i)    || ($cmd =~ /^\/?mp5navy$/i)     ||
+				($cmd =~ /^\/?tmp$/i)   || ($cmd =~ /^\/?p90$/i)       || ($cmd =~ /^\/?m4a1$/i)      || ($cmd =~ /^\/?ak47$/i)    ||
+				($cmd =~ /^\/?sg552$/i) || ($cmd =~ /^\/?scout$/i)     || ($cmd =~ /^\/?awp$/i)       || ($cmd =~ /^\/?g3sg1$/i)   ||
+				($cmd =~ /^\/?m249$/i)  || ($cmd =~ /^\/?hegrenade$/i) || ($cmd =~ /^\/?flashbang$/i) || ($cmd =~ /^\/?elite$/i)   ||
+				($cmd =~ /^\/?aug$/i)   || ($cmd =~ /^\/?mac10$/i)     || ($cmd =~ /^\/?fiveseven$/i) || ($cmd =~ /^\/?ump45$/i)   ||
+				($cmd =~ /^\/?sg550$/i) || ($cmd =~ /^\/?famas$/i)     || ($cmd =~ /^\/?galil$/i) ||
+				($cmd =~ /^\/?maps$/i) || ($cmd =~ /^\/?map_stats$/i) || ($cmd =~ /^\/?map$/i) ||
+				($cmd =~ /^\/?kill$/i) || ($cmd =~ /^\/?kills$/i) || ($cmd =~ /^\/?player_kills$/i) ||
+				($cmd =~ /^\/?weapon$/i) || ($cmd =~ /^\/?weapons$/i) || ($cmd =~ /^\/?weapon_usage$/i) ||
+				($cmd =~ /^\/?action$/i) || ($cmd =~ /^\/?actions$/i) || ($cmd =~ /^\/?hlx_menu$/i) ||
+				($cmd =~ /^\/?status$/i) || ($cmd =~ /^\/?load$/i) || ($cmd =~ /^\/?pro$/i) || ($cmd =~ /^\/?servers$/i) ||
+				($cmd =~ /^\/?clans$/i) || ($cmd =~ /^\/?cheaters$/i) || ($cmd =~ /^\/?bans$/i) || ($cmd =~ /^\/?statsme$/i) ||
+				($cmd =~ /^\/?help$/i) || ($cmd =~ /^\/?timeleft$/i) || ($cmd =~ /^\/?nextmap$/i) || ($cmd =~ /^\/?thetime$/i) ||
+				($cmd =~ /^\/?hlx_display/i) || ($cmd =~ /^\/?hlx_teams/i) || 
+				($cmd =~ /^\/?hlx_set/i) || ($cmd =~ /^\/?hlx_chat/i) || ($cmd =~ /^\/?hlx_auto/i)) {
+				
+				$hlx_command++;
+			}
+
+			if (($messagelen > 3) && ($messagelen < 15)) { # filter buy scripts
+
+				if (($cmd =~ /ak47/i) || ($cmd =~ /ak/i) || ($cmd =~ /m4/i) || ($cmd =~ /m4a1/i) ||
+					($cmd =~ /deagle/i) || ($cmd =~ /famas/i) || ($cmd =~ /galil/i) ||
+					($cmd =~ /scout/i) || ($cmd =~ /awp/i) || ($cmd =~ /awm/i) ||
+					($cmd =~ /aug/i) || ($cmd =~ /m249/i) || ($cmd =~ /para/i) ||
+					($cmd =~ /sig/i) || ($cmd =~ /tmp/i) || ($cmd =~ /ak47/i) ||
+					($cmd =~ /grenade/i) || ($cmd =~ /usp/i) || ($cmd =~ /glock/i)) {
+					
+					$hlx_command++;
+				}
+			}
+
+			if ($g_log_chat > 0) {
+				my $log = 1;
+				if ($g_log_chat_admins == 0)  {
+					my $steamid      = $player->{uniqueid};
+					if ($g_servers{$s_addr}->is_admin($steamid) == 1) {
+						$log = 0;
+					}
+				}
+				
+				if (($hlx_command == 0) && ($log == 1)) {
+					my $saytype = 1;
+					if ($msg_type eq "say_team") {
+						$saytype = 2;
+					} elsif ($msg_type eq "say_squad") {
+						$saytype = 3;
+					}
+					&recordEvent(
+						"Chat", 
+						0,
+						$player->{playerid},
+						$saytype,
+						$message
+					);
+				}
+			}
+
+			if (($g_global_chat > 0) && ($hlx_command == 0)) {
+				my $p_name    = $player->{name};
+				my $dead = "";
+				if ($player->{is_dead} == 1) {
+					$dead = "*DEAD* ";
+				}
+				my $b_message = $dead.$p_name." (".$g_servers{$s_addr}->{name}."): ".$message;
+				send_global_chat($b_message);
+			}
+		}
+
+		if ($message =~ /^\/?hlx_set ([^ ]+) (.+)$/i) {
+			my $set_field = lc($1);
+			my $set_value = $2;
+			
+			if ($set_field eq "name" || $set_field eq "realname") {
+				&updatePlayerProfile($player, "fullName", $set_value);
+			} elsif ($set_field eq "email" || $set_field eq "e-mail") {
+				&updatePlayerProfile($player, "email", $set_value);
+			} elsif ($set_field eq "homepage" || $set_field eq "url") {
+				&updatePlayerProfile($player, "homepage", $set_value);
+			} elsif ($set_field eq "icq" || $set_field eq "uin") {
+				&updatePlayerProfile($player, "icq", $set_value);
+			} elsif ($set_field eq "geo") {
+				# string parsen aus $set_value
+				my $flag = substr($set_value,0,2);
+				my $cstr = substr($set_value,3,200);
+				$cstr =~ /\'([^\']+)\' /;
+				my $city = $1;
+				$cstr = substr($set_value,index($set_value,"'",4)+1,200);
+				$cstr =~ /([^ ]+) ([^ ]+)/;
+				my $lat  = $1;
+				my $lng  = $2;
+				my $region = "";
+			}
+		} elsif ($message =~ /^\/?hlx_hideranking$/i) {
+			my $result = &doQuery("
+				SELECT
+					hideranking
+				FROM
+					hlstats_Players
+				WHERE
+					playerId = " . $player->{playerid}
+			);
+			my ($hideranking) = $result->fetchrow_array;
+			$result->finish;
+			
+			my $hidedesc = "";
+			
+			if ($hideranking == 0) {
+				$hideranking = 1;
+				$hidedesc = "HIDDEN from";
+			} else {
+				$hideranking = 0;
+				$hidedesc = "VISIBLE on";
+			}
+			my $playerName = &abbreviate($player->{name});
+			&execNonQuery("
+				UPDATE
+					hlstats_Players
+				SET
+					hideranking='$hideranking'
+				WHERE
+					playerId=" . $player->{playerid}
+			);
+			
+			if ($player->{display_events} == 1) {
+				$cmd_str = $rcmd." $p_userid ".$g_servers{$s_addr}->quoteparam("'$playerName' is now $hidedesc the rankings");
+			}  
+			$g_servers{$s_addr}->dorcon($cmd_str);
+		}
+		
+		if (($message =~ /^\/?hlx_auto ([^ ]+) ([^ ]+)$/i) || ($message =~ /^\/?hlx_auto_cmd ([^ ]+) ([^ ]+)$/i)) {
+			my $type = lc($1);
+			my $cmd  = lc($2);
+			
+			if (($type =~ /^start$/i) || ($type =~ /^end$/i) || ($type =~ /^kill$/i)) {
+				$time = 0;
+				if (($cmd =~ /^\/?skill$/i) || ($cmd =~ /^\/?rank$/i) || ($cmd =~ /^\/?points$/i) || ($cmd =~ /^\/?place$/i) ||
+					($cmd =~ /^\/?kdratio$/i) || ($cmd =~ /^\/?kdeath$/i) || ($cmd =~ /^\/?kpd$/i) ||
+					($cmd =~ /^\/?session$/i) || ($cmd =~ /^\/?session_data$/i) ||
+					($cmd =~ /^\/?top\d{1,2}?$/i) ||
+					($cmd =~ /^\/?statsme$/i) ||
+					($cmd =~ /^\/?next$/i) ||
+					($cmd =~ /^\/?knife$/i) || ($cmd =~ /^\/?usp$/i)       || ($cmd =~ /^\/?glock$/i)     || ($cmd =~ /^\/?deagle$/i)  || 
+					($cmd =~ /^\/?p228$/i)  || ($cmd =~ /^\/?m3$/i)        || ($cmd =~ /^\/?xm1014$/i)    || ($cmd =~ /^\/?mp5navy$/i)     ||
+					($cmd =~ /^\/?tmp$/i)   || ($cmd =~ /^\/?p90$/i)       || ($cmd =~ /^\/?m4a1$/i)      || ($cmd =~ /^\/?ak47$/i)    ||
+					($cmd =~ /^\/?sg552$/i) || ($cmd =~ /^\/?scout$/i)     || ($cmd =~ /^\/?awp$/i)       || ($cmd =~ /^\/?g3sg1$/i)   ||
+					($cmd =~ /^\/?m249$/i)  || ($cmd =~ /^\/?hegrenade$/i) || ($cmd =~ /^\/?flashbang$/i) || ($cmd =~ /^\/?elite$/i)   ||
+					($cmd =~ /^\/?aug$/i)   || ($cmd =~ /^\/?mac10$/i)     || ($cmd =~ /^\/?fiveseven$/i) || ($cmd =~ /^\/?ump45$/i)   ||
+					($cmd =~ /^\/?sg550$/i) || ($cmd =~ /^\/?famas$/i)     || ($cmd =~ /^\/?galil$/i) ||
+					($cmd =~ /^\/?maps$/i) || ($cmd =~ /^\/?map_stats$/i) || ($cmd =~ /^\/?map$/i) ||
+					($cmd =~ /^\/?kill$/i) || ($cmd =~ /^\/?kills$/i) || ($cmd =~ /^\/?player_kills$/i) ||
+					($cmd =~ /^\/?weapon$/i) || ($cmd =~ /^\/?weapons$/i) || ($cmd =~ /^\/?weapon_usage$/i) ||
+					($cmd =~ /^\/?action$/i) || ($cmd =~ /^\/?actions$/i)) {
+					
+					$player->{"auto_type"}       = $type;
+					$player->{"auto_command"}    = $cmd;
+					$player->{"auto_time"}       = $time;
+					$player->{"auto_time_count"} = 0;
+
+					if ($player->{display_events} == 1) {
+						$cmd_str = $rcmd." $p_userid ".$g_servers{$s_addr}->quoteparam("Set auto command to ".$player->{"auto_command"}." on ".$player->{"auto_type"}."!");
+					}  
+					$g_servers{$s_addr}->dorcon($cmd_str);
+				}
+			}
+		}
+		if ($message =~ /^\/?hlx_auto clear$/i) {
+			$player->{"auto_type"}    = "";
+			$player->{"auto_command"} = "";
+
+			if ($player->{display_events} == 1) {
+				$cmd_str = $rcmd." $p_userid ".$g_servers{$s_addr}->quoteparam("Auto command is disabled!");
+			}  
+			$g_servers{$s_addr}->dorcon($cmd_str);
+		}
+
+		### Begin switching team balance
+		elsif ($message =~ /^\/?hlx_teams([ ][0-9])?$/i) {
+			my $steamid  = $player->{uniqueid};
+			my $mode = -1;
+			if (($1 eq " 0") || ($1 eq " 1")) {
+				$mode = substr($1, 1, length($1)-1);
+			}
+			if (($mode > -1) && ($g_servers{$s_addr}->is_admin($steamid) == 1)) {
+				if ($mode == 0) {
+					$g_servers{$s_addr}->set("ba_enabled", 0);
+					$admin_msg = "AUTO-TEAM BALANCER disabled";
+					if ($g_servers{$s_addr}->{player_admin_command} ne "")  {
+						$cmd_str = $g_servers{$s_addr}->{player_admin_command}." ".$g_servers{$s_addr}->quoteparam($admin_msg);
+					} else {
+						if ($player->{display_events} == 1) {
+							$cmd_str = $rcmd." $p_userid ".$g_servers{$s_addr}->quoteparam($admin_msg);
+						}
+					}
+					$g_servers{$s_addr}->dorcon($cmd_str);
+				} elsif ($mode == 1)  {
+					$g_servers{$s_addr}->set("ba_enabled", 1);
+					$admin_msg = "AUTO-TEAM BALANCER enabled";
+					if ($g_servers{$s_addr}->{player_admin_command} ne "") {
+						$cmd_str = $g_servers{$s_addr}->{player_admin_command}." ".$g_servers{$s_addr}->quoteparam($admin_msg);
+					} else {
+						if ($player->{display_events} == 1) {
+							$cmd_str = $rcmd." $p_userid ".$g_servers{$s_addr}->quoteparam($admin_msg);
+						}
+					}
+					$g_servers{$s_addr}->dorcon($cmd_str);
+				}
+			}
+		}
+
+		### Disabling hlx output
+		elsif ($message =~ /^\/?hlx_display\s?([01])$/i) {
+			my $mode = 0;
+			$mode = $1;
+			
+			if ($mode == 0) {
+				$msg = "All console events are disabled!";
+			} else {
+				$msg = "All console events are enabled!";
+			}
+			$player->set("display_events", $mode);
+			&updatePlayerProfile($player, "displayEvents", $mode);
+			$cmd_str = $rcmd." $p_userid ".$g_servers{$s_addr}->quoteparam($msg);
+			$g_servers{$s_addr}->dorcon($cmd_str);
+		}
+
+		### Disabling hlx global chat output
+		elsif ($message =~ /^\/?hlx_chat\s?([01])$/i) {
+			my $mode = 0;
+			$mode = $1;
+			
+			if ($mode == 0) {
+				$msg = "Global chat output is disabled!";
+			} else {
+				$msg = "Global chat output is enabled!";
+			}
+			$player->set("display_chat", $mode);
+			$cmd_str = $rcmd." $p_userid ".$g_servers{$s_addr}->quoteparam($msg);
+			$g_servers{$s_addr}->dorcon($cmd_str);
+		}
+
+		### Skill Addon
+		elsif (($message =~ /^\/?skill([ ][0-9]+)?$/i) || ($message =~ /^\/?rank([ ][0-9]+)?$/i) || ($message =~ /^\/?points([ ][0-9]+)?$/i) || ($message =~ /^\/?place([ ][0-9]+)?$/i)) {
+			my $error = 0;
+			if ($1 ne "") {
+				$userid   = substr($1, 1, length($1)-1);
+				my $found = 0;
+				while (my($pl, $s_player) = each(%g_players) ) {
+					if ($userid == $s_player->{userid}) {
+						$player = $s_player;
+						$found++;
+					}
+				}
+				if ($found == 0) {
+					$error++;
+				}
+			}
+			my $playerName = $player->{name};
+			my ($skill, $ranknumber, $totalplayers) = get_player_rank($player);
+			if ($ranknumber==0) {
+				$ranknumber = "(HIDDEN)";
+			}
+
+			if ($error == 0) {
+				if ($message !~ /^\/?place([ ][0-9]+)?$/i) {
+					$rcmd = $g_servers{$s_addr}->{player_command_osd};
+					
+					if ($rcmd ne "") {
+						my ($skill, $kills, $deaths, $kd, $suicides, $headshots, $hpk, $acc, $connection_time, $fav_weapon, $fav_weapon_kills, $fav_weapon_acc, $s_fav_weapon, $s_fav_weapon_kills, $s_fav_weapon_acc) = get_player_data($player, 0);
+						my $osd_string = get_menu_text($player, $skill, $kills, $deaths, $kd, $suicides, $headshots, $hpk, $acc, $connection_time, $fav_weapon, $fav_weapon_kills, $fav_weapon_acc, $s_fav_weapon, $s_fav_weapon_kills, $s_fav_weapon_acc, $ranknumber, $totalplayers);
+						$cmd_str = sprintf("%s \"15\" %s %s", $rcmd, $p_userid, $g_servers{$s_addr}->quoteparam($osd_string));
+					} else {
+						$rcmd = $g_servers{$s_addr}->{player_command};
+						my $msg = "";
+						if ($g_ranktype eq "kills") {
+							my $kills = $player->{total_kills};
+							$msg = sprintf("%s is on rank %d of %d with %d kills!", $playerName, $ranknumber, $totalplayers, $kills);
+						} else {
+							$msg = sprintf("%s is on rank %d of %d with %d points!", $playerName, $ranknumber, $totalplayers, $skill);
+						}
+						$cmd_str = sprintf("%s %s %s", $rcmd, $p_userid, $g_servers{$s_addr}->quoteparam($msg));
+					}  
+				} elsif ($g_servers{$s_addr}->{"public_commands"} == 1) {
+					if ($g_ranktype eq "kills") {
+						my $kills = $player->{total_kills};
+						$cmd_str = "";
+						$g_servers{$s_addr}->messageAll(sprintf("%s is on rank %d of %d with %d kills!", $playerName, $ranknumber, $totalplayers, $kills));
+					} else {
+						$cmd_str = "";
+						$g_servers{$s_addr}->messageAll(sprintf("%s is on rank %d of %d with %d points!", $playerName, $ranknumber, $totalplayers, $skill));
+					}
+				}
+			} else {
+				$rcmd = $g_servers{$s_addr}->{player_command};
+				if ($player->{display_events} == 1) {
+					$cmd_str = "$rcmd $p_userid ".$g_servers{$s_addr}->quoteparam("No player found with this userid. Type status in console to get players userid!");
+				}  
+			}
+			if ($cmd_str ne "")
+			{
+				$g_servers{$s_addr}->dorcon($cmd_str);
+			}
+		}
+		### End of Skill Addon
+
+		### Begin of Kill-Death Ratio
+		elsif (($message =~ /^\/?kdratio([ ][0-9]+)?$/i) || ($message =~ /^\/?kdeath([ ][0-9]+)?$/i) || ($message =~ /^\/?kpd([ ][0-9]+)?$/i)) {
+			my $userid = 0;
+			my $found = 0;
+			if ($1 eq "") {
+				$found++;
+			} else {
+				$userid = $1;
+				while (my($pl, $s_player) = each(%g_players) ) {
+					if ($userid == $s_player->{userid}) {
+						$player = $s_player;
+						$found++;
+					}
+				}
+			}
+
+			if ($found > 0 ) {
+				my ($skill, $kills, $deaths, $kd, $suicides, $headshots, $hpk, $acc, $connection_time, $fav_weapon, $fav_weapon_kills, $fav_weapon_acc, $s_fav_weapon, $s_fav_weapon_kills, $s_fav_weapon_acc, $ranknumber, $totalplayers) = get_player_data($player, 1);
+				my $playerName = $player->{name};
+
+				my $accstring = "";
+				if ($acc != "0.0") {
+					$accstring = $acc."% accuracy,";
+				}
+
+				if ($message !~ /^\/?kdeath([ ][0-9]+)?$/i) {
+					if ($g_servers{$s_addr}->{player_command_osd} ne "") {
+						my $osd_string = get_menu_text($player, $skill, $kills, $deaths, $kd, $suicides, $headshots, $hpk, $acc, $connection_time, $fav_weapon, $fav_weapon_kills, $fav_weapon_acc, $s_fav_weapon, $s_fav_weapon_kills, $s_fav_weapon_acc, $ranknumber, $totalplayers);
+						$osd_string = $g_servers{$s_addr}->quoteparam($osd_string);
+						$cmd_str = sprintf("%s \"10\" %s %s", $g_servers{$s_addr}->{"player_command_osd"}, $p_userid, $osd_string);
+					} else {  
+						if ($player->{display_events} == 1) {
+							$cmd_str = $g_servers{$s_addr}->{player_command}." ".$p_userid." ".$g_servers{$s_addr}->quoteparam(sprintf("%s has %d:%d frags, %d headshots (%s%%),%s and a KD-Radio of %s", $playerName, $kills, $deaths, $headshots, $hpk, $accstring, $kd));
+						}  
+					}
+				} else {					
+					if ($g_servers{$s_addr}->{"public_commands"} == 1) {
+						$cmd_str = "";
+						$g_servers{$s_addr}->messageAll(sprintf("%s has %d:%d frags, %d headshots (%s%%),%s and a KD-Ratio of %s", $playerName, $kills, $deaths, $headshots, $hpk, $accstring, $kd));
+					} else {
+						$cmd_str = $g_servers{$s_addr}->{player_command}." ".$p_userid." ".$g_servers{$s_addr}->quoteparam(sprintf("%s has %d:%d frags, %d headshots (%s%%),%s and a KD-Ratio of %s", $playerName, $kills, $deaths, $headshots, $hpk, $accstring, $kd));
+					}
+				}
+			} else {
+				if ($player->{display_events} == 1) {
+					$cmd_str = $g_servers{$s_addr}->{player_command}." ".$p_userid." ".$g_servers{$s_addr}->quoteparam("No player found with this userid. Type status in console to get players userid!");
+				}
+			}
+			if ($cmd_str ne "")
+			{
+				$g_servers{$s_addr}->dorcon($cmd_str);
+			}
+
+		}
+		### End of Kill-Death Ratio
+
+		### Begin of Session stats
+		elsif (($message =~ /^\/?session([ ][0-9]+)?$/i) || ($message =~ /^\/?session_data([ ][0-9]+)?$/i)) {
+			my $error = 0;
+			if ($1 ne "") {
+				$userid   = substr($1, 1, length($1)-1);
+				my $found = 0;
+				while (my($pl, $s_player) = each(%g_players) ) {
+					if ($userid == $s_player->{userid}) {
+						$player = $s_player;
+						$found++;
+					}
+				}
+				if ($found == 0) {
+					$error++;
+				}
+			}
+			my $playerName = $player->{name};
+			my $kills      = $player->{session_kills};
+			my $deaths     = $player->{session_deaths};
+			my $headshots  = $player->{session_headshots};
+			my $suicides   = $player->{session_suicides};
+			my $skill      = $player->{session_skill};
+			my $shots      = $player->{session_shots};
+			my $hits       = $player->{session_hits};
+			my $kdstring = "";
+			
+			if ($deaths > 0) {
+				$kd = sprintf("%.3f", $kills/$deaths);
+				$kdstring = sprintf(" (%.2f%%)", $kills/$deaths)
+			} else {
+				$kd = sprintf("%.3f", $kills);
+			}
+			if ($kills > 0) {
+				$hpk = sprintf("%.0f", (100/$kills) * $headshots);
+			} else {
+				$hpk = sprintf("%.0f", $kills);
+			}
+			if ($shots > 0) {
+				$acc = sprintf("%.1f", (100/$shots) * $hits);
+			} else {
+				$acc = sprintf("%.1f", $shots);
+			}
+			my $accstring = "";
+			if ($acc != "0.0") {
+				$accstring = $acc." accuracy,";
+			}
+			
+			if ($error == 0) {
+				my $pointstr="";
+				if ($g_ranktype ne "kills") {
+					$pointstr = sprintf(" and a skill change of %d points", $skill);
+				}
+				my $msg = sprintf("%s has %d:%d frags%s, %d headshots (%s%%),%s%s", $playerName, $kills, $deaths, $kdstring, $headshots, $hpk, $accstring, $pointstr);
+				if ($message !~ /^\/?session_data([ ][0-9]+)?$/i) {
+					if ($g_servers{$s_addr}->{player_command_osd} ne "") {
+						my ($se_skill, $se_kills, $se_deaths, $se_kd, $se_suicides, $se_headshots, $se_hpk, $se_acc, $se_connection_time, $se_fav_weapon, $se_fav_weapon_kills, $se_fav_weapon_acc, $se_s_fav_weapon, $se_s_fav_weapon_kills, $se_s_fav_weapon_acc, $se_ranknumber, $se_totalplayers) = get_player_data($player, 1);
+						my $osd_string = get_menu_text($player, $se_skill, $se_kills, $se_deaths, $se_kd, $se_suicides, $se_headshots, $se_hpk, $se_acc, $se_connection_time, $se_fav_weapon, $se_fav_weapon_kills, $se_fav_weapon_acc, $se_s_fav_weapon, $se_s_fav_weapon_kills, $se_s_fav_weapon_acc, $se_ranknumber, $se_totalplayers);
+						$osd_string = $g_servers{$s_addr}->quoteparam($osd_string);
+						$cmd_str = sprintf("%s \"10\" %s %s", $g_servers{$s_addr}->{player_command_osd}, $p_userid, $osd_string);
+					} else {
+						if ($player->{display_events} == 1) {
+							$cmd_str = sprintf("%s %s %s", $g_servers{$s_addr}->{player_command}, $p_userid, $g_servers{$s_addr}->quoteparam($msg));
+						}  
+					}  
+				} else {
+					if ($g_servers{$s_addr}->{"public_commands"} == 1) {
+						$cmd_str = "";
+						$g_servers{$s_addr}->messageAll($msg);
+					} else {
+						$cmd_str = sprintf("%s %s %s", $g_servers{$s_addr}->{player_command}, $p_userid, $g_servers{$s_addr}->quoteparam($msg));
+					}
+				}
+			} else {
+				if ($player->{display_events} == 1) {
+					$cmd_str = $g_servers{$s_addr}->{player_command}." ".$p_userid." ".$g_servers{$s_addr}->quoteparam("No player found with this userid. Type status in console to get players userid!");
+				}
+			}
+			if ($cmd_str ne "")
+			{
+				$g_servers{$s_addr}->dorcon($cmd_str);
+			}
+		}
+		### End of Session stats
+		
+		### status Addon
+		elsif ($message =~ /^\/?status([ ][0-9]+)?$/i) {
+			if ($g_servers{$s_addr}->{use_browser} > 0) {
+				my $url        = $g_servers{$s_addr}->{ingame_url};
+				my $server_id  = $g_servers{$s_addr}->{id};
+				my $game       = $g_servers{$s_addr}->{game};
+				if ($1 ne "") {
+					$server_id = substr($1, 1, length($1)-1);
+				}
+				my $fullurl = $g_servers{$s_addr}->quoteparam(sprintf("%s/ingame.php?game=%s&mode=status&server_id=%s", $url, $game, $server_id));
+				my $browsecmd = $g_servers{$s_addr}->{browse_command};
+				if (($g_servers{$s_addr}->{"mod"} eq "BEETLE")) {
+					$cmd_status = sprintf("%s %s say %s %s" , $g_servers{$s_addr}->{exec_command}, $p_userid, $browsecmd, $fullurl);
+				} else {
+					$cmd_status = sprintf("%s %s %s", $browsecmd, $p_userid, $fullurl);
+				}
+			$g_servers{$s_addr}->dorcon($cmd_status);
+			} 
+		}
+
+		### load Addon
+		elsif ($message =~ /^\/?load$/i) {
+		if ($g_servers{$s_addr}->{use_browser} > 0) {
+			my $url        = $g_servers{$s_addr}->{ingame_url};
+			my $server_id  = $g_servers{$s_addr}->{id};
+			my $game       = $g_servers{$s_addr}->{game};
+			my $fullurl = $g_servers{$s_addr}->quoteparam(sprintf("%s/ingame.php?mode=status&server_id=%s&mode=load", $url, $server_id));
+			my $browsecmd = $g_servers{$s_addr}->{browse_command};
+			if ($g_servers{$s_addr}->{"mod"} eq "BEETLE") {
+				$cmd_load = sprintf("%s %s say %s %s", $g_servers{$s_addr}->{exec_command}, $p_userid, $browsecmd, $fullurl);
+			} else {
+				$cmd_load = sprintf("%s %s %s", $browsecmd, $p_userid, $fullurl);
+			}
+			$g_servers{$s_addr}->dorcon($cmd_load);
+			}
+		}
+
+		### servers Addon
+		elsif ($message =~ /^\/?servers$/i) {
+			if ($g_servers{$s_addr}->{use_browser} > 0) {
+				my $url        = $g_servers{$s_addr}->{ingame_url};
+				my $game       = $g_servers{$s_addr}->{game};
+				my $fullurl = $g_servers{$s_addr}->quoteparam(sprintf("%s/ingame.php?game=%s&mode=servers", $url, $game));
+				my $browsecmd = $g_servers{$s_addr}->{browse_command};
+				if ($g_servers{$s_addr}->{"mod"} eq "BEETLE") {
+					$cmd_servers = sprintf("%s %s say %s %s", $g_servers{$s_addr}->{exec_command}, $p_userid, $browsecmd, $fullurl);
+				} else {
+					$cmd_servers = sprintf("%s %s %s", $browsecmd, $p_userid, $fullurl);
+				}
+				$g_servers{$s_addr}->dorcon($cmd_servers);
+			} 
+		}   
+
+		### cheaters Addon
+		elsif ($message =~ /^\/?cheaters$/i || $message =~ /^\/?bans$/i) {
+			if ($g_servers{$s_addr}->{use_browser} > 0)  {
+				my $url        = $g_servers{$s_addr}->{ingame_url};
+				my $game       = $g_servers{$s_addr}->{game};
+				my $fullurl = $g_servers{$s_addr}->quoteparam(sprintf("%s/ingame.php?game=%s&mode=bans", $url, $game));
+				my $browsecmd = $g_servers{$s_addr}->{browse_command};
+				if ($g_servers{$s_addr}->{"mod"} eq "BEETLE") {
+					$cmd_cheaters = sprintf("%s %s say %s %s", $g_servers{$s_addr}->{exec_command}, $p_userid, $browsecmd, $fullurl);
+				} else {
+					$cmd_cheaters = sprintf("%s %s %s", $browsecmd, $p_userid, $fullurl);
+				}
+				$g_servers{$s_addr}->dorcon($cmd_cheaters);
+			}
+		}
+
+		### Actions Addon
+		elsif (($message =~ /^\/?action$/i) || ($message =~ /^\/?actions$/i)) {
+			if ($g_servers{$s_addr}->{use_browser} > 0)  {
+				my $p_playerid = $player->{playerid};
+				my $url        = $g_servers{$s_addr}->{ingame_url};
+				my $game       = $g_servers{$s_addr}->{game};
+				my $fullurl = $g_servers{$s_addr}->quoteparam(sprintf("%s/ingame.php?game=%s&mode=actions&player=%s", $url, $game, $p_playerid));
+				my $browsecmd = $g_servers{$s_addr}->{browse_command};
+
+				if ($g_servers{$s_addr}->{mod} eq "BEETLE") {
+					$cmd_actions = sprintf("%s %s say %s %s", $g_servers{$s_addr}->{exec_command}, $p_userid, $browsecmd, $fullurl);
+				} else {
+					$cmd_actions = sprintf("%s %s %s", $browsecmd, $p_userid, $fullurl);
+				}
+				$g_servers{$s_addr}->dorcon($cmd_actions);		
+			}
+		}
+
+		### Accuracy Addon
+		elsif ($message =~ /^\/?accuracy$/i) {
+			if ($g_servers{$s_addr}->{use_browser} > 0) {
+				my $p_playerid = $player->{playerid};
+				my $url        = $g_servers{$s_addr}->{ingame_url};
+				my $game       = $g_servers{$s_addr}->{game};
+				my $fullurl = $g_servers{$s_addr}->quoteparam(sprintf("%s/ingame.php?game=%s&mode=accuracy&player=%s", $url, $game, $p_playerid));
+				my $browsecmd = $g_servers{$s_addr}->{browse_command};
+				if ($g_servers{$s_addr}->{"mod"} eq "BEETLE") {
+					$cmd_accuracy = sprintf("%s %s say %s %s", $g_servers{$s_addr}->{exec_command}, $p_userid, $browsecmd, $fullurl);
+				} else {
+					$cmd_accuracy = sprintf("%s %s %s", $browsecmd, $p_userid, $fullurl);
+				}
+				$g_servers{$s_addr}->dorcon($cmd_accuracy);	 
+			}
+		}
+
+		### Targets Addon
+		elsif (($message =~ /^\/?targets$/i) || ($message =~ /^\/?target$/i)) {
+			if ($g_servers{$s_addr}->{use_browser} > 0)  {
+				my $p_playerid = $player->{playerid};
+				my $url        = $g_servers{$s_addr}->{ingame_url};
+				my $game       = $g_servers{$s_addr}->{game};
+				my $fullurl = $g_servers{$s_addr}->quoteparam(sprintf("%s/ingame.php?game=%s&mode=targets&player=%s", $url, $game, $p_playerid));
+				my $browsecmd = $g_servers{$s_addr}->{browse_command};
+				if ($g_servers{$s_addr}->{"mod"} eq "BEETLE") {
+					$cmd_targets = sprintf("%s %s say %s %s", $g_servers{$s_addr}->{exec_command}, $p_userid, $browsecmd, $fullurl);
+				} else {
+					$cmd_targets = sprintf("%s %s %s", $browsecmd, $p_userid, $fullurl);
+				}
+				$g_servers{$s_addr}->dorcon($cmd_targets);
+			}
+		}
+
+		### Clans Addon
+		elsif ($message =~ /^\/?clans$/i) {
+			if ($g_servers{$s_addr}->{use_browser} > 0)  {
+				my $url        = $g_servers{$s_addr}->{ingame_url};
+				my $game       = $g_servers{$s_addr}->{game};
+				my $fullurl = $g_servers{$s_addr}->quoteparam(sprintf("%s/ingame.php?game=%s&mode=clans", $url, $game));
+				my $browsecmd = $g_servers{$s_addr}->{browse_command};
+				if ($g_servers{$s_addr}->{"mod"} eq "BEETLE") {
+					$cmd_clans = sprintf("%s %s say %s %s", $g_servers{$s_addr}->{exec_command}, $p_userid, $browsecmd, $fullurl);
+				} else {
+					$cmd_clans = sprintf("%s %s %s", $browsecmd, $p_userid, $fullurl);
+				}
+				$g_servers{$s_addr}->dorcon($cmd_clans);	
+			}
+		}
+
+		### Begin of next Addon
+		elsif ($message =~ /^\/?next$/i) {
+			if ($g_servers{$s_addr}->{player_command_osd} ne "") {
+				my $playerName = $player->{name};
+				my ($ranknumber, $totalplayers, $osd_message) = get_next_ranks($player);
+				$osd_string = $g_servers{$s_addr}->quoteparam($osd_message);
+				$cmd_str    = sprintf("%s \"10\" %s %s", $g_servers{$s_addr}->{"player_command_osd"}, $p_userid, $osd_string);
+				$g_servers{$s_addr}->dorcon($cmd_str);
+			}
+		} 
+
+		### Begin of Top-Players Addon
+		elsif ($message =~ /^\/?top\d{1,2}?$/i) {
+			my $limit = 10;
+			$message =~ /top(\d*)/i;
+			if ($1 > 12) {
+				$limit = 12;
+			} else {
+				$limit = $1;
+			}
+			if ($g_servers{$s_addr}->{player_command_osd} ne "") {
+				my $result = &doQuery("
+					SELECT
+						$g_ranktype, lastName, 
+						kills / IF(deaths=0,1,deaths) AS kpd
+					FROM
+						hlstats_Players
+					WHERE
+						game='".&quoteSQL($player->{game})."' 
+						AND hideranking = 0        
+						AND kills >= 1
+					ORDER BY
+						$g_ranktype DESC, kpd DESC
+					LIMIT 0, ".$limit);
+					
+				my $rankword = "";
+				if ($g_ranktype eq "kills") {
+					$rankword = " kills";
+				}
+				
+				my $osd_message = "->1 - Top Players\\n";
+				my $i           = 0;
+				my $last_base  = "";
+				while (my($base, $lastName) = $result->fetchrow_array) {
+					$i++;
+					if (length($lastName) > 20) {
+						$lastName = substr($lastName, 0, 17)."...";
+					}
+					if ($last_base eq "") {
+						$osd_message .= sprintf("   %02d  %s%s       -      %s", $i, &number_format($base), $rankword, $lastName)."\\n";
+						$last_base   =  $base;
+					} else {
+						$osd_message .= sprintf("   %02d  %s%s  -%04d  %s", $i, &number_format($base), $rankword, ($last_base-$base), $lastName)."\\n";
+					}
+				}
+				$result->finish;
+				$osd_string = $g_servers{$s_addr}->quoteparam($osd_message);
+				$cmd_str    = sprintf("%s \"15\" %s %s", $g_servers{$s_addr}->{player_command_osd}, $p_userid, $osd_string);
+				$g_servers{$s_addr}->dorcon($cmd_str);
+
+			} elsif ($g_servers{$s_addr}->{use_browser} > 0) {
+				my $url = $g_servers{$s_addr}->{ingame_url};
+				my $game = $g_servers{$s_addr}->{game};
+				my $fullurl = $g_servers{$s_addr}->quoteparam(sprintf("%s/ingame.php?game=%s&mode=players", $url, $game));
+				my $browsecmd = $g_servers{$s_addr}->{browse_command};
+				if ($g_servers{$s_addr}->{"mod"} eq "BEETLE") {
+					$cmd_players = sprintf("%s %s say %s %s", $g_servers{$s_addr}->{exec_command}, $p_userid, $browsecmd, $fullurl);
+				} else {
+					$cmd_players = sprintf("%s %s %s", $browsecmd, $p_userid, $fullurl);
+				}
+				$g_servers{$s_addr}->dorcon($cmd_players);	
+			} 
+		}
+		### End of Top10 Addon
+
+		### Begin of statsme Addon
+		elsif ($message =~ /^\/?statsme$/i) {
+			if ($g_servers{$s_addr}->{use_browser} > 0) {
+				my $p_playerid = $player->{playerid};
+				my $url        = $g_servers{$s_addr}->{ingame_url};
+				my $game       = $g_servers{$s_addr}->{game};
+				my $fullurl = $g_servers{$s_addr}->quoteparam(sprintf("%s/ingame.php?game=%s&mode=statsme&player=%s", $url, $game, $p_playerid));
+				my $browsecmd = $g_servers{$s_addr}->{browse_command};
+				if ($g_servers{$s_addr}->{"mod"} eq "BEETLE") {
+					$cmd_statsme = sprintf("%s %s say %s %s", $g_servers{$s_addr}->{exec_command}, $p_userid, $browsecmd, $fullurl);
+				} else {
+					$cmd_statsme = sprintf("%s %s %s", $browsecmd, $p_userid, $fullurl);
+				}
+				$g_servers{$s_addr}->dorcon($cmd_statsme);	
+			}
+		}
+		### End of statsme Addon
+
+		### Begin Player-Weapons Addon
+		elsif (($message =~ /^\/?weapon$/i) || ($message =~ /^\/?weapons$/i)) {
+			if ($g_servers{$s_addr}->{use_browser} > 0)  {
+				my $p_playerid = $player->{playerid};
+				my $url        = $g_servers{$s_addr}->{ingame_url};
+				my $game       = $g_servers{$s_addr}->{game};
+				my $fullurl = $g_servers{$s_addr}->quoteparam(sprintf("%s/ingame.php?game=%s&mode=weapons&player=%s", $url, $game, $p_playerid));
+				my $browsecmd = $g_servers{$s_addr}->{browse_command};
+				if ($g_servers{$s_addr}->{"mod"} eq "BEETLE") {
+					$cmd_weapons = sprintf("%s %s say %s %s", $g_servers{$s_addr}->{exec_command}, $p_userid, $browsecmd, $fullurl);
+				} else {
+					$cmd_weapons = sprintf("%s %s %s", $browsecmd, $p_userid, $fullurl);
+				}
+				$g_servers{$s_addr}->dorcon($cmd_weapons); 
+			}
+		}
+		### End of Player-Weapons Addon
+
+		### Begin Player-Kills Addon
+		elsif (($message =~ /^\/?kill$/i) || ($message =~ /^\/?kills$/i) || ($message =~ /^\/?player_kills$/i)) {
+			if ($g_servers{$s_addr}->{use_browser} > 0) {
+				my $p_playerid = $player->{playerid};
+				my $url        = $g_servers{$s_addr}->{ingame_url};
+				my $game       = $g_servers{$s_addr}->{game};
+				my $fullurl = $g_servers{$s_addr}->quoteparam(sprintf("%s/ingame.php?game=%s&mode=kills&player=%s", $url, $game, $p_playerid));
+				my $browsecmd = $g_servers{$s_addr}->{browse_command};
+				if ($g_servers{$s_addr}->{"mod"} eq "BEETLE") {
+					$cmd_kills = sprintf("%s %s say %s %s", $g_servers{$s_addr}->{exec_command}, $p_userid, $browsecmd, $fullurl);
+				} else {
+					$cmd_kills = sprintf("%s %s %s", $browsecmd, $p_userid, $fullurl);
+				}
+				$g_servers{$s_addr}->dorcon($cmd_kills);  
+			}
+		}
+		### End of Player-Kills Addon
+
+		### Begin Player-Map Performance Addon
+		elsif (($message =~ /^\/?maps$/i) || ($message =~ /^\/?map_stats$/i) || ($message =~ /^\/?map$/i)) {
+			if ($g_servers{$s_addr}->{use_browser} > 0) {
+				my $p_playerid = $player->{playerid};
+				my $url        = $g_servers{$s_addr}->{ingame_url};
+				my $game       = $g_servers{$s_addr}->{game};
+				my $fullurl = $g_servers{$s_addr}->quoteparam(sprintf("%s/ingame.php?game=%s&mode=maps&player=%s", $url, $game, $p_playerid));
+				my $browsecmd = $g_servers{$s_addr}->{browse_command};
+				if ($g_servers{$s_addr}->{"mod"} eq "BEETLE") {
+					$cmd_maps = sprintf("%s %s say %s %s", $g_servers{$s_addr}->{exec_command}, $p_userid, $browsecmd, $fullurl);
+				} else {
+					$cmd_maps = sprintf("%s %s %s", $browsecmd, $p_userid, $fullurl);
+				}
+				$g_servers{$s_addr}->dorcon($cmd_maps);  
+			}
+		}
+		### End of Player-Map Performance Addon
+
+		### Begin Help Addon
+		elsif (($message =~ /^\/?help$/i) || ($message =~ /^\/?cmd$/i) || ($message =~ /^\/?cmds$/i) || ($message =~ /^\/?commands$/i)) {
+			if ($g_servers{$s_addr}->{use_browser} > 0)  {
+				my $url        = $g_servers{$s_addr}->{ingame_url};
+				my $game       = $g_servers{$s_addr}->{game};
+				my $fullurl = $g_servers{$s_addr}->quoteparam(sprintf("%s/ingame.php?game=%s&mode=help", $url, $game));
+				my $browsecmd = $g_servers{$s_addr}->{browse_command};
+			
+				if ($g_servers{$s_addr}->{"mod"} eq "BEETLE") {
+					$cmd_help = sprintf("%s %s say %s %s", $g_servers{$s_addr}->{exec_command}, $p_userid, $browsecmd, $fullurl);
+				} else {
+					$cmd_help = sprintf("%s %s %s", $browsecmd, $p_userid, $fullurl);
+				}
+				$g_servers{$s_addr}->dorcon($cmd_help);  
+			}
+		}
+		### End of Help Addon
+
+	} # end if player  
+    
+
+	return $playerstr . " $msg_type \"$message\"";
+}
+
+
+#
+# 019. Map
+#
+
+sub doEvent_ChangeMap
+{
+	my ($type, $newmap) = @_;
+	
+	$g_servers{$s_addr}->set("map", $newmap);
+	$g_servers{$s_addr}->clear_winner();
+
+	if ($type eq "loading")
+	{
+		while (my($pl, $player) = each(%g_players) )
+		{
+			if ($player->{is_bot} == 1)
+			{
+				$player->updateDB();
+				removePlayer($s_addr, $player->{userid}, $player->{uniqueid}, 1);
+			}
+			else
+			{
+				endKillStreak($player);
+			}
+		}
+		$g_servers{$s_addr}->setHlxCvars();
+		return "Loading map \"$newmap\"";
+	}
+	elsif ($type eq "started")
+	{
+		$g_servers{$s_addr}->increment("map_changes");
+		$g_servers{$s_addr}->set("map_started", time());
+		$g_servers{$s_addr}->set("map_rounds", 0);
+		$g_servers{$s_addr}->set("map_ct_wins", 0);
+		$g_servers{$s_addr}->set("map_ts_wins", 0);
+		$g_servers{$s_addr}->set("map_ct_shots", 0);
+		$g_servers{$s_addr}->set("map_ct_hits", 0);
+		$g_servers{$s_addr}->set("map_ts_shots", 0);
+		$g_servers{$s_addr}->set("map_ts_hits", 0);
+		$g_servers{$s_addr}->updateDB();
+		while (my($pl, $player) = each(%g_players) )
+		{
+			$player->set("team", "");
+			$player->set("map_kills", "0");
+			$player->set("map_deaths", "0");
+			$player->set("map_headshots", "0");
+			$player->set("map_shots", "0");
+			$player->set("map_hits", "0");
+			$player->{trackable} = 0;
+		}
+		$g_servers{$s_addr}->updatePlayerCount();
+		$g_servers{$s_addr}->{map} = $newmap;
+		&printNotice("Current map for server \"$s_addr\" is now \"" . $newmap . "\"");
+		
+		return "Started map \"$newmap\"";
+	}
+	else
+	{
+		return "Map \"$newmap\": $type";
+	}
+}
+
+
+#
+# 020. Rcon
+#
+
+sub doEvent_Rcon
+{
+	my ($type, $command, $password, $ipAddr) = @_;
+	
+	if ($g_rcon_record)
+	{
+		&recordEvent(
+			"Rcon", 0,
+			$type,
+			$ipAddr,
+			$password,
+			$command
+		);
+	}
+	else
+	{
+		$desc = "(IGNORED) ";
+	}
+	
+	return $desc . "$type Rcon from \"$ipAddr\": \"$command\"";
+}
+
+
+#
+# 500. Admin
+#
+
+sub doEvent_Admin
+{
+	my ($type, $message, $playerName) = @_;
+	
+	&recordEvent(
+		"Admin", 0,
+		$type,
+		$message,
+		$playerName
+	);
+	
+	return "\"$type\" (\"$playerName\") \"$message\"";
+}
+
+#
+# 501. Statsme (weapon)
+#
+
+sub doEvent_Statsme
+{
+	my ($playerId, $playerUniqueId, $weapon, $shots, $hits, $headshots, $damage, $kills, $deaths) = @_;
+	my $desc;
+	my $player    = lookupPlayer($s_addr, $playerId, $playerUniqueId);
+	my $playerstr = &getPlayerInfoString($player, $playerId);
+
+	if ($g_servers{$s_addr}->{num_trackable_players} < $g_servers{$s_addr}->{minplayers})
+	{
+		$desc = "(IGNORED) NOTMINPLAYERS: ";
+	}
+	elsif ($player)
+	{
+		if (($g_servers{$s_addr}->{ignore_bots} == 1) && ($player->{is_bot} == 1))
+		{
+			$desc = "(IGNORED) BOT: ";
+		} else {
+		
+			if ($weapon eq "bow") {
+				$weapon = "arrow";
+			}
+
+			if ($shots>0) 
+			{
+				$player->increment("shots",         $shots);
+				$player->increment("map_shots",     $shots);
+				$player->increment("session_shots", $shots);
+				$g_servers{$s_addr}->increment("total_shots", $shots);
+			}  
+			if ($hits>0)
+			{
+				$player->increment("hits",          $hits);
+				$player->increment("map_hits",      $hits);
+				$player->increment("session_hits",  $hits);
+				$g_servers{$s_addr}->increment("total_hits", $hits);
+			}  
+			$player->updateDB();
+               
+			my $player_team = $player->{team};
+			if ($player_team eq "CT")
+			{
+				if ($shots>0) 
+				{
+					$g_servers{$s_addr}->increment("ct_shots", $shots);
+					$g_servers{$s_addr}->increment("map_ct_shots", $shots);
+				}  
+				if ($hits>0) 
+				{
+					$g_servers{$s_addr}->increment("ct_hits", $hits);
+					$g_servers{$s_addr}->increment("map_ct_hits", $hits);
+				}  
+			} elsif ($player_team eq "TERRORIST") {
+				if ($shots>0) 
+				{
+					$g_servers{$s_addr}->increment("ts_shots", $shots);
+					$g_servers{$s_addr}->increment("map_ts_shots", $shots);
+				}
+				if ($hits>0) 
+				{
+					$g_servers{$s_addr}->increment("ts_hits", $hits);
+					$g_servers{$s_addr}->increment("map_ts_hits", $hits);
+				}  
+			}
+			$g_servers{$s_addr}->updateDB();
+                
+			&recordEvent("Statsme", 0,
+				$player->{playerid},
+				$weapon,
+				$shots,
+				$hits,
+				$headshots,
+				$damage,
+				$kills,
+				$deaths
+			);
+		}          
+	} else
+    {
+		$desc = "(IGNORED) NOPLAYERINFO: ";
+    }
+    return $desc . $playerstr . " STATSME weaponstats (weapon \"$weapon\") (shots \"$shots\") (hits \"$hits\") (headshots \"$headshots\") (damage \"$damage\") (kills \"$kills\") (deaths \"$deaths\")";
+}
+
+#
+# 502. Statsme (weapon2)
+#
+
+sub doEvent_Statsme2
+{
+    my ($playerId, $playerUniqueId, $weapon, $head, $chest, $stomach, $leftarm, $rightarm, $leftleg, $rightleg) = @_;
+
+    my $desc;
+    my $player = lookupPlayer($s_addr, $playerId, $playerUniqueId);
+    my $playerstr = &getPlayerInfoString($player, $playerId);
+
+	if ($g_servers{$s_addr}->{num_trackable_players} < $g_servers{$s_addr}->{minplayers})
+	{
+		$desc = "(IGNORED) NOTMINPLAYERS: ";
+	}
+	elsif ($player)
+	{
+		if (($g_servers{$s_addr}->{ignore_bots} == 1) && ($player->{is_bot} == 1))
+		{
+			$desc = "(IGNORED) BOT: ";
+		} else {
+			if ($g_servers{$s_addr}->{play_game} == FOF()) {
+				$weapon =~ s/2$//;
+				if ($weapon eq "bow") {
+					$weapon = "arrow";
+				}
+			}
+			&recordEvent("Statsme2", 0,
+				$player->{playerid},
+				$weapon,
+				$head,
+				$chest,
+				$stomach,
+				$leftarm,
+				$rightarm,
+				$leftleg,
+				$rightleg
+			);
+			$player->updateDB();
+		}
+     }
+     else
+     {
+		$desc = "(IGNORED) NOPLAYERINFO: ";
+     }
+     return $desc . $playerstr . " STATSME weaponstats2 (weapon \"$weapon\") (head \"$head\") (chest \"$chest\") (stomach \"$stomach\") (leftarm \"$leftarm\") (rightarm \"$rightarm\") (leftleg \"$leftleg\") (rightleg \"$rightleg\")";
+}
+
+#
+# 503. Statsme (latency)
+#
+
+sub doEvent_Statsme_Latency
+{
+	my ($playerId, $playerUniqueId, $ping) = @_;
+
+	my $desc;
+	my $player = lookupPlayer($s_addr, $playerId, $playerUniqueId);
+	my $playerstr = &getPlayerInfoString($player, $playerId);
+
+	if (($player) && ($player->{is_bot} == 0))
+	{
+		&recordEvent(
+			"StatsmeLatency", 0,
+			$player->{playerid},
+			$ping
+		);
+	}
+	else
+	{
+		$desc = "(IGNORED) NOPLAYERINFO: ";
+	}
+
+	return $desc . $playerstr . " STATSME average latency \"$ping\"";
+}
+
+#
+# 504. Statsme (time)
+#
+
+sub doEvent_Statsme_Time
+{
+	my ($playerId, $playerUniqueId, $time) = @_;
+
+	my $desc;
+	my $player = lookupPlayer($s_addr, $playerId, $playerUniqueId);
+	my $playerstr = &getPlayerInfoString($player, $playerId);
+
+	if (($player) && ($player->{is_bot} == 0))
+	{
+		&recordEvent(
+			"StatsmeTime", 0,
+			$player->{playerid},
+			$time
+		);
+	}
+	else
+	{
+		$desc = "(IGNORED) NOPLAYERINFO: ";
+	}
+
+	return $desc . $playerstr . " STATSME connection time \"$time\"";
+}
+
+#
+# 505. Kill Location
+#
+
+sub doEvent_Kill_Loc
+{
+	my (%properties) = @_;
+	
+	if (defined($properties{attacker_position})) {
+		my $coords = $properties{attacker_position};
+		($g_servers{$s_addr}->{nextkillx}, $g_servers{$s_addr}->{nextkilly}, $g_servers{$s_addr}->{nextkillz}) = split(/ /,$coords);
+	}
+	
+	if (defined($properties{victim_position})) {
+		my $coords = $properties{victim_position};
+		($g_servers{$s_addr}->{nextkillvicx}, $g_servers{$s_addr}->{nextkillvicy}, $g_servers{$s_addr}->{nextkillvicz}) = split(/ /,$coords);
+	}
+
+	return sprintf("KILL LOCATION x=>%s, y=>%s, z=>%s stored for next kill", $g_servers{$s_addr}->{nextkillx}, $g_servers{$s_addr}->{nextkilly}, $g_servers{$s_addr}->{nextkillz});
+}
+
+1;

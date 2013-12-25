@@ -1,0 +1,1764 @@
+HLstatsX Community Edition 1.6.19
+October 13, 2012
+
++ Heatmaps: Added support for NTS, L4D2 and CSS Heatmap configurations. (#1602, #844)
+! GameSupport: Fixed some CS:GO actions that were incorrectly added in 1.6.18. (#1599)
+! Web: Fixed adding a new server to a duplicate game returning user to original game's server listing. (#1594)
+! Web: Fixed output that could be used as Cross-Site Scripting exploit (Reported by P.Whitton) (#1612)
+
+HLstatsX Community Edition 1.6.18
+August 31, 2012
+
++ GameSupport: Added support for Dino D-Day and Counter-Strike: Global Offensive. (#1589, #1552)
++ Web: Added additional chat logging support for Nuclear Dawn.
+! Web: Fixed adding a new server to a duplicate game returning user to original game's server listing. (#1594)
+
+
+HLstatsX Community Edition 1.6.17
+June 27, 2012
+
++ GameSupport: Added 9 new TF2 weapons from the Pyromania update. (#1579, 1583)
++ Web: Added new map image for TF2 map sd_doomsday. (#1582)
+! GameSupport: Corrected TF2 award names that were incorrectly updated. (#1558)
+! Web: Updated updated check URL to hlxce.com domain. (#1581)
+
+
+HLstatsX Community Edition 1.6.16
+May 20, 2012
+
++ Daemon: Added a task to purge out old entries in hlstats_server_load table. (#1545)
++ GameSupport: Added 8 new weapons for TF2. (#1546 #1547)
++ GameSupport: Support for Nuclear Dawn added. (#1487)
+    SuperLogs is available for Nuclear Dawn.  More info at http://wiki.hlxce.com/wiki/SuperLogs
+! Daemon: Fixed awards being given to players of different games. (#1440)
+! Daemon: Fixed daemon awarding no points when you kill a player with no points. (#1227)
+! Daemon: Fixed regression causing the 'next' command to have garbage output. (#1479)
+! Daemon: Fixed uptime regex calculation due to format change in Team Fortress 2. (#1497)
+! Daemon: Updated geoip.py to use correct MaxMind URL for GeoLiteCity.CSV file. (#1521)
+! Daemon: Fixed install_binary.sh not installing GeoLiteCity to correct location. (#1532)
+! General: Standardized typing for server_id columns in all tables. (#1456)
+! Web: Removed legacy which could be used for XSS and SQL injection attacks.
+! Web: Fixed Status and Avatar not working for players with custom URLs in their Steam profile. (#1525)
+! Web: Fixed various locations where role code was displayed instead of role name. (#1548)
+! Web: Added missing TF2 award and ribbon images. (#1449 #1468)
+! Web: Fixed a syntax issue on tools_perlcontrol.php that caused the page to not load on PHP 5.4 (#1544)
+? Web: Changed the default zoom level for the EUROPE region by 1.  (#1426)
+? Web: Changed the table on player award history page to use the award name instead of award code. (#1556)
+? Web: Changed the query on the Chat page to sort by the ID instead of Event Time, which would have required an index.  (#1083)
+
+
+HLstatsX Community Edition 1.6.15
+November 8th, 2011
+
++ GameSupport: Added many new weapons for TF2, including the Victory Pack, Manno-Technology and Halloween update (#1439, #1447, #1448) (Packhead)
++ GameSupport: Added awards and ribbons for four existing actions (#1467) (Packhead)
++ GameSupport: Captured player_penetration weapon event and changed to action for TF2 (weapon logged as machina) (Packhead)
++ Web: Awards, Maps, Ribbons, Roles and Weapon images now failback to "realgame" directory if not present in "game" directory (#1461) (Packhead)
+! Daemon: Fixed FPS and Uptime tracking post-TF2 stats output fix (#1458) (Packhead)
+! Daemon: Converted server load DB updates to cached queries to reduce load (Packhead)
+! Daemon: Converted almost all daemon queries to use MySQL Prepared Statements to help reduce DB load (Packhead)
+! GameSupport: Corrected typos and added two missing TF2 weapons (#1446) (Bluthund)
+? Plugin: Removed old hack to fix cvars on a2s_rules response (psychonic)
+? Plugin: Removed a large number of redundant client checks (psychonic)
+? Web: Removed unnecessary joins from multiple pages (octo-dhd)
+? Web: Additional index added to speed up PlayerPlayerAction transactions (octo-dhd)
+? Web: Updater has been enhanced to provide more output (Packhead)
+
+
+HLstatsX Community Edition 1.6.14
+July 15, 2011
++ GameSupport: Added 31 new weapons for Team Fortress 2 (#1421, #1429) (Packhead, psychonic, octo-dhd, bug, Rakshot, soolshock, solarpowered)
++ GameSupport: Added new TF2 player action to log scout extinguishes with the Mad Milk (#1397) (Packhead)
+! Daemon: Player position was not printing at initial release of 1.6.13 (#1425) (psychonic)
+! Daemon: Updated the GeoLite_Import.sh script due to change in release cycle of Max Mind (#1438) (aubergine)
+? Daemon: Chat commands are no longer reliant on player events being enabled (psychonic)
+? Daemon: Lazy log line format no longer clears player's team (psychonic)
+? Daemon: Removed some redundant logic in EventHandlers.plib (psychonic)
+? GameSupport: Renamed 14 Team Fortress 2 weapons to align them with the TF2 wiki (#1423) (Packhead)
+
+
+HLstatsX Community Edition 1.6.13
+January 22, 2011
++ GameSupport: Added missing headshot action, awards, and ribbons to HL2DM (psychonic)
++ General: Added total teamkills to player tracking (psychonic)
++ General: Added teamkills and kill/death streaks to player session tracking (psychonic)
++ General: Added more new special award possibilities, "connectiontime", "killsteak", and "deathstreak" (psychonic)
++ Web: Added teamkills to ingame statsme webpage (psychonic)
+? GameSupport: Updated many recently-changed TF2 weapon codes (psychonic)
+? Daemon: Updated run_hlstats to now automatically change to the directory it's in (no longer do you have to CD before using script in cron!) (Packhead)
+? Daemon: Updated run_hlstats to verify shebang line in hlstats.pl is formatted correctly and binary exists (Packhead)
+? Daemon: Moved connect message from Connect event to EnterGame event (to prevent display when banned users connect) (psychonic)
+? Heatmaps: Greatly improved output quality of heat data (msleeper)
+? General: Improved speed of generating awards for "mostkill", "suicides", "teamkills" (psychonic)
+? Web: Server configuration parameter names are now read-only to avoid accidental changes (psychonic)
+? Web: Id column is now hidden on most admin pages with EditTables as it serves little purpose to the user (psychonic)
+! Web: Fixed paging issue on search page (psychonic)
+! Web: Fixed JS error when selecting an admin task (psychonic)
+! Web: Fixed lack of input box when adding new row in readonly EditListColumns (psychonic)
+
+HLstatsX Community Edition 1.6.12
+December 19, 2010
++ GameSupport: Added TF2 Australian Christmas support and missing weapons/actions (thorrr, psychonic, Packhead)
+	(requires SuperLogs:TF2 for some weapons to track independently)
+? Daemon: Cleaned up some output from run_hlstats (#1336) (Packhead)
+! Daemon: Fixed a local-variable being declared outside a function (#1306) (Packhead)
+! Plugin: Fixed a missing handle check (#1307) (psychonic)
+! Web: Fixed hidden clans appearing on ingame browser (#1309) (Packhead)
+! Web: Fixed zoom out button being covered up by Google logo on map page (#1317) (Azelphur)
+! Web: Fixed incorrectly named TF2 ribbon images (#1319) (Packhead)
+! Web: Fixed admin login form not working correctly in certain situations (#1340) (octo-dhd)
+
+
+
+HLstatsX Community Edition 1.6.11
+October 10, 2010
+
++ GameSupport: Added PVKII support (Munra, CoZmicShReddeR, psychonic, Packhead)
++ GameSupport: Added CSPromod support (requires SuperLogs:CSPromod) (psychonic, Packhead, Unity)
++ GameSupport: Added HL1DM support (Peterson, Packhead, psychonic)
++ GameSupport: Added support for TF2 polycount additions (Packhead, psychonic, Dragonshadow)
+	(requires SuperLogs:TF2 for some weapons to track independently)
++ GameSupport: Added support for tracking Mini Sentries in TF2 (requires SuperLogs:TF2) (psychonic, Packhead)
++ GameSupport: Added support for CS:S round_mvp action newly added in SuperLogs: CSS (psychonic)
++ GameSupport: Chat colors enhanced in FoF now that 3.0+ supports them (psychonic)
++ GameSupport: Added missing AOC weapon codes, chivalry, Throwing Axe, and Fists (psychonic)
++ GameSupport: Added some missing award images for CS:S/CSP (Dragonshadow)
++ GameSupport: Added some missing award and ribbon images for TF2 (FernFerret, Dragonshadow, Packhead)
++ GameSupport: Added L4D1 roles to L4D2 for 'The Sacrifice' update (Packhead)
++ GameSupport: Added some missing L4D2 award images (rockerdsk)
++ Daemon: Added support for retrieving hostname and maxplayers via server query if rcon is unavailable (psychonic)
++ Daemon: Added 'CpanelHack' conf directive to optionally add $home/perl to include path before loading Geo::IP modules (psychonic)
++ Daemon: Added SIGINT handling to clean up and flush data upon interupt (ctrl-c), also on C;SHUTDOWN; and C;RELOAD; (psychonic)
++ Daemon: Added SIGHUP handling to mimic C;RELOAD; (psychonic)
++ Daemon: Added perl 5.12 compatibility (psychonic)
++ Daemon: Added much more configurability to hlstats-awards.pl (psychonic)
++ Daemon: Added support for re-evaluating player clan tags in hlstats-awards.pl, use -t option (psychonic)
++ Daemon: Added reload option to run_hlstats to allow reloading settings without actually stopping daemon (Packhead)
++ Plugin: Added workaround for Source 2009 linux rules query issue (psychonic)
++ Web: Admin IP search now supports partial matches (psychonic)
++ Web: "Perl Stats Backend" page can now reload remotely located daemons (#1266) (Packhead)
++ Web: Added new player trend graph (psychonic)
++ Web: Added links to daemon control page in Server Settings page in restart warning box and on Reset page (psychonic)
++ Other: Added AMXBans 6.0 support to hlstatsxban.php import script (Packhead)
+- GameSupport: Removed FoF weapon explosive_arrow, no longer exists ingame (psychonic)
+? Daemon: Chat no longer has to be >3 characters to be logged (psychonic)
+? Daemon: Suicide within 2 seconds of team change is now ignored (psychonic)
+? Daemon: Event inserts are now queued per table in groups of 10 (default) to reduce number of queries (psychonic)
+? Daemon: Added --event-queue-size command line parameter to forcefully override the above (ex. size 100+ when importing logs)
+? Daemon: Player count changes now only update player count, rather than triggering full db flush (psychonic, Matt Lawrence)
+? Daemon: Changed some parsing to aid pvkii support and potentially give a minor boost in speed (psychonic)
+? Daemon: Run script now sends SIGINT instead of SIGKILL when stopping daemon to allow cleanup (Packhead)
+? Daemon: run_proxy now defaults to using hlstats.conf instead of the non-existant proxy.conf (psychonic)
+? Daemon: Re-wrote run_hlstats to now handle start/stop/reload/restart/status single or multiple daemons (Packhead)
+? Daemon: run_hlstats_multi has been deprecated (Packhead)
+? Web: Chat page no longer shows server column when showing chat for a single server (psychonic)
+? Web: Countries page now defaults to sorting by Avg Skill (psychonic)
+? Web: After adding a new server, you now automatically get redirected to the server settings page (psychonic)
+? Web: RCon password is no longer displayed on Edit Servers list (psychonic)
+? Web: Update check in admin area is now async and will not hang admin page if hlx site is down (psychonic)
+! GameSupport: Fixed daemon TFC object dismantle logic not working (psychonic)
+! GameSupport: Fixed GES weapon image filenames not matching weapon codes (psychonic)
+! GameSupport: Fixed db issue causing some TFC actions to not track properly (psychonic)
+! GameSupport: Fixed FoF bug in last release causing all weapons to log as "bow" (psychonic)
+! GameSupport: Updated Dystopia support to GameEngine 3 (psychonic)
+! GameSupport: Fixed spelling of FoF team name 'desparados' => 'desperados' (psychonic)
+! GameSupport: Fixed some issues with certain TF2 weapons/awards not triggering properly (psychonic)
+! GameSupport: Re-added two L4D2 weapons (M60, Golf Club) that only existed on new installs (Packhead)
+! Daemon: Fixed player flag not showing in livestats if the player was already ingame when daemon started (psychonic)
+! Daemon: Fixed "stats" command parsing failing when receiving more output than expected (jocker)
+! Daemon: Fixed some incompatibilities with Mani Admin, extra quotes, etc. (psychonic)
+! Daemon: Fixed kill streaks persisting across map change (psychonic)
+! Plugin: Fixed HLstatsX sv_tag not being applied if custom tags were specified in config (psychonic)
+! Web: Fixed some pages using live activity calculation instead of cached value (psychonic)
+! Web: Fixed players with hidden rank still displaying on per-session player ranking list (psychonic)
+! Web: Fixed some values being html-escaped before being saved to the db (psychonic)
+! Web: Fixed action points on player/clan info possibly being inaccurate due to using current point values (psychonic)
+! Web: Fixed multiple idiosyncracies with weapon and role image filename and text name lookup. (psychonic)
+! Web: Fixed some display glitches on actioninfo page (psychonic)
+! Web: Fixed "Reset Players' Names' Counts" checkbox on Reset page not being checked/unchecked with reset all (psychonic)
+! Web: Fixed incorrect bracket in default hlstats.css causing warning text to be incorrect size (Hipster)
+! Web: Fixed an issue with image filenames that contained spaces (psychonic)
+! Web: Fixed signature images not working when using Steam IDs to lookup player (Packhead)
+! Other: Fixed hlstatsxban.php import script not properly unbanning unbanned users from Sourcebans (Rambomst)
+! Other: Fixed a regex issue with heatmaps and maps with $ in name (Danfocus)
+
+
+HLstatsX Community Edition 1.6.10
+July 13, 2010
+
++ GameSupport: TF2 - Engineer Update - Added new weapons, awards, ribbons and map screenshots (#1205, #1206,#1207) (FernFerret, octo-dhd, Packhead)
++ GameSupport: TF2 - Added missing ribbon images and database support for various weapons (#1197) (octo-dhd, FernFerret, Packhead)
++ GameSupport: CSS - Changed default and existing installs to use GameEngine 3 (Orange Box) (#1203) (Packhead)
+? General: hlstats-awards now has three additional (optional) parameters and only runs award and ribbon generation when a date is specified (#1210) (psychonic)
+
+HLstatsX Community Edition 1.6.9
+June 19, 2010
+
++ GameSupport: Updated HL2DM/HL2CTF weapon images (Carioca, Peterson)
+? Daemon: Player stats are now flushed to the database about twice as often due to feedback from users (psychonic)
+? Daemon: Player stats flush timer is now per server instead of global so potentially less are flushed at once (psychonic)
+? Daemon: Server stats are now flushed on a timer (slightly more frequent than player stats), rather than instantly (#1176) (psychonic)
+! Daemon: Fixed an issue that could cause player stats not to save correctly and lead to increased cpu usage (psychonic)
+! GameSupport: Fixed TF2 obj_teleporter_exit and _entrance being removed (now logging obj_teleporter instead) (#1177) (Packhead, psychonic)
+! Web: Fixed admin pages missing images in some places (#1182) (Packhead)
+! Web: Whitespace is now trimmed from the beginner and end of search input (#1134) (psychonic)
+! Web: Fixed some redundancy and general silliness with sanitizing of search queries. (psychonic)
+
+HLstatsX Community Edition 1.6.8
+May 26, 2010
+
++ GameSupport: Added many new TF actions from SuperLogs:TF2 2.x (#1090, #1159) (Packhead)
++ GameSupport: Added 4 new TF weapons from recent TF2 updates (#1108, #1162) (Packhead)
++ GameSupport: Added many new TF weapon/award/ribbon images (psychonic, HeK, FernFerret)
++ GameSupport: Added 2 new L4D2 weapons from The Passing update (#1130) (Packhead)
++ GameSupport: Added new CSS (OB) actions provided by new SuperLogs:CSS (#1168) (Packhead)
+? Daemon: Removed some old debug messages that could confuse users (psychonic)
+? Web: Put 'beta' notice on perl backend control page as it is not meant to work on all installs yet (psychonic)
+? SMPlugin: Removed chat notification when adding to sv_tags (psychonic)
+? GameSupport: Change TF default TKPenalty to 0 (#1170) (psychonic)
+! Daemon: Fixed possible crash when inserting livestats data (#1063) (psychonic)
+! Daemon: Fixed 'EnablePublicCommands' option not being respected on some commands when disabled (#1116) (psychonic)
+! Daemon: Fixed IP addresses not being saved for players when tracking in LAN mode (#1142) (psychonic)
+! Daemon: Fixed issue causing bots (including l4d infected) to not be recognized in LAN mode (#1166) (psychonic)
+! Web: Fixed loading error on player chat history page due to short tags (psychonic)
+! Web: Fixed broken formatting on player chat history page (#1076) (psychonic)
+! Web: Added missing padding on game page between servers and awards (psychonic)
+! Web: Fixed incorrect page count on chat page (psychonic)
+! Web: Fixed occurence where options.php could have a blank POST, clearing all options (#1143) (psychonic)
+! Web: Fixed multibyte characters not displaying properly in some admin area fields (#1155) (psychonic)
+! SMPlugin: Fixed non-default cvar values being ignored after reload (#1073) (psychonic)
+! SMPlugin: Fixed sv_tags addition happening multiple times on reload (psychonic)
+! GameSupport: Fixed many small issues with NeoTokyo support (#1161, #1173) (SolidSnake916, psychonic)
+! GameSupport: AOC no longer defaults to attempting to use ShowMenu for 'OSD' commands (psychonic)
+! GameSupport: BG2 now defaults to using ShowMenu for 'OSD' commands (psychonic)
+! GameSupport: Added workaround for broken chat in FF 2.4.1 (#1099) (psychonic)
+! GameSupport: Removed old NeoTokyo weapon codes and changed m41l to m41s (#1161) (psychonic)
+
+HLstatsX Community Edition 1.6.7
+February 13, 2010
+
++ Added missing headshot action for cstrike (#1069) (Packhead)
++ Added TF2 actions and awards for airshot_rocket and airshot_headshot  (#1065) (Packhead)
++ Added TF2 weapon, award and ribbons for taunt_medic (#1064) (FernFerret, Packhead)
++ Added tf_pumpkin_bomb weapon image and TF2 ball image (FernFerret)
++ Added the ability to search server and player chat logs as well as optimizations (#677, #1034, #1054, #1055) (octo-dhd, agent86)
++ Added L4D2 forum signature background images (gH0sTy)
+? Changed references of HLstatsX to HLstatsX: CE in perl scripts (#1036) (octo-dhd)
+? Changed "pickaxe" to "unique_pickaxe" in TF2 after Valve update (psychonic)
+? Cleaned up all known 'notice' errors in web code (#1058) (octo-dhd)
+? Resolved PHP4 compatibility issues (#1035) (octo-dhd)
+! Fixed double-connect announcements (octo-dhd)
+! Fixed STEAM_ID argument on playerinfo page (#1061) (psychonic)
+! Fixed players, clans and server counts on ingame MOTD being ignored (psychonic)
+! Fixed the reset page in the admin center to now show disabled games (#1050) (Packhead)
+! Fixed character display and maxlength issues in the administration center (#1053, #1062) (octo-dhd)
+! Fixed a daemon crash when a player joins and ranking is set to "kills" (#996, #1044) (psychonic)
+! Fixed some unpredictable behavior on map-specific plyr and plyrplyr actions (Thor_R, psychonic)
+! Fixed issue with short tags being used in certain pages (Kigen, octo-dhd) (#1052)
+! Fixed lastAddress, geolookup and flags not appearing on server status pages (#1010, #1011) (octo-dhd)
+! Fixed map run times being incorrect if the map didn't "start" (octo-dhd)
+! Fixed blank type filter causing no results to print on Admin Event History (psychonic)
+! Fixed team message coloring for L4D(2) and HL2MP in hlstatsx.sp (psychonic)
+
+HLstatsX Community Edition 1.6.6
+January 10, 2010
++ Added TF2 Ball weapon code (#992) (Packhead)
++ Added team color player names on ingame messages in HL2DM when doing team deathmatch and HL2CTF (psychonic)
++ Added optional (default on) adding of "HLstatsX:CE" to server tags on non-L4D/2 games that support sv_tags (psychonic)
+? Changed the header to use the alt text to be more consistent with project (Packhead)
+? Changed the default point value to 0 for crit kill action in TF2 (#993) (Packhead)
+! Fixed a recently discovered exploit as well as other possible avenues for exploitation (psychonic)
+! Fixed game page not loading on a very small number of installs (octo-dhd)
+! Fixed opt_libdir being ignored in hlstats.pl and hlstats-awards.pl when loading GeoLite binary file (psychonic)
+! Fixed "Can't use an undefined value as a HASH reference" error on some installs, mostly L4D and/or having global chat enabled (psychonic)
+! Fixed favorite weapon calculation in claninfo page (#985) (Packhead)
+! Fixed weapon list for clan including data from other games (Packhead)
+! Removed quotes from playerId in HLstats_EventHandlers.plib to fix potential slowdown in MySQL (psychonic, Packhead)
+! Fixed a case where L4D/L4D2 bots that connect to the server list their IP address as "none". (Packhead)
+! Fixed the kick method for goldsource games (#1022) (Packhead)
+! Fixed a case where lastAddress could be set to "" for players (#1010) (Packhead, psychonic)
+! Fixed utf8 characters getting mangled in hlstats-awards.pl. (psychonic)
+! Fixed boomer and smoker role codes being incorrect on l4d2 (issue #1013) (psychonic)
+! Fixed not checking for existance of geoip data before doing geo lookups in hlstats-awards.pl (#1002) (Packhead)
+
+HLstatsX Community Edition 1.6.5
+December 23, 2009
+ 
++ Added a huge number of new TF2 images for awards, ribbons, and weapons (FernFerret)
++ Added new TF2 weapon and action codes for "War" update (Packhead, psychonic)
++ Added missing TF2 awards for Scout (#897) (trawa, Packhead)
++ Added various missing TF2 weapons, awards, and ribbons (#968) (Packhead)
++ Added ability to move servers between "Games" that share the same "realgame" (psychonic)
++ Added HLX:CE logo on hitbox flash file (BusteR)
++ Added HLX:CE donate link to admin area :3 (psychonic)
+? Bonus round state now triggers at Round_End in addition to Round_Win and Mini_Round_Win (psychonic)
+? Made BonusRoundIgnore be enabled by default for newly added "tf" servers (psychonic)
+? Hide option for each game type now uses a checkbox instead of a drop-down box (psychonic)
+? Game code on Games page in admin area is now read-only to prevent user-caused issues with changing it (psychonic)
+? Daemon code tidied up slightly more along with more slight optimizations (including #823) (psychonic)
+? Changed behavior for heatmap generation to only generate with valid data. (BoNzO)
+? Added an ini_set for max_execution_time for heatmap generation to prevent timeouts. (BoNzO)
+! Fixed a case where an administrator could accidentally lock themselves out of the admin area if not careful (ie. setting password to "(encrypted" or similar) (psychonic)
+! Fixed an issue with hlxce_version and hlxce_webpage not being set at server start under certain conditions (psychonic)
+! Fixed the admin center timing out when our update check server is down (#965) (psychonic, Packhead)
+! Fixed "help" not being blocked by ingame plugin (#914) (Packhead)
+! Fixed incorrect Favorite Weapon calculation (#908) (Steph D, Packhead)
+! Fixed "to-all" messages just showing a "2" using hlx_sm_psay2 (psychonic)
+! Fixed regression in 1.6.3 that caused minplayers to to be ignored for frags on all games except L4D/L4D2 (#934) (psychonic)
+! Fixed multiple potential daemon crash scenarios (#880,#917) (psychonic, octo-dhd)
+! Fixed an issue with plyrplyr actions not being recognized properly (psychonic)
+! Fixed a typo in show_graph.php that caused the graphs not to generate when the style was changed. (#928) (Warbucks)
+! Fixed update check telling admin to upgrade when showing installation as being up-to-date. (Packhead)
+! Daemon now correctly uses player ip address from connect log line when able instead of doing "rcon status" to retrieve it (psychonic)
+
+
+HLstatsX Community Edition 1.6.3
+December 03, 2009
+
++ Added "Taiwin" to gmap location selection (#818) (Owen Lyu, psychonic)
++ Added some missing weapon codes for l4d2 (psychonic)
++ Added SQL profiling for advanced debugging, disabled by default (agent86)
++ Added new L4D2 role icons (#837) (ribit)
++ Added new CSS class to provide a background for "gameslist" icons (#834) (Packhead)
++ Added a simple version check to the admin center (#825) (psychonic)
++ Added additional data-table-head classes to voicecomm server pages (#856) (Packhead)
++ Added a CSS ID "gameslist-active-game" to allow for customization to gameslist when you're on the appropriate game's page (#834) (Packhead)
++ Added actions for SuperLogs:TF2 new "Most Valuable Player" tracking (#826) (Packhead)
++ Added a new "noaward" image for Left 4 Dead 2 (Packhead)
++ Added/enhanced coloring to ingame messages on L4D, L4D2, HL2MP, and DODS (psychonic)
++ Added partial verification of Server Address and Admin Mod choice to Add Server page. (psychonic)
++ Added ability to use steam_id AND game for signatures instead of player_id (#877) (Packhead)
++ Added colored Left4Dead Roles (#890) (Packhead)
+- Removed "smash-only" l4d2 awards from installations and future upgrades, will not be removed from existing sites (psychonic, Packhead)
+- Removed "run_hlstats_autorestart" as it is redundant now. (Packhead)
+- Removed non-existant "SMAC" weapon from NTS in install.sql (psychonic)
+? Made multiple optimizations on the Chat page (#829) (agent86, Packhead)
+? Player DB Updates in daemon now utilize prepared statements (#842) (agent86)
+? Updated INSMOD and FOF game icons (psychonic)
+? Updated the run_ scripts so they could be used as a startup script in init.d (#861) (Packhead)
+? hlx_sm_csay now does light green chat-style messages on L4D/L4D2 instead of extremely small center message (psychonic)
+? Various minor daemon optimizations (psychonic)
+? Cleaned up code in hlstatsx.sp and minor optimizations (psychonic)
+? Modified date that is printed for Last Kill on contents.php (#863) (Packhead)
+? Cleaned up updater notifications and added new "warning", "warning-header" and "warning-text" CSS classes (Packhead)
+? Modified the doConnect method to retry on daemon connection error (#841) (agent86)
+? Changed map screenshot behavior to now fail back to a game default and then the HLXCE logo if the map screenshot cannot be found. (Packhead)
+? Changed stylesheet cookie behavior (#806) (octo-dhd)
+? Touched up favicon.ico (psychonic)
+? Slightly darkened watermark on forum sig image (psychonic)
+? Updated run_hlstats and run_proxy with variables to daemon filename, conf file and path. (Packhead)
+? Updated run_hlstats_multi with variables for daemon filename and path (Packhead)
+? Daemon no longer counts incaps (l4d/l4d2) where victim is on Infected team (#836) (psychonic)
+? Revised logic on mapinfo.php to follow logic from status.php and utilize getImage() (Packhead)
+? Changed user-settings on playerinfo_general.php to now say "Not Set" and be linked to #set on the help page (#869) (Packhead)
+? Check for existance of geolite binary file before attempting to load it (#807) (BoNzO)
+? Changed behavior of config file/command line -- command line option now overrides conf file settings (#862) (octo-dhd)
+! Fixed Zoom support to Google Maps (psychonic)
+! Fixed an issue with plyrplyr actions being ignored (#883) (psychonic)
+! Fixed (attempt) for possible null error on geodata inserts (#880) (psychonic)
+! Fixed a typo in updater.php (Packhead)
+! Fixed "alt" text on ribbon images (#882) (Packhead)
+! Fixed some bugs in display on playerinfo_general.php (#869) (Packhead)
+! Fixed some ingame web issues (Packhead)
+! Fixed anchor tags on some pages which made some CSS styles look bad (#835) (Packhead)
+! Fixed new game code and name getting escaped twice when duplicating a game (#855) (psychonic)
+! Fixed not being able to have two teamspeak servers with different connect ports but same query port (#851) (psychonic)
+! Fixed "broken text" on award pages when nobody wins the award (#857)
+! Fixed some issues in global and sourcebans CSS revolving around the gamelist icons (Packhead)
+! Fixed status.php to also make use of default.png for missing map screenshots (#852) (Maximilian Lotz, Packhead)
+! Fixed header links not correct after performing search or using admin pages (#486) (psychonic)
+! Fixed display_style_selector having the wrong optype and causing an error on the daemon (Packhead)
+! Fixed run_hlstats_multi not using the logs directory (#736, #802) (Packhead)
+! Fixed all run scripts to use relative paths (#737) (Packhead)
+! Fixed hlstatsxban.cfg not being read correctly (#603) (Valentin G., psychonic)
+! Fixed error that could cause graphs not to display correctly (psychonic)
+! Fixed spacing issue with player names on some ingame messages (psychonic)
+! Fixed incorrect format specifier in daemon player info string causing uniqueid to not print properly (psychonic)
+! Fixed possible null error on playerhistory.php and tools_adminevents.php (#553) (psychonic)
+! Fixed utf8 character display issue on playerhistory.php and tools_adminevents.php (psychonic)
+! Fixed slow query on claninfo_mapperformance.php (#816) (agent86)
+! Fixed footer having "an Interwave Studios Community project" twice (#810) (Packhead)
+! Fixed ingame forced messages not displaying if BroadCastEvents was off (#839) (psychonic)
+! Fixed ingame commands requiring MOTD not working in HL2DM (psychonic)
+! Fixed extinguish actions from being incorrect action type in TF2 (#729) (psychonic)
+! Fixed Forums link on web site only showing if Sourcebans link was enabled. (psychonic)
+! Fixed Romania coordinates being negated on gmap. (Nigh)
+! Fixed Sourcebans theme table header background image not filling full cell if screen size is too small (#812) (octo-dhd)
+! hlx_sm_psay2 command in hlstatsx.sp now strips color control codes from input message to combat solid message color interruption that occurred on some games (psychonic)
+
+
+
+HLstatsX Community Edition 1.6.2
+November 14, 2009
+
++ Added support for Left 4 Dead 2 (#732) (Packhead, psychonic, octo-dhd)
++ Added new update script for geoip binary file (Packhead)
++ Added misc dev tools such as fake server (agent86), log code parser (psychonic), optional web profiling code (agent86), and server query tool (BoNzO)
++ Added Team Fortress 2 tf_pumpkin_Bomb weapon logging (octo-dhd)
++ Added five additional Zombie Panic Source weapons (Packhead)
++ Added support for TF2 jarate and shield_blocked events (Packhead)
++ Created a new field to track creation date for a player and modified daemon to start filling field (psychonic, Packhead)
++ Added medic and engineer extinguish awards (#729) (Packhead)
++ Created php-based SQL updater to ease upgrading from version to version (psychonic)
++ Headshot actions and awards added for ZPS and NTS (psychonic)
++ Added new signatures to replace existing signature images (R3M)
++ Added a watermark inserted on generation for signature images (psychonic)
++ Added signature background images for The Hidden (R3M)
++ Added R3M's "Sourcebans" theme to HLX:CE as the new default theme for new installations (R3M, Packhead, psychonic, octo-dhd)
++ Added small HLXCE logo to display on accordian pages when loading Trend graphs (Packhead)
++ Added ability for end user to switch themes and for administrator to enable/disable this option, Defaults to off on new and old installs (psychonic, Packhead)
++ Added ingame pages "Go Back" link to allow for a quick return while browsing stats through the in-game browser (Packhead)
++ Added new logo in the header and footer (psychonic, Packhead)
++ Added new Favicon of new logo (psychonic)
++ Added NTS award and ribbon icons (R3M, TheTrickster, Packhead)
++ Added new game list at the top-right of the page that displays with more than one game enabled and the administrator enabling, Defaulted on for new and old installs (Packhead)
++ Added ability for 'themes' to load custom navigation icons per stylesheet. (Packhead)
++ Added new options to specify path to SourceBans and Forum pages.  Icon must be present in hlstatsimg/icon/<stylesheetname>/ and administrator must specifiy path. (Packhead)
+- Unused NeoTokyo weapon codes removed (psychonic)
+- OnTakeDamage removed (psychonic)
+- Removed unused "racket" weapon code for ZPS (psychonic)
+- Fixed recording "other" crowbar as broom in ZPS (ViolentCrimes, psychonic)
+- Removed options to set Trend Graph background image (Packhead)
+? Server graph generation is now delayed until the accordion is open (#640) (agent86)
+? Removed some deprecated function from the php files (psychonic)
+? Site now utilizes google chrome frame if installed (psychonic)
+? Moved configuration for heatmap script into a separate configuration file and added debug output (BoNzO)
+? Moved configuration for hlstatsxban.php into a separate configuration file (Packhead)
+? Event insertion queries in daemon now get prepared and reused to severely cut down on overall time spent in queries (#543) (agent86
+? Cleaned up output and added pruning of hlstats_Trends to hlstats-awards.pl (#773) (psychonic)
+? Hlstatsx.sp now hides options from menu that require motd screen if on a game that does not support it (psychonic)
+? Changed "Console Events" wording in ingame menu in hlstatsx.sp to "Toggle Point Msgs"
+? Updated to Google Maps v3 API (#560) (octo-dhd)
+! Fixed incorrect function return in hlstatsx.sp interfering with some chat plugins (Antithasys)
+! Fixed some issues with php ban importer script (Packhead)
+! Fixed miscellanous invalid html (#627) (psychonic)
+! Fixed misc crashing issues in daemon from invalid players/servers (including #628) (b|afk, agent86, psychonic)
+! Fixed occurrences in daemon when rank could print as 0 (octo-dhd)
+! Fixed issues with changing GeoIP setting and reloading daemon config rather than restarting daemon (#598) (psychonic)
+! Fixed issues where headshots could be doubled or incorrect kills being counted as headshots since 1.6.0 (#602) (psychonic)
+! Fixed map-specific actions being broken since 1.6.0 (psychonic)
+! Fixed "HLstats_Server->set: "map" is not a valid property name" in daemon console (#362) (agent86)
+! Fixed messageAll() sub on daemon server object not checking to make sure event broadcasting is enabled before attempting to send. (psychonic)
+! Fixed magic quotes issue on player and clan info weapon pages (#695) (raydan)
+! Fixed trend count telling incorrect number of new players/kills in last 24 hours (#657) (psychonic)
+! Fixed potential array out of bounds error in hlstatsx.sp (psychonic)
+! Fixed more cases in hlstatsx.sp where names could be miscolored (TTS Oetzel & Goerz GmbH)
+! Fixed game detection successful message in hlstatsx.sp not necessarily showing correct game name (psychonic)
+! Fixed location logging format in LogPlyrPlyrEvent in loghelper.inc (psychonic)
+! Fixed old events not being deleted (psychonic)
+! Fixed a grammatical problem with TF2 pumpkin bomb weapon (Packhead)
+! Fixed hlstats-awards.pl not detecting correct version (psychonic)
+! Fixed the hitbox flash on ZPS to use the zombie1 file instead of the cstrike model. (psychonic)
+! Fixed country flags not displaying since implementation of accordians on game page (octo-dhd)
+! Fixed second level cstrike ribbons using the same filename as first level (Unity, Packhead)
+
+
+
+HLstatsX Community Edition 1.6.1
+September 23, 2009
+
++ Added many new heatmap background images (stachi, Roman Sobol, HSFighter, Zuko, Extrim25, Patalete, Packhead)
++ Added missing Ventrilo images (compuwis)
++ Added Fistful of Frags award images (Mosalar)
++ Added alternate php ban import script to extras (Peace-Maker)
++ Added FTP script in extras to allow logs to be pulled on a schedule instead of streamed (Woody)
++ Added more DODS awards (BusteR, Packhead)
++ Added missing image for NTS DetPac (R3M)
++ Added much more granularity to options on Admin Reset page (psychonic)
++ Added HLstatsX:CE Settings option to Sourcemod's !settings menu (psychonic, Packhead)
++ Added parsing for TF2's new medic_death logging to create new killed_charged_medic action (psychonic)
++ Added parsing for TF2's sawblade death logging to create new death_sawblade action (psychonic)
++ Added Romania to Google Maps country list (Alexandru Bajdechi, KingJ)
++ Added total kill count to contents.php (psychonic)
++ Added InterWave Studios link to footer.php (psychonic)
++ Added compiled ep1 linux build of stub version plugin for installs without Sourcemod to report HLX:CE version (psychonic)
++ Added new FF weapon "backstab", including award (psychonic, Rawh)
++ Added more database indexes for optimization (agent86)
++ Added new tf2 "telefrag" weapon code and award (octo-dhd)
++ Added missing tf2 award for deflect_arrow (Packhead)
+! Fixed player counts issues that started with release 1.6.0 (octo-dhd, agent86, psychonic)
+! Fixed hlxce_ cvars becoming unset if game server restarted without a daemon restart (psychonic)
+! Fixed "Unblessed reference 'increment'" that results from players with blank names (octo-dhd, psychonic)
+! Fixed "data truncated for column 'pos_x'" error on plyrplyr actions (Mave Rick)
+! Fixed GlobalBan query in importbans.pl (Peace-Maker)
+! Fixed heatmap generation script hitting php memory limit (Kotonoha Katsura)
+! Fixed "String found where operator expected at (eval 38) line 1, near "$ = ''"" error on startup since 1.6.0 (psychonic)
+! Fixed web rendering error on game.php when showing multiple servers without javascript "glider" enabled (psychonic)
+! Fixed error when running hlstats-resolve.pl since 1.6.0 (psychonic)
+! Fixed issue with encodings on some pages (psychonic)
+! Fixed floats not being cleared on playerinfo and claninfo causing display glitches on some sections in tabbed mode (psychonic)
+! Fixed tables width on "Weapon Statistics" table on Weapons section on claninfo (psychonic)
+! Fixed weapon statistics logged after player disconnect being ignored (psychonic)
+! Fixed AutoTeamBalancer not working in CSS since 1.6.0 (stachi)
+! Fixed L4D heatmaps not generating properly (Packhead)
+! Fixed daemon crashing when receiving control packets since 1.6.0 (BoNzO)
+! Fixed hidden clans being able to be shown on games list (BoNzO, Packhead)
+! Fixed sql error in daemon that could arise if you have a game without servers but have past data from (Mave Rick)
+! Fixed cases players earning a point for suicide or teamkill if point value was set to 0 (psychonic)
+! Fixed potential sql errors on Player Event History page if events referenced players, servers, or any other data that no longer exists (psychonic)
+! Fixed a potential unique key issue in hlstats_Servers_VoiceComm table (psychonic)
+! Fixed number formatting in General Statistics on contents.php (psychonic)
+! Added missing % sign after accuracy in kdeath command output (psychonic)
+! Fixed variable names being printed on ingame load page (psychonic)
+! Fixed typo in sql query on ingame weapons page causing sql query error (psychonic)
+! Removed link to activity gantt scheme, since we don't use it in 1.6, it only generated an broken image (BoNzO)
+! Fixed circular reference in TRcon.pm (agent86)
+! Fixed scope issue with g_players_temp in hlstats.pl (agent86)
+! Fixed missing label for hideranking 3 on tools_editdetails_player.php (psychonic)
+! Fixed shots per kill count on playerinfo_general.php to more accurately use statsme table kills to match statsme table hits/shots, rather than comparing to total kills (psychonic)
+! Fixed ventrilo server join link not working properly in some scenarios (Semikolon)
+! Fixed default graph color to match default style (psychonic)
+! Fixed weapon/role name not displaying on Weapons/Roles page if no image was found (if weapon) and code contained on or more spaces (psychonic)
+! Fixed html characters in weapon names on Weapons page being escaped twice (psychonic)
+! Servers and players for hidden games are no longer counted on contents.php (psychonic)
+! Fixed a case where the incorrect top player for a game on contents.php could be shown if more than one player was tied for skill/kills (psychonic)
+! Fixed country tooltip and image alt text being lowercase on flag beside player name on playerinfo_general.php (psychonic)
+! Fixed issues with display of ingame chat where a name had a " or ' (psychonic)
+- Removed redundant "Remove Game Settings" admin page since deleting a game on the Games page does the same thing, but correctly (psychonic)
+? Touched up many images (R3M, Packhead, BoNzO, Unity, Violent Crimes)
+? Optimized rank queries in web and daemon (agent86, psychonic, BoNzO)
+? Player table updates in daemon are now buffered and flushed to greatly reduce number of queries being ran(agent86)
+? Generation of heatmaps now works for duplicated games with manual changes (BoNzO)
+? Ingame plugin now displays a notice to players that have HTML MOTDs disabled if they use a command that would require one (psychonic, Packhead)
+? By popular request, adjusted game total player count to not exclude inactive players, pre1.6.0 behavior (psychonic)
+? Updated run_importbans to allow for user to use either importbans.pl or Peace-Maker's php version (Packhead)
+? Updated included DejaVu font to version 2.30 (http://dejavu.sourceforge.net)
+? When deleting a game via the Games page in the admin area, all associated data for that game is now removed. A warning was also added on that page (psychonic)
+? When deleting a server via the Edit Servers page, server trend data for that server is now also deleted (psychonic)
+? Moved db cleanup from hlstats.pl to hlstats-awards.pl (agent86, psychonic)
+
+
+HLstatsX Community Edition 1.6.1
+September 23, 2009
+
++ Added many new heatmap background images (stachi, Roman Sobol, HSFighter, Zuko, Extrim25, Patalete, Packhead)
++ Added missing Ventrilo images (compuwis)
++ Added Fistful of Frags award images (Mosalar)
++ Added alternate php ban import script to extras (Peace-Maker)
++ Added FTP script in extras to allow logs to be pulled on a schedule instead of streamed (Woody)
++ Added more DODS awards (BusteR, Packhead)
++ Added missing image for NTS DetPac (R3M)
++ Added much more granularity to options on Admin Reset page (psychonic)
++ Added HLstatsX:CE Settings option to Sourcemod's !settings menu (psychonic, Packhead)
++ Added parsing for TF2's new medic_death logging to create new killed_charged_medic action (psychonic)
++ Added parsing for TF2's sawblade death logging to create new death_sawblade action (psychonic)
++ Added Romania to Google Maps country list (Alexandru Bajdechi, KingJ)
++ Added total kill count to contents.php (psychonic)
++ Added InterWave Studios link to footer.php (psychonic)
++ Added compiled ep1 linux build of stub version plugin for installs without Sourcemod to report HLX:CE version (psychonic)
++ Added new FF weapon "backstab", including award (psychonic, Rawh)
++ Added more database indexes for optimization (agent86)
++ Added new tf2 "telefrag" weapon code and award (octo-dhd)
++ Added missing tf2 award for deflect_arrow (Packhead)
+! Fixed player counts issues that started with release 1.6.0 (octo-dhd, agent86, psychonic)
+! Fixed hlxce_ cvars becoming unset if game server restarted without a daemon restart (psychonic)
+! Fixed "Unblessed reference 'increment'" that results from players with blank names (octo-dhd, psychonic)
+! Fixed "data truncated for column 'pos_x'" error on plyrplyr actions (Mave Rick)
+! Fixed GlobalBan query in importbans.pl (Peace-Maker)
+! Fixed heatmap generation script hitting php memory limit (Kotonoha Katsura)
+! Fixed "String found where operator expected at (eval 38) line 1, near "$ = ''"" error on startup since 1.6.0 (psychonic)
+! Fixed web rendering error on game.php when showing multiple servers without javascript "glider" enabled (psychonic)
+! Fixed error when running hlstats-resolve.pl since 1.6.0 (psychonic)
+! Fixed issue with encodings on some pages (psychonic)
+! Fixed floats not being cleared on playerinfo and claninfo causing display glitches on some sections in tabbed mode (psychonic)
+! Fixed tables width on "Weapon Statistics" table on Weapons section on claninfo (psychonic)
+! Fixed weapon statistics logged after player disconnect being ignored (psychonic)
+! Fixed AutoTeamBalancer not working in CSS since 1.6.0 (stachi)
+! Fixed L4D heatmaps not generating properly (Packhead)
+! Fixed daemon crashing when receiving control packets since 1.6.0 (BoNzO)
+! Fixed hidden clans being able to be shown on games list (BoNzO, Packhead)
+! Fixed sql error in daemon that could arise if you have a game without servers but have past data from (Mave Rick)
+! Fixed cases players earning a point for suicide or teamkill if point value was set to 0 (psychonic)
+! Fixed potential sql errors on Player Event History page if events referenced players, servers, or any other data that no longer exists (psychonic)
+! Fixed a potential unique key issue in hlstats_Servers_VoiceComm table (psychonic)
+! Fixed number formatting in General Statistics on contents.php (psychonic)
+! Added missing % sign after accuracy in kdeath command output (psychonic)
+! Fixed variable names being printed on ingame load page (psychonic)
+! Fixed typo in sql query on ingame weapons page causing sql query error (psychonic)
+! Removed link to activity gantt scheme, since we don't use it in 1.6, it only generated an broken image (BoNzO)
+! Fixed circular reference in TRcon.pm (agent86)
+! Fixed scope issue with g_players_temp in hlstats.pl (agent86)
+! Fixed missing label for hideranking 3 on tools_editdetails_player.php (psychonic)
+! Fixed shots per kill count on playerinfo_general.php to more accurately use statsme table kills to match statsme table hits/shots, rather than comparing to total kills (psychonic)
+! Fixed ventrilo server join link not working properly in some scenarios (Semikolon)
+! Fixed default graph color to match default style (psychonic)
+! Fixed weapon/role name not displaying on Weapons/Roles page if no image was found (if weapon) and code contained on or more spaces (psychonic)
+! Fixed html characters in weapon names on Weapons page being escaped twice (psychonic)
+! Servers and players for hidden games are no longer counted on contents.php (psychonic)
+! Fixed a case where the incorrect top player for a game on contents.php could be shown if more than one player was tied for skill/kills (psychonic)
+! Fixed country tooltip and image alt text being lowercase on flag beside player name on playerinfo_general.php (psychonic)
+! Fixed issues with display of ingame chat where a name had a " or ' (psychonic)
+- Removed redundant "Remove Game Settings" admin page since deleting a game on the Games page does the same thing, but correctly (psychonic)
+? Touched up many images (R3M, Packhead, BoNzO, Unity, Violent Crimes)
+? Optimized rank queries in web and daemon (agent86, psychonic, BoNzO)
+? Player table updates in daemon are now buffered and flushed to greatly reduce number of queries being ran(agent86)
+? Generation of heatmaps now works for duplicated games with manual changes (BoNzO)
+? Ingame plugin now displays a notice to players that have HTML MOTDs disabled if they use a command that would require one (psychonic, Packhead)
+? By popular request, adjusted game total player count to not exclude inactive players, pre1.6.0 behavior (psychonic)
+? Updated run_importbans to allow for user to use either importbans.pl or Peace-Maker's php version (Packhead)
+? Updated included DejaVu font to version 2.30 (http://dejavu.sourceforge.net)
+? When deleting a game via the Games page in the admin area, all associated data for that game is now removed. A warning was also added on that page (psychonic)
+? When deleting a server via the Edit Servers page, server trend data for that server is now also deleted (psychonic)
+? Moved db cleanup from hlstats.pl to hlstats-awards.pl (agent86, psychonic)
+
+HLstatsX Community Edition 1.6.0
+August 12, 2009
+
++ added support for NeoTokyo, including headshot support and images (R3M, gH0sTy, ViolentCrimes)
++ added first version of new proxy daemon to distribute load between multiple daemon instances (BoNzO)
++ added key for proxy and daemon. When used, allows daemon to accept control commands from ip addresses other than 127.0.0.1 (BoNzO)
++ added hlxce_version (not to be confused with hlxce_plugin_version) cvar to ingame plugins (psychonic)
++ added server query methods to get server map when rcon is unavailable and to identify new servers when allowing all servers to track (BoNzO)
++ added new logic to determine whether or not a player should could toward the minimum amount of players set (to leave out bots if IgnoreBots is set or leave out team "" and spectators) without affecting visible player count (psychonic)
++ added option to specify config file for daemon on command line (BoNzO)
++ added ability to change player hint command via server configuration page in admin area (psychonic)
++ added heartbeat daemon control command to check status (BoNzO)
++ admin event logging now also tracks amxx admin actions that are in game log (psychonic)
++ added run_ script for importbans utility (Packhead)
++ added GlobalBan support to importbans utility (R3M)
++ added heatmap generation support and many heatmap background images (msleeper, BoNzO, `Zuko)
++ added more hl2dm and l4d award images (MrXorMrY)
++ added new CSS connection time award & ribbon images (HSFighter)
++ killlocation world actions from SuperLogs plugins are now supported to catch kill/death coordinates for use with next logged kill (psychonic)
++ full headshot tracking for more mods (INS, NTS, GES) is now available in combination with new SuperLogs plugins (psychonic)
++ colored ingame messages are now supported in Age of Chivalry (psychonic)
++ hlxce_version and hlxce_webpage are now automatically set on the game server by the daemon if rcon is available (psychonic)
++ hlstats.pl and hlstats-awards.pl now support a --configfile directive (BoNzO)
++ TF2's logged player_extinguished event is now supported as four different player actions, one per class (psychonic)
++ ventrilo servers are now supported in the voice server list and viewer (compuwis, psychonic)
++ added many new ribbons for cs1.6 (Unity)
++ added beta autocomplete on search box on Players page (KingJ, BoNzO)
++ added new historical cache feature to add ability cache every page on first load to ease load on static stats archives (octodhd)
++ added l4d map thumbnails (Honk)
++ added many missing TF2 weapon, award, and ribbon images (Semikolon)
++ added two new web styles, "classic" and "nom nom nom" (psychonic)
++ added options version stub VSP plugins for people who wish to report their HLX:CE installs but aren't running the sourcemod or amxx (psychonic)
+! fixed many perl warnings in daemon (psychonic)
+! fixed and optimized more regular expressions in daemon (psychonic)
+! fixed issue with banned players not being hidden from ranking even with global banning enabled (psychonic)
+! fixed bug where rcon connection would be lost on map change on some configurations (raydan aka Ben6006)
+! fixed some rank lookups in daemon returning incorrect rank when ranking by kills (psychonic)
+! fixed connect announce messages saying player had 0 kills when ranking by kills (octodhd)
+! fixed some cases where ingame messages would have incorrect or inconsistent coloring (psychonic)
+! fixed nonexistant pages not returning 404 header (KingJ)
+! added missing ribbon entries for Galil in CSS (BoNzO)
+! fixed bans not being able to be sorted by date (R3M)
+! fixed daemon crash when set to track any servers and a logged server has a single quote in its hostname (psychonic)
+! fixed a ping of 0 sometimes getting recorded for players (psychonic)
+! fixed compiler warning in HLX:CE Ingame Plugin on Sourcemod 1.3+ (psychonic)
+! replaced remaining, deprecated ereg_ functions from pages that still had them (psychonic)
+! servers are now properly added to db with default config for server's game when "Allow only servers set up in admin panel to be tracked" set to "no" (BoNzO)
+- removed legacy support for specifying game servers in hlstats.conf (psychonic)
+- removed the need for redundant AddressPort option in server configuration (psychonic)
+- removed "Type help..." server advertisement as it is better left up to other server plugins for ease of enabling or disabling the message or changing the text/frequency of it (psychonic)
+- removed mp_logdetail 3 requirement for tracking headshots in DOD:S (SuperLogs:DODS or equivalent plugin is now needed to track DODS headshots) (psychonic)
+- removed all auxilary logging from HLstatsX:CE Ingame Plugin in favor of using new specialized SuperLogs plugin set (psychonic)
+? png's are now supported for game icon images (psychonic)
+? gif's and jpg's are now supported for award images (psychonic)
+? normalized the names of like column headings on web interface (psychonic)
+? web portion, aside from the admin area, is now XHTML 1.0 Transitional compliant. stylesheets have also been reworked. table layout has been converted to divs (psychonic, octodhd)
+? many optimizations added to the daemon, large and small (octo-dhd, psychonic)
+? many small optimizations added to sourcemod ingame plugin (psychonic)
+? some small db changes were made to speed up loading of some pages and some daemon interactions (psychonic)
+? hlx_webpage cvar in ingame plugins renamed to hlxce_webpage (psychonic)
+? weapon and action info (codes/point values/modifiers) is now cached in the daemon (psychonic)
+? activity is now calculated with hlstats-awards.pl instead of on-the-fly with every rank query (loses up to 3.5% accuracy for active players based on minactivity of last 28 days, but much faster) (psychonic)
+? more coordinates are now stored, including victim coords on death, player and victim coords on plyrplyr actions, and victim position on teamkills (psychonic)
+? log filename format is now ymd instead of dmy (Packhead)
+? optimized filesize of many more of the included images (many already done in 1.5.x) (psychonic)
+? edit Player/Clan Details links are now only visible when logged in as an admin (U#0)
+? custom banner now supports external URLs (MadMakz)
+? severely sped up Maps page by adding caching of counts of kills and headshots per map (psychonic)
+? renamed remaining places that said "cheaters" to "bans" or "banned users and cheaters", including ingame command to display them (psychonic)
+? hlx_sm_psay no longer colors ingame messages on insurgency. change command to hlx_sm_psay2 for this (psychonic)
+? rcon broadcasts to all (with sourcemod plugin) are now sent to all users at once instead of in groups of eight (psychonic)
+? nojs check on page load no longer uses redirectly upon js not being available and now does an actual check instead of relying on useragent (KingJ, psychonic)
+? claninfo -> General now used shared google_maps.php include (psychonic)
+? ie8 compatibility mode button is now hidden (psychonic)
+? rank # no longer shows on livestats for players not on a team (psychonic)
+
+HLstatsX Community Edition 1.5.6
+May 27, 2009
+* added: new weapon codes for tf2 (force_a_nature, ambassador, tf_projectile_arrow (huntsman), taunt_spy, and taunt_sniper)
+* added: handling of "Dead Ringer" for tf2. fake kills will show realistic point message to attacker upon fake death, but no points will be adjusted nor kill recorded
+* added: pyro_extinguish and sniper_extinguish actions for tf2 to ingame plugin
+* added: search by IP address can now be used in track modes other than "LAN" (admin only)
+* added: Edit Player Details screen now shows IP addresses used by that player
+* added: Edit Player Details screen now has more editable fields (points, kills, deaths, headshots)
+* added: IP addresses in Admin Event History are now linked to IP address search results page
+* added: script to import bans from a Sourcebans, AMXBANS, or Beetlesmod ban database
+* changed: admin event logging for Sourcemod is now logged as one type per originating plugin, allowing filtering of messages per plugin
+* changed: cheaters.php is now bans.php. name in header in now "Bans" and page name displays as "Cheaters and Banned Players"
+* changed: Admin Event History page now shows nothing instead of ' password ""' when password is not recorded (as in Source games)
+* changed: many post hooks in ingame plugin have been changed to post hooks (as pre hooks were unnecessary)
+* bugfix: kill streak actions were not being logged for players whom had kills after their last death but before disconnecting
+* bugfix: some bugs in connect message were sometimes causing an incorrect and unrelated message to be displayed
+* bugfix: Admin Event History page require register_globals to be on for filter to function properly
+* bugfix: headshot actions in weapon_logging plugin were not logging properly
+* bugfix: minactivity was getting set to incorrect value after reloading daemon settings
+* bugfix: tf2 arena first_blood action broke with spy/sniper update
+* bugfix: shots were being recorded twice for most weapons for css and l4d in weapon_logging plugin
+
+HLstatsX Community Edition 1.5.5.2
+May 12, 2009
+* bugfix: Fixed regression in 1.5.5 causing headshots in DOD:S to no longer be counted
+
+HLstatsX Community Edition 1.5.5.1
+May 6, 2009
+* bugfix: Fixed daemon crashing on mapchange
+* bugfix: Fixed pages ending display at first "weaponimg" column
+* bugfix: Fixed bot detection (octo)
+* bugfix: Fixed sql error on reset page when resetting player names history (or all) for all games
+
+HLstatsX Community Edition 1.5.5
+May 4, 2009
+* added: round_win and headshot actions for Insurgency that fire but were missing from default install
+* added: in-game award actions for GE:S, fired but were missing from default install
+* added: new weapons, roles, maps, and award images for GES (Dr.NO and the GE:S team)
+* added: colored ingame messages for FOF
+* added: forum sig images for dystopia, hl2ctf, hl2mp, ns, and sgtls (HO!NO!)
+* added: new tf2 and css weapon images (HO!NO!)
+* added: clicking forum sig text in playerinfo_general.php now highlights the text. Also, text is now read-only (MadMakz)
+* added: new weapon images for bg2 (the bg2 team)
+* added: new UA stylesheet (Unity)
+* added: map images for FOF (Fragenstein)
+* added: bot dectection for /whichbot/ bots
+* added: weapon name tooltip for weapon images
+* added: geoip lookup when importing logs via STDIN or when rcon password is unknown (Woody)
+* added: added support for "own" configfiles in your homedir (BoNzO)
+* added: new special award code allsentrykills to combine kills from all levels of sentry guns in tf2
+* added: daemon now sets the value of the hlx_webpage cvar on the amxx and sm plugins
+* added: added "mapfix" to sm plugin similar to psychostats plugin to print a line to the log stating the current map when the plugin is loaded, usually when server is started. Should result in less events not having a map named.
+* added: default values for PlayerEventsAdminCommand for each supported admin mod
+* added: admin message in ATB to tell admins that a player was moved
+* changed: removed unused code from amxx plugins
+* changed: game reset tool now uses truncate instead of delete when possible when removing data for all games, much faster on large DBs
+* changed: forced gameserver (log) time to be used for tracking of certain events to increase accuracy (octo)
+* changed: removed closing of handle in sm plugin in OnPluginEnd (redundant as all handles are already closed when a plugin is unloaded)
+* changed: moved hint command to be user-specifyable instead of hardcoded in daemon. Added mod defaults with game default overrides.
+* changed: simplified some logic in global banning code
+* bugfix: graph image filename no longer has "unset" in name (octo)
+* bugfix: multiple issues on search page, including game filter not functioning when searching by playername
+* bugfix: sql error on reset page when resetting all data for one or all games
+* bugfix: potential column size error on admin event history
+* bugfix: headshot action was not always firing for some games (if health ended up < 0) (Dr. NO)
+* bugfix: fixed weapon logging for FOF (because of the way the game is coded, it will only log accurately on dm mode, disabled on others)
+* bugfix: color hex code was printing in some ingame messages in GE:S
+* bugfix: roles images were not aligned properly
+* bugfix: cheaters and people with hidden ranking were able to earn awards/ribbons
+* bugfix: cstrike amxx plugin creates many unnessecary log line (one per hit)
+* bugfix: text of connection error in class_db.php references hlstats.php instead of config.php for settings
+* bugfix: playerinfo_general.php does not close socket after fetching steam community info
+* bugfix: query for favorite weapon on playerinfo is not always accurate
+* bugfix: server graph showing 0 for activity and fps on some systems (octo)
+* bugfix: ns individual builtstructure actions were not firing
+* bugfix: bow with regular arrow in FOF sometimes logs as bow, sometimes as arrow
+* bugfix: kills, deaths, headshots, etc. counts were carrying over on game copy tool
+* bugfix: unicode characters do not show properly on ingame messages in insmod, issue 66 (IceMatrix)
+* bugfix: rescue_survivor action in l4d was firing anytime any "survivor-door" was opened, whether or not there was a survivor to be rescued
+* bugfix: Ingame clans page was showing clans marked as hidden (Issue 67)
+* bugfix: Unicode characters in google map (for player, city, and country names) were not displaying properly
+* bugfix: ZPS detection in ingame sm plugin was out of date on description check
+* bugfix: maxplayers no longer gets reset to 0 if rcon access is lost
+* bugfix: plain_uniqueid property on server object in daemon now stores actual game steamid for use in ban and kick statements (instead of incorrectly using trimmed, stored version of steamid)
+* bugfix: ATB was not always showing switch message to switched players. Added fallback for switch message on games that don't support hint style message
+
+*** build env changes (BoNzO)
+* restructured build environment to collect the scripts at one place.
+* added command sudo before epm command if building for .deb since the filepermissions will be screwed if you don't run epm as root under debian like OS.
+* updated man page to include how to setup userspecific config file with deb and rpm packages
+
+
+HLstatsX Community Edition 1.5.4
+Mar 24, 2009
+* added: new full/partial reset page to admin panel. New page allows more control of exactly what gets reset
+* added: map image for dod_palermo (Unity)
+* added: many new (great-looking) custom forum signature background images (HO!NO!)
+* added: colored message support ingame for ff (thx hlstriker), ges, and insmod (thx Fyren)
+* added: support for Dystopia, and Stargate: The Last Stand, and The Battle Grounds 2
+* added: hitbox images for GE:S (thanks GE:S team for the images)
+* added: victims section to actioninfo, playerinfo, and claninfo for plyrplyr actions
+* added: several new l4d actions
+* added: requested option in Edit Player Details to block avatar from loading (uses default image instead)
+* added: requested option to hide query execution information in footer. This is on (info hidden) by default for new installs.
+* added: link to countryclaninfo from country in Location field on playerinfo
+* added: ability to set game defaults that override mod defaults (ie. blank PlayerEventsCommandOSD for games that don't support msay)
+* added: Map region per clan can now be chosen in Edit Clan Details screen (inspired by an addon by R3M)
+* changed: restructured sig directory and moved game-specific sig background images to game folders
+* changed: updated text on Help page
+* changed: reworked parts of logging in and out and keeping track of session (octo)
+* changed: Each games's icon is now "game.gif" since game-$game.gif was redundant after splitting up game directories and would also need extra logic built into duplication tool
+* changed: Backstab can now optionally be a plyrplyr action
+* changed: Reset page now let's you choose from any non-hidden game, instead of any game with servers
+* changed: Reworded message on stats disabled for not-min-players
+* changed: Games on contents page are now orders by realgame, name
+* changed: Updated DejaVu font (used for forum signatures) to version 2.29 (http://dejavu-fonts.org)
+* changed: added many optimizations to the daemon including eliminating many lookups by caching data, and reducing rcon commands in some areas by 50-66%
+* changed: clarified usage instructions for hlx_sm_bulkpsay that are shown when typing it without parameters
+* changed: -s/--stdin option on daemon command-line now implies --norcon
+* changed: Merged plyr action and plyrplyr action tables on playerinfo and claninfo.
+* changed: Printed version number is now stored in the db, with separate dbversion stored for future update scripts
+* changed: Clarified names of server sections in admin page
+* changed: Set default PlayerEventsCommandOSD to '' for hl2mp and bg2
+* bugfix: Fixed clicking plyrplyr actions on actions page not working (octo)
+* bugfix: Fixed stun award defaulting to plyr when action defaulted to plyrplyr (thx to octo for catching)
+* bugfix: Fixed regression in 1.5.3 causing owner_ events not firing correctly
+* bugfix: Fixed a couple GE:S weapon logging bugs (thx Dr. No)
+* bugfix: Added trimming of logged rcon and admin commands to fit in the 255 character limit in db
+* bugfix: multple rcon commands sent at once, delimited with semicolons are now logged as separate commands if rcon logging is enabled
+* bugfix: Fixed some html errors
+* bugfix: Fixed command line options not being read before connecting to db (reported by allstats.de)
+* bugfix: Fixed new new instance of geoip object being created for every lookup in daemon (reported by allstats.de)
+* bugfix: Fixed display of rank output when ShowMenu (msay) is not supported
+* bugfix: Fixed error in game duplication tool where new code or name contained special db characters like '
+* bugfix: Connect announce message for new players now just says "New Player X connected (country)" instead of saying Pos <last place> with 1000 points (no message for player connect if new player and country not detected)
+* bugfix: Reworded Connect Announce message for players with hidden rank.
+* bugfix: Fixed character encoding on teamspeak server list (ServerAlex)
+* bugfix: Player chat history now labels team chat as such
+* bugfix: Fixed some potential "Data too long" sql errors in chat and player histories
+* bugfix: Fixed bug on some systems if hlstats was not in root webdir (Woody)
+* bugfix: Fixed player and victim being reversed on steal_sandwich action (octo)
+* bugfix: Fixed multiple l4d actions
+* bugfix: Fixed roles links not being click-able in some browsers.
+* bugfix: Fixed all games not showing up in search criteria box on search page.
+* bugfix: Removed unused icq field from edit player details screen
+* bugfix: Fixed intermittent issue with wrong ribbon image showing for some ribbons on playerinfo (octo)
+* bugfix: Informational messages (not-min-players message, connect announce (if on), round end disabled (if applicable) are now sent even if EnablePublicCommands is off.
+* bugfix: PublicCommand messages (like place) are no longer shown on mods other than sm & amxx when EnablePublicCommands is off
+* bugfix: Connect Announce messages are no longer sent to the person connecting as they would not have connect in time to see it in most cases anyway
+* bugfix: Changed default DisplayResultsInBrowser value to 0 for GE:S and INSMOD as they don't support it currently
+* bugfix: Fixed norcon option being ignored when not using stdin
+* bugfix: Fixed some server graph-related issues (octo)
+* bugfix: Re-added missing EUROPE option from map regions
+* bugfix: fixed misc bugs with source rcon logging
+* bugfix: revised weapons for FOF, including adding new Winchester Shotgun
+
+
+HLstatsX Community Edition 1.5.3
+Mar 1, 2009
+* added: Added hlx_sm_bulkpsay command to reduce rcon messages sent during team actions and global announcements
+* added: Added support for colored global announcements (only on games that support coloring on sm & amxx)
+* added: Added optional support for announcing rank, points (or kills if ranked by kills), and country upon player connect
+* added: new tf2 weapon codes
+* added: Added roles support for GE:S
+* added: Added weapon_logging support for GE:S beta 3.1+
+* added: Added headshot tracking and action for ge:s and tfc
+* added: Added DefaultDisplayEvents option to control default option for players' DisplayEvents option
+* added: Added first_blood (player), steal_sandvich plyr or plyrplyr), and stun (plyr or plyrplyr) actions for tf2
+* added: New insurgency forum sig image (R3M)
+* added: New css forum sig image (Unity)
+* added: New "bulkpsay" command in sm and amxx plugins to send psays eight at one time to minimize rcon during team rewards and global messages
+* added: Added basic logout link for logged in admins
+* added: dods daily awards images (GTFO.G, dannyowan)
+* added: dustbowl capture actions for tfc
+* added: dbversion parameter to hlstats_Options for future use
+* changed: edited more db column widths for consistency, added an index on playerId in EventEntries
+* changed: Awards are now sorted by name
+* changed: messages said with say_team are now marked with "(Team)" on chat page
+* changed: Made auto-updating of server name from hostname cvar optional
+* changed: Removed constant "$playerstring is XXXs idle" from daemon console/log
+* changed: Chat triggered that use public commands now use bulkpsay if available
+* changed: Clarified daemon restart notice on HLstatsX:CE settings page
+* changed: Changed dropdowns on award setup pages to use name/description instead of code
+* changed: Games in admin panel are now in alphabetical order
+* bugfix: adjusted alignment on pages missed in 1.5.2's adjustments (HO!NO!)
+* bugfix: Fixed mysql_enable_utf8 not being set on the db connection after a reconnect
+* bugfix: Added better method of protecting against infected TK in l4d
+* bugfix: Fixed https detection bug with IIS
+* bugfix: Fixed duplicate display of some options in HLstatsX:CE Settings page
+* bugfix: Fixed "Admins" not working with full steamid since 1.5.1
+* bugfix: Fixed potential issue with player location lookup
+* bugfix: Fixed dods headshot action occuring for wrong player or not occuring
+* bugfix: Fixed skill being able to go negative, causing errors
+* bugfix: Special awardcode (mostkills, bonuspoints, etc.) can now be set up in the admin panel
+* bugfix: Fixed misspelling of ribbon/award for placed sappers (thx rrtaft for catching this)
+* bugfix: Fixed inaccuracy on some l4d kill messages
+* bugfix: Fixed kills and ppactions not being recognized if victim had a " in name
+* bugfix: Fixed event properties not being read correctly if a property value had a " in the name
+* bugfix: Fixed some killedobject events not firing correctly since 1.5.2
+
+HLstatsX Community Edition 1.5.2
+Feb 22, 2009
+* added: game logo for sig.php, game are (aoc, ges, fof, and thx to heimer for is zps contribution) (HO!NO!)
+* added: some missing cstrike awards and ribbons
+* added: more cstrike award an ribbons images (Unity)
+* changed: When showing daily award list on main game page, award names now link to dailyawardsinfo
+* changed: Action names and role names in playerinfo and claninfo now link to the respective info pages
+* changed: trailing slashes in HLStatsURL are now automatically removed
+* bugfix: Fixed "plain_userid" typo
+* bugfix: Fixed "Fixed "String found where operator expected at (eval 18) line 1, near "$ = '1'" (Missing operator before '1'?)" message appearing" message showing in daemon log
+* bugfix: Fixed searching with full steamid no longer working on search page since 1.5.1
+* bugfix: Fixed events not tracking for players with " marks in their names
+* bugfix: Fixed rcon logging for source games (and unrecognized message on rcon)
+* bugfix: Fixed RconIgnoreSelf option. Will only work if rcon shows as from BindIp
+* bugfix: Fixed special awards not necessarily being award to players of the correct game
+* bugfix: Fixed owner_ events not firing in tf2 after switching internal steamid format in 1.5.1
+* bugfix: Fixed query in search not being fully escaped before being sent to the db
+* bugfix: Fixed ip lookup happening even if no ip was found for player
+* bugfix: Fixed bot steamid display in playerinfo
+* bugfix: Fixed bug in hlstats-awards.pl requiring Geo::IP::PurePerl perl module to be installed even if using database lookup method for geolocation since 1.5.1
+* bugfix: Fixed a couple mostly-cosmetic typos in server setting explanations
+* bugfix: Fixed some lingering alignment issues on some of the pages (HO!NO!)
+* bugfix: Fixed some bugs in the rewardTeam sub causing extra rcon to happen during team actions (thx to octo for finding this)
+* bugfix: Fixed infected teamkills happened in l4d
+* bugfix: Removed victim kill msg in l4d and removed mention of victim from killer's kill msg
+* bugfix: Put in some safeguards so if a player's ip cannot be found, the daemon only tries to find it once every 2 minutes
+* bugfix: Fixed a table coloring issue in countryclansinfo
+* bugfix: crit_kill action will no longer occur in tf2 on suicides
+
+HLstatsX Community Edition 1.5.1
+Feb 18, 2009
+* added: New TF2 award and ribbon images
+* added: Better roles tracking for l4d
+* added: script to convert from HLStats 1.40 to HLstatsX:CE 1.5.1
+* added: chat coloring for ZPS in ingame plugin (heimer)
+* changed: STEAM_X: is now ignored on steamids. Included script to convert all stored ids to new format
+* changed: Hardcoded event table names on reset pages to prevent accidental table deletion (in case someone has a non-core-hlx table with similar name in their db)
+* changed: removed dailystats.php (no longer used)
+* changed: removed PLATFORM constant from config.php (no longer needed)
+* changed: Optimized more column length and indexing in db
+* changed: Daemon will now only delete events older than DELETEDAYS if DELETEDAYS >= 0
+* bugfix: Optimized last event query in playerinfo_general
+* bugfix: Fixed intermittent 100% cpu bug in TRcon (for real this time)
+* bugfix: Clarified some text on teamspeak server setup page
+* bugfix: Fixed issue with repeated team awarded on pointcaptured action
+* bugfix: GeoIP lookup in hlstats-awards now sets country name
+* bugfix: GeoIP lookup in hlstats-awards is now able to lookup using binary version of GeoIP data
+* bugfix: Fixed utf-8 encoding issues with region names from GeoIP binary data
+* bugfix: copied all recent changes and fixes from playerinfo_weapons to claninfo_weapons (HO!NO!)
+* bugfix: Fixed kdeath and kpd commands not functioning properly
+
+HLstatsX Community Edition 1.5
+Feb 15, 2009
+* added: Support for Left 4 Dead, Fistful of Frags, and GoldenEye: Source
+* added: Weapon logging with game-specific hitbox models for Left 4 Dead, Fistful of Frags, and Insurgency (hitgroups only)
+* added: ingame plugin now generates crit_kill, force_suicide, hit_by_train, and drowned actions for tf2
+* added: many performance improvements on web pages
+* added: new hlx:ce favicon (D3vilF1sh)
+* added: support for using Maxmind's binary format GeoIP data (huge speed increase and less resources used on player loc lookup). Geo::IP::PurePerl module required
+* added: support for awards for playerplayer actions (type P) and victims of playerplayers actions (type V)
+* added: full set of ribbons for cstrike (Unity)
+* added: new winchester weapon in ZPS
+* added: many new actions for FF now present as of FF 2.2
+* added: admin logging support for sourcemod (requires sourcemod to be logging to game log instead of separate sm log)
+* added: daily awards can now be run for a specified day (octo)
+* added: Added some missing insmod awards images and added higher quality versions of rank images. (R3M)
+* added: destroying own building (sentry, teleporter, etc.) longer than two minutes after it has been created does not fire the owner_killed or dismantle action (no loss of points) in tf, tfc, and ff (idea from octo)
+* added: new page, dailyawardinfo, to show win history of an indiv award
+* added: steam avatar image override (U#0)
+* added: Broader forum support for forum sig image by adding modrewrite option (idea from MadMakz and R3M)
+* added: tf2 flag_dropped_death event so that there is distinction between a player dropping the flag manually and dropping it because he died. (octo)
+* added: sortorder field for server list (order is now by sortorder, name, serverid)
+* added: support for automatically marking users seen kicked by steambans as cheaters. Other very minor optimizations
+* added: special zps skill calc mode
+* changed: Redid TF2 actions so that all action info is in actioncode now (eliminating object and event fields and enabling more possibilities for awards)
+* changed: Headshot are now done in daemon if kill line has headshot property. Removed manual "triggered" line added to logs from plugin
+* changed: Removed AdminContact broadcast because some user did not want and almost all are already running an admin mod with the capability; no need to duplicate.
+* changed: dailystats.php is now obsolete. all functionality of it has been merged into hlstats-awards.pl
+* changed: forum sig now uses realgame rather than gamecode to detect what game image to use
+* changed: gliding server tabs on game page is now optional (otherwise old static display is used)
+* changed: made seperate "(Join)" link for steam:// links. (whole server address was too easy to accidentally click)
+* changed: mp_logdetail 3 no longer required for DODS to track headshots
+* changed: Replaced many large country flag images with smaller (filesize) images(R3M)
+* changed: Removed unused hlstats_server_addons table and corresponding admin page
+* changed: removed class change logging for FF in ingame plugin. Added parsing for FF-style change role log lines
+* changed: Global awards now use same method to show as Daily awards on awards page (so now they show even if no one has been awarded them yet.)
+* changed: Default DNS resolve timeout changed from 5 to 3 for new installs
+* changed: Replaced included font for forum sigs with open source DejaVuSans.ttf (http://dejavu-fonts.org)
+* changed: added optimizations to database and sourcemod plugins
+* changed: Improved freetype detection in sig.php
+* changed: Player actions with team points listed will now reward the team of the player committing the action if team is left blank (instead of issuing no award)
+* changed: Reworked image directory structure to be more modular per game
+* changed: Merged hlstats_Options and hlstats_PerlSettings (and thus hlstats_Options_Choices and hlstats_PerlSettings_Choices as well as the two related configuration pages in the admin panel) since many options are shared between the daemon and the web interface.
+* changed: Minactivity in config.php is now ignored. Both web interface and daemon will use minactivity value specified in Options page.
+* changed: Some more admin pages, such as resets, now require full admin permission instead of only restricted admin access
+* changed: Removed entries/joins column from Maps page to increase performance
+* bugfix: the hlstatsx:ce daemon now works properly on Perl 5.10
+* bugfix: eliminated some more unneeded rcon status "spam"
+* bugfix: Roles link in header will no longer show if game has roles but all are hidden
+* bugfix: Fixed bonusround ignore message showing twice in some cases
+* bugfix: kill streak now resets on round end
+* bugfix: Duplicate game page in admin panel now copies 'realgame' settings and maps image folder
+* bugfix: Removed more remnants of old imgpath option
+* bugfix: Fixed ingame load command not necessarily showing graph for correct server
+* bugfix: ingame messages no longer show surround by quotation marks when use beetlesmod or mani admin on source ep1 games
+* bugfix: steam avatar now shows steam community default "?" avatar instead of broken image if image cannot be found (bot or human with no profile set up)
+* bugfix: accuracy no longer mentioned on rank output in games that do not support accuracy tracking
+* bugfix: many tables were not obeying table_border formatting in the stylesheet
+* bugfix: fixed some cases of team round win not being picked up if BonusRoundIgnore was on
+* bugfix: AoC headshot detection is now more accurate
+* bugfix: Fixed point calculation bug that occurred when using skillmode 0 with XYZ saynt's calculation method
+* bugfix: Fixed and weapon and team typo for insmod (R3M)
+* bugfix: Fixed typo in teams admin page causing changes not to be saved
+* bugfix: Round over message (on bonusroundignore) now only shows if minplayers is met
+* bugfix: In some configurations, daemon recognized all data from game server as control commands
+* bugfix: Roles marked as hidden are now hidden from the Roles page (U#0)
+* bugfix: Top of Chat page is now consistent with other pages (U#0)
+* bugfix: Fixed MALFORMED DATA message that some people were receiving (HO!NO!)
+* bugfix: other various formatting issues on web
+* bugfix: Users not on a defined team now show in livestats view (spectators no longer need to be defined and now people on no team or "Unassigned" will show)
+* bugfix: some tables in playerinfo and claninfo were not sorting properly
+* bugfix: Fixed image alignment in php pages
+* bugfix: Fixed award winners copying over when duplcating game settings
+* bugfix: Fixed roles names not showing in playerinfo and claninfo
+* bugfix: hidden players and cheaters now cannot obtain any of the special code awards (latency, bonuspoints, etc.)
+* bugfix: Players with "last_event" in the future are now included in ranking in daemon rank-related calculations (octo)
+* bugfix: Daemon no longer tries to resolve ip address unless running in "Normal" mode and player is not a bot
+* bugfix: Fixed bug where daemon created kill_streak_0 and kill_streak_1 actions upon player suicide
+* bugfix: Fixed "Back to..." links on ribboninfo and rankinfo
+* bugfix: Fixed hitbox flash not narrowing down to indiv weapon stats when clicked
+* bugfix: Clan tag patterns no longer save html entities (<< was showing &lt;&lt; and not matching)
+* bugfix: SET NAMES 'UTF-8' was not being run after database reconnect in daemon
+* bugfix: Fixed typo in playerinfo_general.php causing favorite weapon link to not work
+* bugfix: Removed double slash occurring in forum image link on some systems
+* bugfix: When rankingtype is set to kills, ingame commands (such as next, top10, rank, place, etc.) should now reflect same (correct) ranking as web interface
+* bugfix: Fixed playerinfo ranking to be more consistent with player list and sig ranks
+* bugfix: Fixed wrong award image being shown in some cases on playerinfo if player earned multiple levels of an award
+
+
+HLstatsX Community Edition 1.4.1
+Dec 17, 2008
+* added: Added notice to perlsettings.php and serversettings.php to state that perl daemon must be restarted for settings to take effect
+* added: Reset DB Collations page in admin panel now has option to print generated sql commands to screen instead of directly running them
+* added: Added ability to do partial reset per game instead of only for all
+* changed: New Server page in admin panel is now called "Quick-add Server"
+* bugfix: Removed remaining mention of freetypeenabled option in sig.php
+* bugfix: Flash hitbox game detection now uses realgame field
+* bugfix: Forum signature image is now compatible with more forum software
+* bugfix: removed remaining mentions of obsolete imgpath option replacing with IMAGE_PATH
+* bugfix: Fixed numerous bugs and omissions in Game Duplication tool
+* bugfix: removed blocking of "gstats" and "global_stats" in chat in SM plugin
+* bugfix: removed fix for catching chat commands in zps in SM plugin(no longer needed and causes problems on latest zps version)
+* bugfix: hlx_sm_team_action command now prints correct command name in usage parameters
+
+HLstatsX Community Edition v1.4
+Dec 8, 2008
+  * added: support for CS 1.6 (cstrike), TFC, DOD, and NS (psychonic, with help from the HLStats project)
+  * added: amxx plugins for cstrike, tfc, dod, and ns, based on amxx plugins for hlx premium by TTS Oetzel & Goerz GmbH. Changed newline character in plugins to "\n" to match sourcemod plugin. (psychonic)
+  * added: support to the daemon to send psay/msay/browse/swap commands in the form the amxx plugins expect (psychonic).
+  * added: game, map, and weapon images for cstrike, tfc, dod, and ns. game images using vaksa's valve icon images. maps and weapon images from HLstats, used with permission from banana.
+  * added: header to make ingame pages no longer cached by the steam browser (psychonic)
+  * added: more map images for The Hidden (Cheesey)
+  * added: Round_Win event for AoC. the sourcemod plugin supported the event since 1.3 (psychonic)
+  * added: game icon for aoc (pirate555)
+  * added: game icon for zombie panic (WaywerdWolf : Wiff23@msn.com)
+  * added: award and weapon icons for zombie panic (aveneyer : aveneyer@gmail.com)
+  * added: large flag display on countryclansinfo.inc (R3M)
+  * added: ability to set team color/bgcolor (for livestats) in admin panel. livestats now also uses this value for link color rather than having to manually have every team listed in hlstats.css (psychonic)
+  * added: new AJAX functionality on game, playerinfo, claninfo, and awards pages ([iO]crayolacrayon)
+  * added: tooltip on rank history, ribbon, and global award images to show name
+  * added: a2s_info querying (octo)
+  * added: ability to parse output of HL1-style rcon status command (psychonic)
+  * added: Insurgency awards and ribbons icons (insurgency.pl)
+  * added: rank progress bar to playerinfo, similar to hlx premium (psychonic)
+  * added: missing latency awards for ff, hidden, aoc, & zps (psychonic)
+  * added: new title, background, and tab images for header (slaintrax)
+  * added: total count of currently playing players per game on contents page (warbucks)
+  * added: new map type for google maps, physical (psychonic)
+  * added: enhancements to web, perl, and server settings pages to show dropdown boxes with possible values where applicable (psychonic)
+  * added: Teamspeak viewer from ELstatsNEO 2.44, adapted to NEO by hellraiser, further adapted to HLX:CE by psychonic
+  * added: alternative GeoIP import script (*XYZ*SaYnt)
+  * added: two more ranking views "last week" and "last month" (hellraiser)
+  * added: server activity overview to playerinfo (hellraiser)
+  * added: support for more daily/global award types: suicides, kills, teamkills, bonuspoints (urmel, ELstatsNEO)
+  * added: added new css ribbons from ELstatsNEO 2.44 (hellraiser)
+  * added: new option to cap max gained points by ratio of killer to victim points (*XYZ*SaYnt, psychonic)
+  * added: additional security to web files ([iO]crayolacrayon)
+  * added: player and server blips on map are now one per location instead of one per person/server, allowing multple people/servers to be listed on one instead of hidden behind each other if they are at same location ([iO]crayolacrayon)
+  * added: player map on claninfo page ([iO]crayolacrayon)
+  * added: support for PlayerPlayerActions for actions that are logged in this format (victim loses points player gained ex: domination, sentry destruction) (psychonic)
+  * added: upgrade script to go from ELstatsNEO 2.45 to HLX:CE 1.2 (still need to then upgrade from 1.2 - 1.3 and 1.3 - 1.4). Will do proper NEO - 1.5 in next release (psychonic)
+  * changed: directory and file structure of web has changed greatly ([iO]crayolacrayon)
+  * changed: sourcemod plugin, in AoC, now prints same weapon name to log as would be natively logged by the game. upgrade script will fix existing and future entries (psychonic)
+  * changed: in run_ scripts, replaced ":" in log file names with "-" to avoid some issues when trying to download logs with certain Windows ftp clients (psychonic)
+  * changed: Removed nav-countryclans option and renamed show_flags to countrydata. (psychonic)
+  * changed: status.php and sig.php now default to countrydata setting for showing flags instead of defaulting to showing flags (can be overridden with query string parameter) (psychonic)
+  * changed: flags on awards page are only shown if countrydata is set to 1. (psychonic)
+  * changed: global awards are automatic from specified daily awards now, also allowing global awards for actions and not just weapons. hlstats_Awards_Global table is no longer used or needed. Entries in hlstats_Ribbons where special=3 are no longer used or needed. Global and daily award images now go in gawards and dawards directories respectively in game directory with filename (type O/W)_(code).png (psychonic)
+  * changed: if missing image for award or ribbon, defaults to gold medallion image rather than broken image link. (psychonic)
+  * changed: reformatted map popups a bit and added connect link to server popup. (psychonic)
+  * changed: hlstats-awards.pl does not give error anymore when attempting to insert award into player award history if ran more than once in one day. (psychonic)
+  * changed: a2s_info query now used to retrieve hostname/maxplayers/currentmap rather than parsing output of rcon status command (psychonic)
+  * changed: BASTARDrcon, a merge of TRcon subs with KKrcon connection for use with HL1 rcon (psychonic)
+  * changed: ranks are now restructured using similar structure to stats on insurgency.pl. added new rank icons. (insurgency.pl)
+  * changed: games marked hidden are now hidden from Game Settings menu (psychonic)\
+  * changed: game detection removed in favor of setting actual game for each created "game" in admin panel (psychonic)
+  * changed: made map text on graph darker (psychonic)
+  * changed: removed player commend steamid and broadcast command steamid options since all games require the userid. (psychonic)
+  * changed: removed freetypeinstalled option from web settings in favor of checking of existence of imagegetfbbox function (octo)
+  * changed: moved google maps options from config.php to web settings in admin panel (psychonic)
+  * changed: removed MODE settings from config.php. now uses setting already set in perl settings.
+  * changed: year and month graphs now have much higher refresh interval as they do not change nearly as often as other graphs ([iO]crayolacrayon)
+  * changed: country dropdown on edit_player_info now shows country names of all countries in db rather than two-letter country code from list of country image files. (psychonic)
+  * bugfix: perl daemon now correctly encodes utf8 characters (from a post by Procyon @ lart's forum)
+  * bugfix: roles names were not showing on playerinfo or claninfo (psychonic)
+  * bugfix: flags on daily awards on game.inc were not showing (psychonic)
+  * bugfix: server link on server map popup was incomplete (R3M)
+  * bugfix: potential display issue with roles and weapons pages if role or weapon code was not all lowercase (psychonic)
+  * bugfix: ff headshots were not processed correctly if logs were received from stdin and database game name was not "ff" (ex. ff2, ff3) (psychonic)
+  * bugfix: found another spot in perl where existing bad utf8 data could cause crash when inserting clans (psychonic)
+  * bugfix: server connect links on map server popup and status.php now use public address if public address is not blank. (VieuxEd)
+  * bugfix: Insurgency team codes were incorrect (crawler163)
+  * bugfix: server location lookup now uses publicaddress (if not blank) for location lookup (psychonic)
+  * bugfix: U.K. flag was not showing up (psychonic)
+  * bugfix: google maps started enforcing use of newer api causing maps not to show correctly (R3M)
+  * bugfix: minor formatting issues in some playerinfo tables (psychonic)
+  * bugfix: ampersands and other special characters were being html encoded in rcon passwords and other select fields when they should not have been. (psychonic)
+  * bugfix: load graph had display error if not populated with enough data to fill graph (psychonic)
+  * bugfix: roles totals on playerinfo were inaccurate ([iO]crayolacrayon)
+  * bugfix: ranks were not saving in admin panel (psychonic)
+  * bugfix: tables in claninfo were not aligned properly (warbucks)
+  * bugfix: bonus round not being ignored if BonusRoundIgnore was set to 1, but BonusRoundIgnoreTime was 0 (psychonic)
+  * bugfix: help page now obeys styles (psychonic)
+  * bugfix: requirement of "http://" in siteurl in web options was ambiguous. can use with or without now (GTFO.G)
+  * bugfix: from ELstatsNEO 2.43 "thanks to 'trawa': fixed more "<?" typos"
+  * bugfix: from ELstatsNEO 2.43 "thanks to 'blade': broken backlink in rankinfo.inc"
+  * bugfix: from ELstatsNEO 2.43 "thanks to 'edward.81': fixed some mysql escapes in dailystats.php"
+  * bugfix: from ELstatsNEO 2.43 "thanks to 'RDevil63': points display in player ranking, when selecting something other than "total ranking""
+  * bugfix: from ELstatsNEO 2.44 "Thanks to 'Urmel': fixed table display in awards"
+
+HLstatsX Community Edition v1.3.1
+19. Oct 2008
+  * bugfix: ingame status now uses config.php for path to livestats.inc (psychonic)
+  * bugfix: ingame servers.inc now works on games other than CSS (psychonic)
+  * bugfix: player links in livestats.inc in ingame pages now work and go to statsme pages (psychonic)
+  * bugfix: db collation reset tool was mixing utf8_unicode and utf8_general (psychonic)
+  * bugfix: fixed potential issue with saving certain changes in admin panel on pages with checkboxes (psychonic, killer)
+  * bugfix: max players was showing twice on map graph legend (psychonic)
+
+HLstatsX Community Edition v1.3
+17. Oct 2008
+  * added: support for Age of Chivalry (including headshot support thanks to help from AoC team) and Zombie Panic Source (everything except weapon/award images) (psychonic, Erna[AoC])
+  * added: support for more than two teams per game in livestats view (Anomaly)
+  * added: support for player and server country lookup via GeoIP database (psychonic)
+  * added: server pegs on google map (Anomaly)
+  * added: support for hint-style messages in daemon (psychonic)
+  * added: support for sandvich action in TF2 in sourcemod plugin (octo)
+  * added: hint message when player gets switched via team balancer (psychonic)
+  * added: merged changes in "offical" hlstatsx ingame plugin 2.7 to sourcemod plugin (psychonic)
+  * added: better game detection for non-primary instances of same game (css2, css3, css4, etc.)
+  * added: support for roles statistics in FF, requires sourcemod plugin (psychonic)
+  * changed: updated web and ingame help pages (psychonic)
+  * changed: touched up weapon images for The Hidden (psychonic)
+  * changed: ingame display for rank and others shows weapon name instead of code for fav. weapon (psychonic)
+  * changed: server configuration defaults not populate automatically when clicking configure for the first time (psychonic)
+  * changed: reset db collation tool now set database default character set and collation, rather than just tables and columns (psychonic)
+  * changed: refactored a bit of the daemon, including addition of code for determining when and when not to quote certain parameters in rcon commands (psychonic, octo)
+  * changed: daemon now does a database ping before each query and tries once to reconnect before sending query if db is disconnected (Serge Baranov (from hlds mailing list), psychonic)
+  * changed: "Say help to show available commands" message now only shows if browser commands are enabled for the server (psychonic)
+  * changed: top1 through top12 (11 in some games) now returns that number of players. higher than 12(11), up to top99 returns 12(11) (octo)
+  * changed: removed seimbrasa's steam community api as it broke with VALVe's latest community update. wrote new code to parse steam community xml (octo)
+  * changed: text of roles and weapons pages now use role/weapon name rather than code.
+  * removed: elstatsneo logo in player trend graph background images (psychonic)
+  * removed: unused "buddy tracking" functionality partially in code from elstatsneo(psychonic)
+  * removed: all masterserver code (psychonic)
+  * removed: raw socket functionality for sending info to players' consoles. had limited usefulness and required ability to run processes on gameserver (psychonic)
+  * removed: support for mani admin mod 1.1 and below (psychonic)
+  * bugfix: typo in TF2 game detection in daemon (psychonic)
+  * bugfix: (mini) round win events in TF2 should work properly now, for real this time (psychonic)
+  * bugfix: fixed a couple pages in admin panel attempting to double htmlencode values (psychonic)
+  * bugfix: point values for games marked hidden will now not show on the help page. (psychonic)
+  * bugfix: server dropdown in chat.inc was showing all servers, not just those for current game (psychonic)
+  * bugfix: typo in one of the insurgency awards (psychonic)
+  * bugfix: daily awards are now able to show on game.inc again after breaking in 1.2 (psychonic)
+  * bugfix: geolite import script did not account for download being in ansi and db being in utf8
+  * bugfix: ingame commands should now work across all games and admin-mods that support that command type (note: some game and admin-mod combos do not support ingame browsing and amx-style menus, limitation of game/mod, not hlx) (psychonic)
+  * bugfix: broken image on roles info page
+
+HLstatsX Community Edition v1.2
+28. Sept 2008
+  * added: php4 support for steam community api, giving full project php4 support again (psychonic)
+  * added: actions for domination and revenge in DODS (psychonic, GTFO.G)
+  * added: better game detection for ff (psychonic, shadow00caster)
+  * added: ff grenade_napalmlet now counted as grenade_napalm (psychonic, shadow00caster)
+  * bugfix: multiple issues with script for upgrading from 1.20rc2/lart/neo (psychonic, warbucks)
+  * bugfix: status.php now uses proper styles and image locations (psychonic)
+  * bugfix: style was not applied in one section of servers.inc (psychonic)
+  * bugfix: admin module for resetting db collations to utf8 was erroring on NOT NULL columns that had default of '' (psychonic)
+
+HLstatsX Community Edition v1.1
+24. Sept 2008
+  * added: weapon icons for ff (psychonic, shadow00caster)
+  * added: weapons for ff missing from 1.00 (psychonic, shado00wcaster)
+  * added: headshot tracking for ff, headshot action for ff. removed boom_headshot weapon (octo-dhd, psychonic)
+  * added: prelimary support for The Hidden: Source (weapons, actions, awards, teams, sm plugin game detection) (Fisch.666, psychonic)
+  * added: server filter selection box on chat page (psychonic, Rawh)
+  * added: option to show daily award winners on game frontpage. many people asked for this (psychonic)
+  * changed: version number scheme. (X is major release (huge backend changes), X.X is normal release (moderate changes/additions/fixes), X.X.X is minor bugfix release)
+  * changed: game server links now use "steam://connect/" rather than "hlsw://" (psychonic, Neural_Overload)
+  * bugfix: display issue with background of weapon cells in tables (psychonic)
+  * bugfix: keys on hlstats_Actions tables got messed up shortly before 1.00 (psychonic)
+  * bugfix: some options did not show in admin panel in 1.00 (psychonic)
+  * bugfix: in tf2, points for round win and mini round win were always being awarded to both teams (psychonic)
+  * bugfix: spectator team name in ff should have been #FF_TEAM_UNASSIGNED (psychonic)
+  
+  Known issues
+  * Web: on actions page, counts are combined for actions with same code but different teams, even though they display as separate lines.
+  * Fortress Forever, only red and blue players show up as on a team in livestats (green, yellow, attackers, and defender do not)
+  * No award images for Insurgency or Fortress Forever
+
+HLstatsX Community Edition v1.00
+22. Sept 2008
+  * added: additional option for banner display in options page, 0 = none (psychonic)
+  * added: medic assist detection for tf2 (logs as a separate action) (lart, octo-dhd, psychonic)
+  * added: roles tabs (only shows for games with roles) (octo-dhd, psychonic))
+  * added: additional roles details in playerinfo (octo-dhd, psychonic)
+  * added: steam community integration using Unofficial Steam Community API (Seirmubsa a.k.a. Fuzz Bucket, psychonic)
+  * added: new styles to choose from (psychonic, WeZoN)
+  * added: support for colored ingame messages on tf2 (psychonic)
+  * added: more actions on tf2: backstabs, mini round wins, cube soccer (http://www.cubesoccer.com), medic assist (psychonic)
+  * added: WIP script to upgrade from Lart's to HLX Community (psychonic)
+  * added: admin tool to reset table and row collations in db to utf8 (useful for after upgrading from a different version) (psychonic)
+  * added: better detection for tf gametype. now checks for tf2 the same way it checks for other games, making game detection more accurate under certain circumstances (psychonic)
+  * added: kill streak actions like HLstatsX Premium (double kill, triple kill, mega kill, etc.) for all supported games (octo-dhd)
+  * added: option to ignore stats during bonus round (for applicable games) (octo-dhd)
+  * added: longest kill streak and longest death streak tracking, shows in web interface and statsme display (octo-dhd, psychonic)
+  * added: support for Insurgency (R3M, psychonic)
+  * added: support for Fortress Forever (Shadow00caster, psychonic)
+  * changed: total player count on game landing page and ingame broadcast no longer counts hidden people as players (cheaters, bots (if ignored), and people who chose to opt-out) (psychonic)
+  * changed: move some configuration options from config.php to admin panel (database)
+  * changed: reverted back to old forum sig style, with addon from Lart's for game logos, added admin options related to sig. (HO!NO!, GTFO.G, octo-dhd, psychonic)
+  * bugfix: typo in install sql that caused ingame browsing not to work (psychonic)
+  * bugfix: kpd column sorting in some tables was sorting as string (octo-dhd)
+  * bugfix: unicode characters in player names were not showing properly in ingame messages (psychonic, Tobi)
+  * bugfix: typo in dailystats.php in converting ip to number (octo-dhd)
+  * bugfix: fixed some things with using stdin and/or using logs' timestamps rather than servers' (octo-dhd)
+  * bugfix: fixed shading between maps on graph (this worked in NEO 2.32, but broke in 2.40) (psychonic)
+  
+  Known issues
+  * Fortress Forever, only red and blue players show up as on a team in livestats (green, yellow, attackers, and defender do not)
+  * No award images for Insurgency or Fortress Forever
+ 
+ELstatsNEO - UPDATE v2.41
+21. Aug 2008
+  * bugfix: thanks to "edward.81": fixed nonstandard teamspeak port problem
+  * added new tf2 weapons            : gloves, natascha, taunt_heavy
+  * added new tf2 gaw & daw & ribbons: axtinguisher, backburner, blutsauger, ubersaw, gloves, natascha
+  * reduced favicon file size  
+  * temporarily disabled statsserver logging - in the future it will be up with a new protocol to reduce traffic  
+
+ELstatsNEO - RELEASE v2.40
+11. Jul 2008
+  * bugfix: thanks to "Sn!per101": fixed some "<?" tags in playerinfo_general.php which caused crap when running on windows webserver 
+  * bugfix: "no country" flag didn't show in daily & global awards page
+  * bugfix: corrected Server load graphs kills/max_players line      
+  * added missing latency daw image for tf2
+  * added to playerinfo_general: favourite map / favourite server
+  * added playerinfo link & country flag to global chat overview  
+  * added "# played" column to maps statistics  
+  * added rare PROP_PHYSICS in css weapons    
+  * split entire claninfo to tabs like playerinfo
+  * added extended clan details: teams&actions, weapons, maps    
+  * added to claninfo_general: favourite map / favourite server / total players / clan swear-o-meter
+  * set parameter "HLStatsXCountryMaster" to 0 per default (HLstatsX Masterserver is now Non-Public)
+  * hlstats.pl: Implemented CONTROL interface via IP 127.0.0.1 (used for web-frontend remote control)
+  * new Admin Task: Remote control tasks for the Perl Backend Script   
+  * hlstats.pl: Prevented communication to Masterserver for "LAN Mode" or "NameTrack" and also when allowing all servers (this is to reduce crap being reported to the masterserver)
+  * added new PerlConfig parameter "MasterBanlistBantime" to support the new Global Banlist function - disabled by default
+    You can now choose to automatically temp-ban players listed on the Mast0rserver global Banlist !
+  * modified complete message eventhandlers: preparing for new messaging system, giving more performance & flexibility
+  * added server fps & uptime lines to server load graph  
+  * removed the confusing "server details" entry in the admin panel on the left side 
+  * prepared some functions for steambans reporting to elstatsneo masterserver   
+
+ELstatsNEO - UPDATE v2.33
+24. Jun 2008
+  * EXPLOIT: Fixed exploit where players were able to inject log data via ingame chat
+  * tf2: added new pyro  weapon codes + images: deflect_promode, deflect_sticky, deflect_flare
+  * tf2: modified eventhandler to detect owner object destruction (new action codes added)  
+
+ELstatsNEO - UPDATE v2.32
+21. Jun 2008
+  * prepared database for map coordinate stats
+  * bugfix: server load graphs didn't show sometimes
+  * updated elstatsneo url in footer.inc
+  * removed "nowrap" in header.inc navbar     
+  * tf2: added new pyro  weapon codes + images: taunt_pyro, backburner, flaregun, axtinguisher, deflect_rocket
+  * tf2: added new medic weapon codes + images: blutsauger, ubersaw   
+  * tf2: modified eventHandler to reward all involved players when capturing checkpoints (not only the team reward)
+  * modified eventHandler to log PlayerAction coordinates (eg. built objects, flag events)  
+  * modified eventHandler to log kill coordinates (frags, suicides, teamkills)       
+
+ELstatsNEO - RELEASE v2.30
+25. May 2008
+  * fix: fixed player trend graph timeline
+  * fix: removed hardcoded hlstatsimg path in show_graph.php
+  * bugfix: awardId GET var didn't get evaluated in playerawards resulting in a dead link
+  * created and added some missing country images to hlstatsimg/flags
+  Also look at the unreleased v2.25 and v2.30 RC1 changelog        
+
+ELstatsNEO - ElectroLeet betatest UPDATE v2.30 RC1
+21. May 2008
+  * bugfix: teamspeak servers didn't show if only one gametype active
+  * fix: edit playerinfo function scandir() is now php4 compatible  
+  * Awards overview reworked - table design & hl2mp ribbon credits
+  * Added Map names to 24h server load graph
+  * Added Masterserver fallback to master.hlstatsx.com for country lookups only (defaults to enabled, can be set in the admin interface)    
+
+ELstatsNEO - ElectroLeet betatest UPDATE v2.25
+18. May 2008
+  * bugfix: country clan info: avg member points
+  * bugfix: UK country flag bug
+  * bugfix: empty pages in countryclansinfo    
+  * bugfix: Top player in games overview did always be calculated by points
+  * bugfix: some playernames caused dailystats.php to crash
+  * bugfix: html typo violation in contents.inc caused teamspeak module to fail rendering properly in Internet Explorer      
+  * modified servers.inc and game.inc to support "teams" display from the livestats for all game's defined teams, not just CSS and DODS
+    -> bgcolor and text color now definable in the teams admin settings   
+  * added ability to hide clans from the clan stats (eg. if you would hide [ger] (ger) or some other country tags from clan list)
+  * switched perl script servers config to the database, now configurable via web interface! 
+    -> hlstats.conf -> database import script included in the scripts/perl folder
+    ! Updated hlstats.pl to read the servers[] portion from the database instead from hlstats.conf
+  * switched perl script general config to the database, now configurable via web interface!
+    ! Updated hlstats.pl to read the moved parameters from the database instead from hlstats.conf
+  * added some useful functions to the perl ans servers[] settings in the admin interface: 
+    -> reset to default, copy settings from other server, onmouseover-help window for each parameter!
+  * changed players list design: column order now switches with the selected rankingtype in options
+  * added .htaccess files to include folders to prevent web access - so you can place them within the webroot folder if you wish (requires "user .htaccess override" enabled in apache webserver)
+  * optimized tsgk_swear_words calculation query in playerinfo_general.inc (lesser server cpu load when having a lot of swear words) 
+  * added swear-wordlist editor to admin interface    
+  * modified font tags to span classes controlled via css file -> saves a LOT of html output garbage 
+    (test profile playerinfo shrinked from 720kb to 202kb plain html code (72% less output) without any design changes)
+  * switched most database based style presets to cascading stylesheets - you still can choose the used style from the admin interface  
+  * modify ALL scripts to use the Stylesheet classes instead the old database color codes - WHAT A MESS   
+  * added tsgk black stylesheet
+  * created new perl start script "run_hlstats_multi" - now you can run multiple processes without duplicating the whole perl folder with different hlstats.conf files  
+  * changed masterserver address/port to "master.elstatsneo.de:27801" (created own masterserver with actual hlstatsx cheater steamid's dump and GeoCityDB)     
+  * changed statsserver address/port to "stats.elstatsneo.de:27802" (created own statsserver providing a powerful global stats on www.elstatsneo.de in the future!)     
+
+ELstatsNEO - RELEASE v2.20
+11. May 2008
+  * bugfix: ribbon admin module didn't work after last update
+  * bugfix: on some php installations the math functions are missing - coded a fix to playerinfo's steam community link 
+            so the script dont crashes when functions are missing
+  * bugfix: dailyawards didn't build correctly when two gametypes shared same weapon code (eg. pistol on hl2mp and tf2)
+  * bugfix: corrected "contents.inc" -> top player & clan calculated now like options setting (kill/points rate setting)    
+  * changed default "buddystats" to off since it consumes MUCH resources when >10k players in database
+  * added hits & visits counter (configurable via admin interface)  
+  * split the rank definitions to each game, so you can define different kill count between eg. CSS and HL2MP  
+  * added country names table to database 
+  * re-added global chat link (hideable via admin options)    
+  * created "CountryClans" overview - Players grouped by country (hideable via admin options)    
+  * Added admin function: "Duplicate a whole game settings tree to split servers of same gametype"  
+  * Added admin function: "Remove a complete game settings tree from the database" 
+  * Added Support for OpenSource GeoLite-City database 
+    (automatic downloader&database import script included in scripts/GeoLiteCity)
+  * dailystats.php now tries to update every player who don't have his country set against the GeoLite Database    
+  * css: added all weapons, daily awards and daw images
+  * css: added all global awards and global awards images
+  * css: added all ribbons and silver ribbon images (default 5 awards needed)
+  * tf2: added all daily awards and daw images
+  * tf2: added all global awards and global awards images
+  * tf2: added all ribbons and silver ribbon images (default 5 awards needed)    
+
+ELstatsNEO - UPDATE v2.10
+05. May 2008
+  * bugfix: ribboninfo.inc -> ribbon image wasn't displayed
+  * bugfix: playerinfo.inc -> hl2mp ribbons linebreak didn't work sometimes
+  * bugfix: admin option "score ranking" will now work :)      
+  * speedup: all ribbon related stuff
+  * speedup: global awards
+  * extended sig.php to easily set the ttf font in the admin options (no more font hardcoding required)
+  * added some ttf fonts to the package (webroot/fonts)
+  * joined both ribbons tables to single "hlstats_Ribbons" for better administration
+  * now done fixed ribbons sort order in playerinfo         
+  * added trend graph background file (admin options parameter)    
+  * added player buddy list to playerinfo (played at least x minutes together)
+  * split playerinfo.inc into several files for better development handling
+  * reworked playerinfo: added tabs to improve display & navigation (tabs can be disabled in the elstatsneo options)      
+
+ELstatsNEO - FIRST RELEASE v2.00
+02. May 2008
+	* final packaged release - no longer a HLstatsX patch
+	* added steam community link in playerinfo
+	* added forum signature in playerinfo
+	* added new admin task: partial score reset
+	* moved teamspeak server display to the contents page instead of the header.inc
+	* added favourite weapon in playerinfo
+	* added kills per minute in playerinfo
+	* added electro1337 style preset
+	* added clanlogo modification (by TSGK/Osiris)
+	* modified claninfo details (by el/gringo)
+	* added new config setting: rankingtype -> rank by score or by kills
+	* modified scripts for alternate ranking types
+	* added tsgk|osiris weapon ribbons for hl2mp (plain, bronze, silver, supreme image sets)
+	* added 'rank' informations on the page
+	* added complete new 'ribbons' overview with details to sections
+	* added global awards system to sections and playerinfo
+	* added player Trend Graph to playerinfo	
+	* added "swear-o-meter" to the playerinfo (add badwords manually to the table "tsgk_swear_words"	
+	
+--------------------------------------------------------------------------------------------------------------------------------------------- 
+HLstatsX 1.20 RC2 PATCHES by Malte Bayer
+--------------------------------------------------------------------------------------------------------------------------------------------- 
+
+HLstatsX 1.20 RC2 ___PATCH___ v1.14
+	* modified hitbox embed to support the new models
+	* hlstatsx bugfix: hitbox weapon select (error in javascript translation)
+	* added two new hitbox models (alyx for "hl2mp" and pyro for "tf" games)
+	* add / edit hl2mp ribbons
+	* added script run-time stats in footer
+	* added global server chat log
+	* added hpk, kpd and skill change graphic to player sessions
+	* made activity sortable
+
+HLstatsX 1.20 RC2 ___PATCH___ v1.12
+	* modified admintask "edit player details" to let admins set the country flag by hand
+	* corrected improper working medal system
+	* cleaned up playerinfo
+	* added kill counter to awards (note: the hlstats-awards.pl script has changed!)
+	* extended player awards history
+
+
+HLstatsX 1.20 RC2 ___PATCH___ v1.11
+	* added new tables & admin forms for new Ribbons system
+	* added admin form to manage Ranks
+	* added ribbons (award based) for "Counter-Strike Source"
+	* added ribbons (award based) for "Half-Life 2 Deathmatch"
+	* added ribbons (award based) for "Team Fortress 2"
+	* added logo for GameType "tf"
+	* extended actions table to support "tf" special events (object / event)
+	* modified PERL parser scripts to support "tf" special events (object / event)
+	* added support for sniper "headshot"
+	* extended admin task "reset stats" to choose which games to be reset
+	* added teamspeak status viewer
+	* added new table & admin form: teamspeak
+
+HLstatsX 1.20 RC2 ___PATCH___ v1.10
+	* fix: Player Awards history
+	* added new admin task: "Clean up Statistics" (Delete all inactive players, clans from the database)
+	* added ranks (kill based)
+	* added global rank statistics overview
+	* SQL file: Updated Settings for the Game "Team Fortress 2" (added more awards)
+
+HLstatsX 1.20 RC2 ___PATCH___ v1.00
+	* added Player session history
+	* added Player Awards history
+	* SQL file: Settings & Weapon Images for the Game "Team Fortress 2"
+
+--------------------------------------------------------------------------------------------------------------------------------------------- 
+HLstatsX Changelog below
+--------------------------------------------------------------------------------------------------------------------------------------------- 
+
+
+18. June 2007 [V1.20 RC2]
+--------------------------------------------------------------------------------------------------------------------------------------------- 
++ Integration of the SourceMod plugin.
++ Added player action "headshot" raised by the SourceMod plugin (see upgrade_v120RC2.sql in the upgrade directory).
++ Added compatibility for the MetaMod: Source plugin "MiniStats" to display HLstatsX events ingame.
+- Reworked all webpages for higher security against exploits.
+- New coloring of the ingame messages with the SourceMod plugin.
+Fixed: Game detection is not working correctly.
+Fixed: All unicode characters are now allowed on player search and within the admin interface.
+
+
+22. May 2007 [V1.20 RC1]
+--------------------------------------------------------------------------------------------------------------------------------------------- 
++ Integrated support for SourceMod.
++ Support for the new GoogleMap api version 2.
++ Option to define the minimum kills a player must have before taken into full account.
++ Full Support of native DoD:s events.
++ Integrated the two new css models artic and gsg9 into the flash movie (by Sandman).
++ Public Commands can now be disabled.
+- Rewrite of the browser commands for SourceMod and Mani v1.2.
+- The victims points change is now based on killer skill changes (if SkillMode > 0).
+- Victims now see how many points they lost in the broadcast messages.
+- Changed HLstatsX link in the header to work correctly with more then one game.
+- Server name is now restricted to 255 characters (64 characters before).
+- Included security fixes for the webpage.
+- Removed Raw Sockets variable from standard configuration since it is not needed.
+- Updated configuration file including SourceMod default configuration.
+Fixed: Crash and no country data for name tracking mode.
+Fixed: Break on date/time display on smaller resolutions.
+Fixed: Announce command ma_hlx_csay is not working (missing target).
+Fixed: False team-kills are recognized rarely.
+Fixed: Special characters in the search are not allowed.
+Fixed: "Best latency" award only in css.
+Fixed: Error in display long server names in player history.
+
+
+31. Mar 2006 [V1.01]
+--------------------------------------------------------------------------------------------------------------------------------------------- 
++ Global realtime player tracking included.
++ Name and IP-Tracking Mode now full working e.g. for LAN sessions.
++ Option to log chat history for each player (additional option to exclude admins).
++ Global chat for players to communicate between gameservers.
++ Smoother graphics in serverload graphs.
++ Integrated new models into the flash movie (by Sandman).
++ New option "SkillMinChange". Specifies the minimum number of skill points a player will
+  gain for each frag. (Default is 2 skill points minimum change).
++ Integrated action events of VIP-Mod from LDuke.
++ Added dods images (weapons, maps) and de_nuke and cs_militia images for css (by Michael_Jim).
++ Kick reason if player want to connect on rank limited servers.
++ Added dods integration on webpages and dods events in sql file from various plugins.
++ New claninfo and action ingame webpages.
++ Support for CSS Deatmatch gametype.
++ Added commands for rank, session, kpd which results are displayed to all players.
+- Updated function to display names on google map properly.
+- Reworked ingame html files. Now all links to players and clans will work correctly.
+- Safer way handle internal player array.
+- Player pings are retrieved within a greater interval.
+- Server status script displays noimage picture if map image is not available.
+- Inactive clan members will no more displayed in detailled clan view.
+- Reworked ingame AMX style menus.
+- Broadcast public address to the masterserver if setup in the webinterface.
+- Server graphics now displaying much smoother.
+- Updated actions for Day of Defeat: Source to work with all plugins.
+- Updated hlstats.sql file with larger varchar database entries.
+- Default maximum skill change is now 25 points.
+Fixed: Webpage Vulnerability.
+Fixed: Socket functions for synchronization countries and vac banlist not working for 
+       windows operating systems (Thx crazydew).
+Fixed: Deathmatch awards not tracking the .357 magnum and wrong weapon image.
+Fixed: Bot tracking on name changes.
+Fixed: Statistics are displayed to other players after gameserver crash.
+Fixed: Sometimes too much entries were displayed on next command.
+Fixed: Smaller bugs.
+
+
+29. Oct 2005 [V1.00 Final]
+--------------------------------------------------------------------------------------------------------------------------------------------- 
++ Server html page which displays the serverload on different ranges.
++ Game Images for source mods (thx to Vasili Vorotnikov).
++ Support for Day of Defeat: Source.
++ Added option that admins will not be switched from auto team-balance (SwitchAdmins in hlstats.conf).
++ Flash animation now displays different models on css games (by Sandman).
+- Checking maxplayers and map every 10 minutes.
+- Player connection time is now tracked on importing log files.
+- Status and signature script now display flags as standard value.
+- Not displaying contact if contact field is empty.
+- Dynamic dns resolution of master server address (New parameter: --masterserver, to set ip address manually).
+- Updated server overview page.
+- Better support for non css games (status.php).
+- Updated queries on masterserver communication.
+Fixed: Search on "all" games and rewritten html formular part.
+Fixed: Some crashes with function track_server_load.
+Fixed: Server load graph for all servers showing wrong max_slots.
+Fixed: Displaying bots on day ranking when ignoring bots is enabled.
+Fixed: Global banning may end in an infinite loop on very rare situations (Thx DOH!Scorpion).
+Fixed: Correct playercount on importing logs (Performance gain ~500%).
+Fixed: Not displaying osd menu with kpd command if accuracy is 0.00.
+Fixed: TRcon.pm crashing with negative strlen error.
+Fixed: Minor bugs.
+
+22. Aug 2005 [RC10]
+--------------------------------------------------------------------------------------------------------------------------------------------- 
++ Added forum signature script with 10 integrated backgrounds (Thx Michael_Jim).
++ Added favicon.ico (Thx Michael_Jim).
++ New predefined regions for Google Map. Map view type is now configurable.
+- Updated ctf support file (MySQL/Weapon images).
+- Reworked importing old logs.
+- Improved mutiple game tracking.
+- Creating upgrade directory for all MySQL files which only for upgrading from older versions.
+- Renamed "set" command to "hlx_set" and "hideranking" command to "hlx_hideranking".
+- Improved query of clan rankings page.
+- Server address in overview now link to hlsw client.
+Fixed: History is not calculated after day change while playing.
+Fixed: Perl daemon crashing if gameserver is restarted.
+Fixed: Infinite loop while rcon password was wrong.
+Fixed: Wrong percentages in team statistics.
+Fixed: Javascript error on startpage if mutiple games are installed.
+Fixed: Flash hitbox displayed wrong arm and leg sides.
+Fixed: Smaller bugs.
+
+
+28. July 2005 [RC9]
+--------------------------------------------------------------------------------------------------------------------------------------------- 
++ Integration of bettlesmod. HLstatsX development in future will mainly focus on this plugin!
++ Extended functionally to get the players country and city from the masterserver.
++ Integrated google world map on webpage.
++ Top10-Players display as amx style menu.
++ Introducing "/next" command to display amx style menu with the players ranked ahead.
++ Tracking players total connection time and day performances.
++ Setting mode of "players loosing points" for getting killed (Server[]-array variable "SkillMode").
++ Adding Halflife 2 capture the flag support (game_ctf.sql).
+- Webpage title show now the "sitename"  instead of HLstatsX.
+- Reworked ingame webpages with small fonts.
+- Now needed 3 players for getting ranked in clan ranking.
+- Just one awards date to avoid confusions.
+- If servers got > 5 minutes no events, map is detected again.
+- Changing weapon and action logging. Webpages are much more faster now.
+- Team balancing now working also with bots.
+- Touched a hostage event is set to "0" points (game_css.sql).
+Fixed: X/0 slot display.
+Fixed: Rank on session start (-1). New players see "N/A" until the got a rank (=> 1 kill).
+Fixed: Team-Killing message sometimes not showing new killer skill.
+Fixed: Link color on displaying the TopX-Players (status.php).
+Fixed: Switching the hitbox players sides (hitbox.swf).
+Fixed: Styles working correctly on all ingame webpages.
+Fixed: Bug on showing clans in motd.inc ingame.
+Fixed: Division by zero error in server graphics on setup (show_graph.php).
+Fixed: Activity display on rarely situations.
+Fixed: Smaller bugs.
+
+
+08. July 2005 [RC8]
+--------------------------------------------------------------------------------------------------------------------------------------------- 
++ Synchronization with the global banlist in administration web interface.
++ Optional display the content auf /session, /rank, /kpd in an ingame window on CSS servers (required Mani-Admin-Plugin V1.1.0o).
++ Players now can turn off displaying console events with "hlx_display 0"(required BroadCastEventsCommandSteamid == 1, PlayerEventsCommandSteamid == 1).
++ Using cvar sv_visiblemaxplayers to display maximum server slots correctly.
+- The cheaterlist starts now with 0 minimum kills to show all cheaters.
+- Updated Flashanimation. Colors now fit to the styles. Size reduced (-20kbyte).
+- Events were deleted also when people are playing.
+- Update all output in webpage and perl daemon to display formatted numbers.
+- Cheaters and hidden players are no more listed in clan rankings.
+- New default value "" for "PlayerEventsAdminCommand".
+- Sending now Top200-Players to the global ranking. Value can changed with new variable "MasterServerTopPlayers".
+- Auto commands call has changed to "hlx_auto".
+Fixed: MySQL upgrade file missing some table changes (upgrade_hlstats_v132.sql).
+Fixed: Clearing player team on map change (Switching DM to TDM therefore possible).
+Fixed: Actplayers could now never be greater then maxplayers (HLstats_Server.pm).
+Fixed: Showing graph axis not correct or with just on value (e.g. maxplayers = 13).
+
+
+30. Juli 2005 [RC7]
+--------------------------------------------------------------------------------------------------------------------------------------------- 
++ If broadcasting enabled all vac bans are reported to the masterserver and saved in a global banlist.
++ Optional show Flash Animation (by Sandman) for weapon targets (need SHOW_WEAPON_TARGET_FLASH = 1 in config.php).
++ Get the vac cheater listing ingame through "/cheaters" command.
+- Response on setting auto commands.
+- Server overview graphics range is now 24 hours.
+- Minor changes in webpages.
+Fixed: Removing margin in ingame webpages.
+Fixed: Font color auf graphics are now dynamic to the style.
+Fixed: On resetting statistics also resetting the hlstats_Servers tables data.
+Fixed: Graph peaks on map change when bots are playing.
+Fixed: Top line of graphics now never paint dotted.
+Fixed: On importing logs from stdin not call rcon commands.
+Fixed: Total player count on "skill" command not shown correctly on different games (Thx SoNiC).
+Fixed: Shown player statistics on hl2mp on server overview.
+
+
+26. Jun 2005 [RC6]
+--------------------------------------------------------------------------------------------------------------------------------------------- 
++ Detect VAC2 bans and hide automatically such players from ranking.
++ Cheater list table in the main menu (need SHOW_VAC_BANS = 1 in config.php).
++ Admin-Event History now shows Mani-Admin-Plugin and BeetlesMod.
+Fixed: Load graph is displaying css graphs on hl2mp (game.inc).
+Fixed: Maxplayers finally working also during map-change (HLstats_Server.pm).
+Fixed: Now server resetting includes Hlstats_server_load and HLstats_Trend tables (Thx DOH!Scorpion).
+Fixed: Display message on teamkills.
+Fixed: Game images are now included for source engine.
+
+
+23. Jun 2005 [RC5]
+--------------------------------------------------------------------------------------------------------------------------------------------- 
++ HL2 Deathmatch support with images.
++ Upgrade sql file for hlstats V1.32 users (upgrade_hlstats_v132.sql).
++ Motd ingame include file. This shows Top-Players/Clans/Maps etc on startup (by Flashman).
+- Changing admin access rights on restricted accounts. Now restricted accounts can also change styles and add servers. They can now even reset the statistics so be careful with your admin accounts!
+- Set MinKill limit again to 5 as default.
+- Standard of delete days is lowered to 14 days as default.
+- Introduce game related sql files (game_hl2mp.sql/game_css.sql).
+Fixed: Styles are back to business.
+Fixed: Sometimes crashing on suicide events.
+Fixed: TK penalty not working (got the suicide penalty points).
+Fixed: Announcing ingame stats with "say" command.
+Fixed: Not displaying correct maxplayers.
+Fixed: HTML page width on stats with more than one game.
+Fixed: Sytax error in hlstatsx.css (Thx Michael_Jim).
+
+
+11. Jun 2005 [RC4]
+--------------------------------------------------------------------------------------------------------------------------------------------- 
++ Possibility to broadcast events only to the affected players (requires mani-admin-plugin).
++ New option to disable broadcasting PlayerActions (f.e touched a hostage, dropped the bomb etc).
++ Server script to show the actual server status on your homepage (status.php).
++ New options to make individual penalty points for teamkilling and suicides.
+Fixed: Rcon crashes after some hours.
+Fixed: Minor bugs.
+
+
+06. Jun 2005 [RC3]
+--------------------------------------------------------------------------------------------------------------------------------------------- 
++ Added possibility to ignore bots from HLstatsX.
++ New rcon features, the connection will be renewed every 100 commands. This makes it possible to fix a broken connection.
+Fixed: Crash on splitted source packets (Hopefully for ev1).
+
+
+05. Jun 2005 [RC2]
+--------------------------------------------------------------------------------------------------------------------------------------------- 
++ Added config.php in the web directory. Now only one file must be configured for php files.
++ Added new constant "IMAGE_PATH_URL" to avoid problems with not showing the graphs correctly. The value should point to your hlstats web directory WITHOUT "/hlstats.php" or trailing "/".
++ Added new options to the server array configuration. Now you can set MinPlayers for each server. Now it is also possible to specify admins. Those can turn on/off team-balancing (hlx_teams 0/1), aren't banned on retry (AutoBanRetry = 1) and they can play even if they don't match the positions limit (MinimumPlayersRank > 0).
+- Small updates on ingame webpages.
+- General easier way bringing graphics up running.
+Fixed: Clanranking didn't work (execute update_rc1.sql in your database).
+Fixed: On some purposes ingame displaying not working.
+Fixed: Removing unnecessary hlstatsimg directory.
+
+
+31. May 2005 [RC1]
+--------------------------------------------------------------------------------------------------------------------------------------------- 
+- Changed all webpages. The menu is now always on top of the page and all pages are shown over the complete width of the screen.
+
+
+15. May 2005
+--------------------------------------------------------------------------------------------------------------------------------------------- 
++ Added possibility to set a required position-limit. If you wanna play on those servers you must have at least position <= limit (f.e. Top500-Servers).
++ New developing of HLstatsX-Proxy to send spoofed-packets over multiple servers.
++ Completely rewritten rcon-class since KKrcon version has a horrible way of working and performance problems (Performance gain ~500%).
++ It is now possible to display statistics ingame in an own window.
++ Complete new ingame framework.
++ Possibility to detect bans and make the ban "global" on all servers.
++ Graphical display from the server load.
++ Player activity for ranking (inactive players are not displayed anymore).
+- Reworked MySQL-Queries.
+Fixed: Many bugs. 
+
+
+11. Apr 2005
+--------------------------------------------------------------------------------------------------------------------------------------------- 
+- Changed master server protocol to submit players and top-players (HLstats_Server.pm). 
+
+
+10. Apr 2005
+--------------------------------------------------------------------------------------------------------------------------------------------- 
++ Changed way of socket handling. If no logs for parsing available hlstats optimizes the database, delete old events and can communicate with the master server (hlstats.pl).
+- Empty servers are now reported to master server if MasterServerData > 0 (hlstats.pl and HLstats_Server.pm)
+
+
+08. Apr 2005
+--------------------------------------------------------------------------------------------------------------------------------------------- 
++ Option to track only configurated servers. This is a BIG security thing to older versions!
++ New way of configuration in hlstats.conf. Now you can configure every single server. (Needs to change ConfigReaderSimple.pm)
++ Support for master server communication (http://www.statsme.de/master)
+- Changed standard config behaviour for server. For now almost all extended options are turned off.
+- Changed MySQL-Table hlstats_Servers. You have to include on more field (players int(11) NOT NULL default '0')
+Fixed: Errors on htmlentities (playerinfo.inc)
+Fixed: All known bugs (f.e. weblinks in navbar) 
+
+
+04. Apr 2005
+--------------------------------------------------------------------------------------------------------------------------------------------- 
+- Reworked table design for better display on 1024x768. (game.inc, weapons.inc, players.inc, playerinfo.inc)
+Fixed: Max-Players value is set automatically in database (HLStats_Server.pm) 
+
+
+02. Apr 2005 
+--------------------------------------------------------------------------------------------------------------------------------------------- 
++ Add possibility to get other players rank, session or kpd-data (Players userid as argument. f.e. "session 4501")
++ Statsme-events are only tracked if actplayers >= minplayers
+Fixed: Hard-coded link to statsme.de in livestats (game.inc)
+Fixed: Settings in the config-file now (hopefully) working, sorry for that :(
+
+
+30. Mar 2005
+--------------------------------------------------------------------------------------------------------------------------------------------- 
++ Added configurations-options, now everybody (hello admins :D) can use this modifcation.
++ Weapon-Accuracy informations fully integrated into the web-page
++ Server-Table now includes every related server-data (f.e. All shots from CTs :D) (Serverstats-Webpage is on the way...)
++ Better player tracking.
++ UTF-8 Header support.
+Fixed: All known bugs from hlstats-versions around. (STEAM_ID_PENDING-problem is fixed!)
+
+
+20. Mar 2005
+--------------------------------------------------------------------------------------------------------------------------------------------- 
+- Now you can work right from the start with the new MySQL-Design. Just use the hlstats.sql from here. 
+
+
+18. Mar 2005
+--------------------------------------------------------------------------------------------------------------------------------------------- 
+- Initial release. 
