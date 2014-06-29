@@ -626,6 +626,7 @@ public Action:ProtectForwardingChange(args)
 }
 
 
+
 public Action:ProtectForwardingDelallChange(args)
 {
 	if (hlx_protect_address != INVALID_HANDLE)
@@ -775,6 +776,7 @@ color_player(color_type, player_index, String: client_message[192])
 	}
 	return color_player_index;
 }
+
 
 
 color_all_players(String: message[192]) 
@@ -1160,11 +1162,11 @@ public Action:hlx_sm_psay(args)
 			}
 			if (strcmp(message_prefix, "") == 0)
 			{
-				Format(display_message, sizeof(display_message), "\x01%s", client_message);
+				Format(display_message, sizeof(display_message), "\x01\x0B\x01%s", client_message);
 			}
 			else
 			{
-				Format(display_message, sizeof(display_message), "%c%s\x01 %s", ((gamemod == Game_ZPS || gamemod == Game_GES)?5:4), message_prefix, client_message);
+				Format(display_message, sizeof(display_message), "\x01\x0B%c%s\x01 %s", ((gamemod == Game_ZPS || gamemod == Game_GES)?5:4), message_prefix, client_message);
 			}
 			
 			new bool: setupColorForRecipients = false;
@@ -1188,23 +1190,28 @@ public Action:hlx_sm_psay(args)
 							color_index = player_index;
 						}
 						new Handle:hBf;
-						hBf = StartMessageOne("SayText2", player_index);
+						hBf = StartMessageOne("SayText2", player_index, USERMSG_RELIABLE|USERMSG_BLOCKHOOKS);
+						
 						if (hBf != INVALID_HANDLE)
 						{
-							BfWriteByte(hBf, color_index); 
-							BfWriteByte(hBf, 0);
-							
-							if (gamemod == Game_CSGO)
+							if(GetUserMessageType() == UM_Protobuf) 
 							{
-								// hackhackhack...
-								// CS:GO won't print any colors unless you not only start with standard color (1)
-								// like in other games, but also have a 'printable' character following it. We will just
-								// use an unused control code
-								BfWriteByte(hBf, 1);
-								BfWriteByte(hBf, 11);
+								PbSetInt(hBf, "ent_idx", 0);
+								PbSetBool(hBf, "chat", false);
+								PbSetString(hBf, "msg_name", display_message);
+								PbAddString(hBf, "params", "");
+								PbAddString(hBf, "params", "");
+								PbAddString(hBf, "params", "");
+								PbAddString(hBf, "params", "");
+							}
+							else
+							{
+								BfWriteByte(hBf, color_index); 
+								BfWriteByte(hBf, 0);
+								
+								BfWriteString(hBf, display_message);
 							}
 							
-							BfWriteString(hBf, display_message);
 							EndMessage();
 						}
 					}
@@ -1324,21 +1331,39 @@ public Action:hlx_sm_psay2(args)
 				{
 					// thanks to Fyren and IceMatrix for help with this
 					new Handle:hBf;
-					hBf = StartMessageOne("SayText", player_index);
+					hBf = StartMessageOne("SayText", player_index, USERMSG_RELIABLE|USERMSG_BLOCKHOOKS);
 					if (hBf != INVALID_HANDLE)
 					{
-						BfWriteByte(hBf, 1);
-						BfWriteBool(hBf, true);
-						BfWriteByte(hBf, player_index); 
-						
-						if (prefix == 0)
+						if(GetUserMessageType() == UM_Protobuf) 
 						{
-							BfWriteString(hBf, buffer_message);
+							PbSetInt(hBf, "ent_idx", player_index);
+							PbSetBool(hBf, "chat", true);
+							
+							if (prefix == 0)
+							{
+								PbSetString(hBf, "text", buffer_message);
+							}
+							else
+							{
+								PbSetString(hBf, "text", client_message);
+							}
 						}
 						else
 						{
-							BfWriteString(hBf, client_message);
+							BfWriteByte(hBf, 1);
+							BfWriteBool(hBf, true);
+							BfWriteByte(hBf, player_index); 
+							
+							if (prefix == 0)
+							{
+								BfWriteString(hBf, buffer_message);
+							}
+							else
+							{
+								BfWriteString(hBf, client_message);
+							}
 						}
+						
 						EndMessage();
 					}
 				}
@@ -1564,6 +1589,36 @@ public Action:hlx_sm_browse(args)
 				{
 					if (g_bPlyrCanDoMotd[player_index])
 					{
+						if (GetUserMessageType() == UM_Protobuf)
+						{
+							decl String:typeStr[5];
+							IntToString(MOTDPANEL_TYPE_URL, typeStr, 4);
+							
+							new Handle:pb = StartMessageOne("VGUIMenu", player_index);
+							
+							PbSetString(pb, "name", "info");
+							PbSetBool(pb, "show", true);
+
+							new Handle:modkey = PbAddMessage(pb, "subkeys");
+							
+							PbSetString(modkey, "name", "type");
+							PbSetString(modkey, "str", typeStr); 
+
+							modkey = PbAddMessage(pb, "subkeys");
+							PbSetString(modkey, "name", "title");
+							PbSetString(modkey, "str", "HLstatsX:CE");
+
+							modkey = PbAddMessage(pb, "subkeys");
+							PbSetString(modkey, "name", "msg");
+							PbSetString(modkey, "str", client_url);
+
+							EndMessage();
+						}
+						else
+						{
+							ShowMOTDPanel(player_index, "HLstatsX:CE", client_url, MOTDPANEL_TYPE_URL);
+						}
+						
 						ShowMOTDPanel(player_index, "HLstatsX:CE", client_url, MOTDPANEL_TYPE_URL);
 					}
 					else
@@ -1660,6 +1715,7 @@ public Action:hlx_sm_redirect(args)
 		
 	return Plugin_Handled;
 }
+
 
 
 public Action:hlx_sm_player_action(args)
@@ -2134,12 +2190,21 @@ stock PrintToChatRecipientsFF(const String:message[])
 		if (client > 0 && !IsFakeClient(client) && IsClientInGame(client))
 		{	
 			new Handle:hBf;
-			hBf = StartMessageOne("SayText", client);
+			hBf = StartMessageOne("SayText", client, USERMSG_RELIABLE|USERMSG_BLOCKHOOKS);
 			if (hBf != INVALID_HANDLE)
 			{
-				BfWriteByte(hBf, 0); // send as console
-				BfWriteString(hBf, message);
-				BfWriteByte(hBf, 1); // 1 to enable color parsing, 0 to not
+				if(GetUserMessageType() == UM_Protobuf) 
+				{
+					PbSetInt(hBf, "ent_idx", 0);
+					PbSetBool(hBf, "chat", true);
+					PbSetString(hBf, "text", message);
+				}
+				else
+				{
+					BfWriteByte(hBf, 0); // send as console
+					BfWriteString(hBf, message);
+					BfWriteByte(hBf, 1); // 1 to enable color parsing, 0 to not
+				}
 				EndMessage();
 			}
 		}
