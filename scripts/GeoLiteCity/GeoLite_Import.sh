@@ -40,7 +40,7 @@
 LINUX_OTHER="0" 
 
 # Login information for your MySQL server
-DBHOST=""
+DBHOST="localhost"
 DBNAME=""
 DBUSER=""
 DBPASS=""
