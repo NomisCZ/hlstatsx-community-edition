@@ -40,10 +40,10 @@
 LINUX_OTHER="0" 
 
 # Login information for your MySQL server
-DBHOST="localhost"
-DBNAME="hlstatsx"
-DBUSER="hlxuser"
-DBPASS="SQL_PASSWORD_HERE"
+DBHOST=""
+DBNAME=""
+DBUSER=""
+DBPASS=""
 
 #
 # Nothing to change below here.
