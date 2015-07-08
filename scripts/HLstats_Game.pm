@@ -92,7 +92,6 @@ sub getTotalPlayers
 		WHERE
 			game=?
 			AND hideranking = 0
-			AND kills >= 1
 	";
 	my $resultTotalPlayers = &::execCached("get_game_total_players", $query, &::quoteSQL($self->{game}));
 	my ($totalplayers) = $resultTotalPlayers->fetchrow_array;
