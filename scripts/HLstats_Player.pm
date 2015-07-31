@@ -1061,7 +1061,6 @@ sub getRank
 			WHERE
 				game=?
 				AND hideranking = 0
-				AND kills >= 1
 				AND (
 						(skill > ?) OR (
 							(skill = ?) AND ((kills/IF(deaths=0,1,deaths)) > ?)
