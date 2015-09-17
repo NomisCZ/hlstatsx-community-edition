@@ -6,7 +6,7 @@ WARNING: Heatmap generation will consume alot of processor time.  Please be sure
 
 Install:
 	- change user, password, database and path to your "web" folder in config.inc.php
-	- download the appropriate heatmap pack from www.hlxcommunity.com and put into "src"
+	- download the appropriate heatmap pack from the dev branch /extras/HeatmapPack/  and put into "src"
 
 To generate heatmaps:
 	- run: php generate.php
