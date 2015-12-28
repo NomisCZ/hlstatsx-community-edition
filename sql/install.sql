@@ -1,4 +1,4 @@
--- HLstatsX: CE Installation Database file
+﻿-- HLstatsX: CE Installation Database file
 
 -- This file is only needed for new installations.
 
@@ -1710,6 +1710,7 @@ INSERT INTO `hlstats_Awards` (`awardType`, `game`, `code`, `name`, `verb`) VALUE
 ('W', 'csgo', 'ump45', 'UMP-45', 'kills with ump45'),
 ('W', 'csgo', 'xm1014', 'XM automatic Shotgun', 'kills with xm1014'),
 ('W', 'csgo', 'taser', 'Zeus x27', 'kills with taser'),
+('W', 'csgo', 'revolver', 'R8 Revolver', 'kills with revolver'),
 ('O', 'nd', 'headshot', 'Headshot King', 'shots in the head'),
 ('O', 'nd', 'structure_kill', 'Destroyer', 'destroyed structures'),
 ('O', 'nd', 'killed_commander', 'Commander Killer', 'enemy commander kills'),
