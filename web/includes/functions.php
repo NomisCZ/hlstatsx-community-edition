@@ -89,7 +89,7 @@ function getFlag($flag, $type='url')
  */
 function valid_request($str, $numeric = false)
 {
-	$search_pattern = array("/[^A-Za-z0-9\[\]*.,=()!\"$%&^`�':;߲�#+~_\-|<>\/\\\\@{}������ ]/");
+	$search_pattern = array("/[^A-Za-z0-9\[\]*.,=()!\"$%&^`´':;ß˛ł#+~_\-|<>\/\\\\@{}äöüÄÖÜ ]/");
 	$replace_pattern = array('');
 	$str = preg_replace($search_pattern, $replace_pattern, $str);
 	if ( $numeric == false )
