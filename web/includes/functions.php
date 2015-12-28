@@ -89,7 +89,7 @@ function getFlag($flag, $type='url')
  */
 function valid_request($str, $numeric = false)
 {
-	$search_pattern = array("/[^A-Za-z0-9\[\]*.,=()!\"$%&^`´':;ß²³#+~_\-|<>\/\\\\@{}äöüÄÖÜ ]/");
+	$search_pattern = array("/[^A-Za-z0-9\[\]*.,=()!\"$%&^`ï¿½':;ß²ï¿½#+~_\-|<>\/\\\\@{}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ]/");
 	$replace_pattern = array('');
 	$str = preg_replace($search_pattern, $replace_pattern, $str);
 	if ( $numeric == false )
@@ -511,7 +511,6 @@ function get_player_rank($playerdata) {
 		WHERE
 			game='".$playerdata['game']."'
 			AND hideranking = 0
-			AND kills >= 1
 			AND (
 					(".$g_options['rankingtype']." > '".$playerdata[$g_options['rankingtype']]."') OR (
 						(".$g_options['rankingtype']." = '".$playerdata[$g_options['rankingtype']]."') AND (kills/IF(deaths=0,1,deaths) > ".($playerdata['kills']/$tempdeaths).")
