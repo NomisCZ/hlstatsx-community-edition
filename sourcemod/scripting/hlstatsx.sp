@@ -188,7 +188,7 @@ public OnPluginStart()
 	
 	switch (gamemod)
 	{
-		case Game_L4D, Game_INSMOD, Game_GES:
+		case Game_L4D, Game_INSMOD, Game_GES, Game_CSGO:
 		{
 			g_bGameCanDoMotd = false;
 		}
@@ -360,9 +360,13 @@ get_server_mod()
 	new String: game_description[64];
 	GetGameDescription(game_description, sizeof(game_description), true);
 	
-	if (StrContains(game_description, "Counter-Strike", false) != -1)
+	if (StrContains(game_description, "Counter-Strike: Source", false) != -1)
 	{
 		gamemod = Game_CSS;
+	}
+	if (StrContains(game_description, "Counter-Strike: Global Offensive", false) != -1)
+	{
+		gamemod = Game_CSGO;
 	}
 	else if (StrContains(game_description, "Day of Defeat", false) != -1)
 	{
