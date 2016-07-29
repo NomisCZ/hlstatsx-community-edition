@@ -6593,6 +6593,7 @@ INSERT INTO `hlstats_Teams` (`game`, `code`, `name`, `hidden`, `playerlist_bgcol
 ('aoc','Agathia Knights','Agathia Knights','','#D2E8F7','#0080C0',1),
 ('cstrike','TERRORIST','Terrorist','0','#FFD5D5','#FF2D2D',1),
 ('cstrike','CT','Counter-Terrorist','0','#D2E8F7','#0080C0',2),
+('cstrike','SPECTATOR','Spectator','0','#D5D5D5','#111111',3),
 ('tfc','Blue','Blue','0','#D2E8F7','#0080C0',1),
 ('tfc','Red','Red','0','#FFD5D5','#FF2D2D',2),
 ('tfc','#Hunted_team1','(Hunted) VIP','0','#FFD5D5','#FF2D2D',5),
