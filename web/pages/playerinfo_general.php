@@ -46,7 +46,7 @@ For support and installation notes visit http://www.hlxcommunity.com
 	<div class="subblock">
 		<div style="float:left;vertical-align:top;width:48.5%;">
 			<table class="data-table">
-				<tr class="data-table-head">
+			<tr class="data-table-head">
 					<td style="vertical-align:top;">Player Profile<br /><br /></td>
 					<td style="text-align:center; vertical-align:middle;" rowspan="7" id="player_avatar">
 						<?php
@@ -61,50 +61,32 @@ For support and installation notes visit http://www.hlxcommunity.com
 									hlstats_PlayerUniqueIds.playerId = '$player'
 							");
 							list($uqid, $coid) = $db->fetch_row();
-							function fetchpage($page)
-							{
-								$domain="steamcommunity.com";
-								$indata="";
-						//		$data=file_get_contents($page);
-								$fsock=fsockopen($domain, 80, $errno, $errstr,2);
-								if(!$fsock)
-								{
-									echo "Error: $errstr";
-								}
-								else
-								{
-									$request=sprintf("GET %s HTTP/1.1\r\nHost: %s\r\nConnection: Close\r\n\r\n",$page,$domain);
-									fwrite($fsock, $request);
-									while(!feof($fsock))
-									{
-										$indata.=fgets($fsock,1024);
-									}
-									fclose($fsock);
-									return $indata;
-								}
+						
+							$status = 'Unknown';
+							$avatar_full = IMAGE_PATH."/unknown.jpg";
+						
+							if ($coid !== '76561197960265728') {
+
+								$profileUrl = "https://steamcommunity.com/profiles/$coid?xml=1";
+		
+								$curl = curl_init();
+								curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1 );
+								curl_setopt($curl, CURLOPT_URL, $profileUrl);
+
+								$xml = curl_exec($curl);
+								curl_close($curl);
 							}
-							$page = "/profiles/$coid?xml=1";
-							$pagedata=fetchpage($page);
-							if( preg_match('/Location: (.*)/', $pagedata, $location) )
-							{
-								$page = trim($location[1]) . "?xml=1";
-								$pagedata = fetchpage($page);
+							
+							$xmlDoc = null;
+							if ($xml) {
+								$xmlDoc = simplexml_load_string($xml);
 							}
-							preg_match('/<onlineState>(.*?)<\/onlineState>/', $pagedata, $results);
-							preg_match('/<avatarFull><!\[CDATA\[(.*?)\]\]><\/avatarFull>/', $pagedata, $results2);
-							$status = ucwords($results[1]);
-							$avatar_full = $results2[1];
-							$avimg = getImage("/avatars/$player");
-							if ($avimg)
-							{
-								$avatar_full = $avimg['url'];
+						
+							if ($xmlDoc) {
+								$status = ucwords($xmlDoc->onlineState);
+								$avatar_full = $xmlDoc->avatarFull;
 							}
-							else if ($avatar_full == '' || $playerdata['blockavatar'] == '1')
-							{
-								$avatar_full = IMAGE_PATH."/unknown.jpg";
-							}
-							if ($status == '')
-								$status = '(Unknown)';
+						
 							echo("<img src=\"$avatar_full\" style=\"height:158px;width:158px;\" alt=\"Steam Community Avatar\" />");
 						?>
 					</td>
@@ -207,6 +189,19 @@ For support and installation notes visit http://www.hlxcommunity.com
 					</td>
 				</tr>
 				<tr class="bg2">
+                                        <td>MM Rank:</td>
+                                        <td>
+                                                <?php
+                                                        if ($playerdata['mmrank'])
+                                                        {
+                                                                echo '<img src=hlstatsimg/mmranks/' . $playerdata['mmrank'] . '.png alt="rank" style=\"height:20px;width:50px; />';
+                                                        }
+                                                        else
+								echo '<img src=hlstatsimg/mmranks/0.png alt="rank" style=\"height:20px;width:50px; />';
+                                                ?>
+                                        </td>
+                                </tr>
+				<tr class="bg1">
 					<td>Last Connect:*</td>
 					<td>
 						<?php
@@ -231,13 +226,13 @@ For support and installation notes visit http://www.hlxcommunity.com
 						?>
 					</td>
 				</tr>
-				<tr class="bg1">
+				<tr class="bg2">
 					<td>Total Connection Time:</td>
 					<td>
 						<?php echo timestamp_to_str($playerdata['connection_time']); ?>
 					</td>
 				</tr>
-				<tr class="bg2">
+				<tr class="bg1">
 					<td>Average Ping:*</td>
 					<td>
 						<?php
@@ -259,7 +254,7 @@ For support and installation notes visit http://www.hlxcommunity.com
 						?>
 					</td>
 				</tr>
-				<tr class="bg1">
+				<tr class="bg2">
 					<td>Favorite Server:*</td>
 					<td>
 						<?php
@@ -290,7 +285,7 @@ For support and installation notes visit http://www.hlxcommunity.com
 						?>
 					</td>
 				</tr>
-				<tr class="bg2">
+				<tr class="bg1">
 					<td>Favorite Map:*</td>
 					<td>
 						<?php
@@ -315,7 +310,7 @@ For support and installation notes visit http://www.hlxcommunity.com
 						?>
 					</td>
 				</tr>
-				<tr class="bg1">
+				<tr class="bg2">
 					<td>Favorite Weapon:*</td>
 						<?php
 							$result = $db->query("
@@ -373,21 +368,8 @@ For support and installation notes visit http://www.hlxcommunity.com
 				<tr class="bg1">
 					<td style="width:50%;">Activity:</td>
 					<td style="width:35%;">
-						<?php
-							$width = sprintf("%d%%", $playerdata['activity'] + 0.5);
-							$bar_type = 1;
-							if ($playerdata['activity'] > 40)
-								$bar_type = "6";
-							elseif ($playerdata['activity'] > 30)
-								$bar_type = "5";
-							elseif ($playerdata['activity'] > 20)
-								$bar_type = "4";
-							elseif ($playerdata['activity'] > 10)
-								$bar_type = "3";
-							elseif ($playerdata['activity'] > 5)
-								$bar_type = "2";
-							echo "<img src=\"" . IMAGE_PATH . "/bar$bar_type.gif\" style=\"width:$width;height:10px;border:0;\" alt=\"".$playerdata['activity'].'%" />';
-						?>
+	                                <meter min="0" max="100" low="25" high="50" optimum="75" value="<?php
+                                        echo $playerdata['activity'] ?>"></meter>
 					</td>
 					<td style="width:15%;"><?php echo $playerdata['activity'].'%'; ?></td>
 				</tr>
@@ -791,17 +773,9 @@ For support and installation notes visit http://www.hlxcommunity.com
 				</tr>
 				<tr class="data-table-head">
 					<td style="width:60%;">
-						<?php
-							$cellbody = '<img src="' . IMAGE_PATH . '/bar6.gif" width="';
-							if ($rankPercent < 1)
-								$cellbody .= '1%';
-							elseif ($rankPercent > 100)
-								$cellbody .= '100%';
-							else
-								$cellbody .= sprintf('%d%%', $rankPercent + 0.5);
-							$cellbody .= "\" style=\"height:10px;border:0;\" alt=\"$rankPercent%\" />";
-							echo $cellbody;
-						?>
+						<meter min="0" max="100" low="25" high="50" optimum="75" value="<?php
+                                        echo $rankPercent ?>"></meter>
+					
 					</td>
 					<td style="width:40%;">
 						Kills needed: <b><?php echo "$rankKillsNeeded (".number_format($rankPercent, 0, '.', '');?>%)</b>

@@ -1203,9 +1203,6 @@ if (!$selTask || !$admintasks[$selTask])
 		}
 	}
 ?>
-	<li><strong>Version Check</strong><br />
-	<div id="updatecheck">Checking for update... <img src="<?php echo IMAGE_PATH."/../css/spinner.gif"; ?>" /></div>
-	</li>
 </ul>
 <?php
 	echo '</td>';
@@ -1216,50 +1213,6 @@ if (!$selTask || !$admintasks[$selTask])
 </table>
 
 <?php
-if (!$selTask || !$admintasks[$selTask])
-{
-?>
-<script type="text/javascript">
-/* <![CDATA[ */
-
-	xmlhttp = false;
-	currentver = '<?php echo $g_options['version']; ?>';
-	if (window.XMLHttpRequest)
-	{// code for IE7+, Firefox, Chrome, Opera, Safari
-		xmlhttp=new XMLHttpRequest();
-	}
-	else
-	{// code for IE6, IE5
-		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-	}
-	xmlhttp.onreadystatechange=function()
-		{
-			if (xmlhttp.readyState==4 && xmlhttp.status==200)
-			{
-				latestver = xmlhttp.responseText.replace(/\s+$/,"");
-				if (latestver == currentver)
-				{
-					document.getElementById("updatecheck").innerHTML =
-						'Your version is <span style="font-weight:bold">'+currentver+'</span><br />\n'
-						+'You are up to date';
-				}
-				else
-				{
-					document.getElementById("updatecheck").innerHTML =
-						'Your version is <span style="color:#C40000;font-weight:bold">' + currentver + '</span><br />\n'
-						+ 'Current version is <span style="color:#007F0E;font-size:125%;font-weight:bold">' + latestver + '</span>. Updating is recommended.<br />\n'
-						+ 'Please go to <a href="http://www.hlxce.com" target="_blank">hlxce.com</a> for releases and info.';
-				}
-			}
-		}
-	xmlhttp.open("GET","updatecheck_helper.php",true);
-	xmlhttp.send();
-
-/* ]]> */
-</script>
-<?php
-}
-
 if (isset($footerscript))
 {
     echo $footerscript;

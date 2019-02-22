@@ -1,5 +1,7 @@
 body {
-	background-color:#253546;
+	background: url(../styles/ua_styles/csgo_motd_bg.jpg) top left no-repeat;
+	background-size: 100%;
+	background-color:#19232f;
 	color:#FFFFFF;
 	margin-left:10px;
 	margin-right:10px;

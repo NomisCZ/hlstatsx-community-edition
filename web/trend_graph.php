@@ -98,10 +98,10 @@
 		exit();
 	}
 	
-	$Chart = new pChart(400, 200);
+	$Chart = new pChart(380, 200);
 	$Chart->drawBackground($bg_color['red'], $bg_color['green'], $bg_color['blue']);
 	
-	$Chart->setGraphArea(40, 28, 339, 174);
+	$Chart->setGraphArea(50, 28, 339, 174);
 	$Chart->drawGraphAreaGradient(40, 40, 40, -50);
 	
 	if (count($date) < 2)

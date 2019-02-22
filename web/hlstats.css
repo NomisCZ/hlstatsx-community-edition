@@ -9,7 +9,7 @@ BODY {font: 10pt Arial; }
 
 TD {font: 11pt Arial; } 
 h2 {font: 11px Arial; } 
-h1 {font: 11px Arial; } 
+h1 {font: 20px Arial; } 
 h3 {font: 11px Arial; }
 
 .helpwindow {
@@ -67,6 +67,50 @@ ul#header_gameslist li{
 	font-size: 14px;
 }
 
+meter {
+    background: #EEE;
+    box-shadow: 0 2px 3px rgba(0,0,0,0.2) inset;
+    border-radius: 3px;
+    width: 100%;
+    height: 12px;	
+}
+
+meter::-webkit-meter-bar {
+    background: #EEE;
+    box-shadow: 0 2px 3px rgba(0,0,0,0.2) inset;
+    border-radius: 3px;
+}
+
+meter::-webkit-meter-optimum-value {
+    background: #86CC00; /* Green */
+    border-radius: 3px;
+}
+
+meter::-webkit-meter-suboptimum-value {
+    background: #FFDB1A; /* Yellow */
+    border-radius: 3px;
+}
+
+meter::-webkit-meter-even-less-good-value {
+    background: #CC4600; /* Red */
+    border-radius: 3px;
+}
+
+meter::-moz-meter-bar {
+    border-radius: 3px;
+}
+
+meter:-moz-meter-optimum::-moz-meter-bar {
+    background: #86CC00;
+}
+
+meter:-moz-meter-sub-optimum::-moz-meter-bar {
+    background: #FFDB1A;
+}
+
+meter:-moz-meter-sub-sub-optimum::-moz-meter-bar {
+    background: #CC4600;
+}
 
 .warning {
 	border: thin solid red;
@@ -79,4 +123,142 @@ ul#header_gameslist li{
 
 .warning .warning-text {
 	font-size: 1em;
+}
+
+nav{
+	display: block;
+	margin: auto;
+	text-align: center;
+}
+
+.fancyNav{
+    /* Affects the UL element */
+    overflow: hidden;
+    display: inline-block;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+
+.fancyNav li{
+    /* Specifying a fallback color and we define CSS3 gradients for the major browsers: */
+
+    background-color: #f0f0f0;
+    background-image: -webkit-gradient(linear,left top, left bottom,from(#fefefe), color-stop(0.5,#f0f0f0), color-stop(0.51, #e6e6e6));
+    background-image: -moz-linear-gradient(#fefefe 0%, #f0f0f0 50%, #e6e6e6 51%);
+    background-image: -o-linear-gradient(#fefefe 0%, #f0f0f0 50%, #e6e6e6 51%);
+    background-image: -ms-linear-gradient(#fefefe 0%, #f0f0f0 50%, #e6e6e6 51%);
+    background-image: linear-gradient(#fefefe 0%, #f0f0f0 50%, #e6e6e6 51%);
+
+    border-right: 1px solid rgba(9, 9, 9, 0.125);
+
+    /* Adding a 1px inset highlight for a more polished efect: */
+
+    box-shadow: 1px -1px 0 rgba(255, 255, 255, 0.6) inset;
+    -moz-box-shadow: 1px -1px 0 rgba(255, 255, 255, 0.6) inset;
+    -webkit-box-shadow: 1px -1px 0 rgba(255, 255, 255, 0.6) inset;
+
+    position:relative;
+
+    float: left;
+    list-style: none;
+}
+
+.fancyNav li:after{
+
+    /* This creates a pseudo element inslide each LI */	
+
+    content:'.';
+    text-indent:-9999px;
+    overflow:hidden;
+    position:absolute;
+    width:100%;
+    height:100%;
+    top:0;
+    left:0;
+    z-index:1;
+    opacity:0;
+
+    /* Gradients! */
+
+    background-image:-webkit-gradient(linear, left top, right top, from(rgba(168,168,168,0.5)),color-stop(0.5,rgba(168,168,168,0)), to(rgba(168,168,168,0.5)));
+    background-image:-moz-linear-gradient(left, rgba(168,168,168,0.5), rgba(168,168,168,0) 50%, rgba(168,168,168,0.5));
+    background-image:-o-linear-gradient(left, rgba(168,168,168,0.5), rgba(168,168,168,0) 50%, rgba(168,168,168,0.5));
+    background-image:-ms-linear-gradient(left, rgba(168,168,168,0.5), rgba(168,168,168,0) 50%, rgba(168,168,168,0.5));
+    background-image:linear-gradient(left, rgba(168,168,168,0.5), rgba(168,168,168,0) 50%, rgba(168,168,168,0.5));
+
+    /* Creating borders with box-shadow. Useful, as they don't affect the size of the element. */
+
+    box-shadow:-1px 0 0 #a3a3a3,-2px 0 0 #fff,1px 0 0 #a3a3a3,2px 0 0 #fff;
+    -moz-box-shadow:-1px 0 0 #a3a3a3,-2px 0 0 #fff,1px 0 0 #a3a3a3,2px 0 0 #fff;
+    -webkit-box-shadow:-1px 0 0 #a3a3a3,-2px 0 0 #fff,1px 0 0 #a3a3a3,2px 0 0 #fff;
+
+    /* This will create a smooth transition for the opacity property */
+
+    -moz-transition:0.25s all;
+    -webkit-transition:0.25s all;
+    -o-transition:0.25s all;
+    transition:0.25s all;
+}
+
+/* Treating the first LI and li:after elements separately */
+
+.fancyNav li:first-child{
+    border-radius: 4px 0 0 4px;
+}
+
+.fancyNav li:first-child:after,
+.fancyNav li.selected:first-child:after{
+    box-shadow:1px 0 0 #a3a3a3,2px 0 0 #fff;
+    -moz-box-shadow:1px 0 0 #a3a3a3,2px 0 0 #fff;
+    -webkit-box-shadow:1px 0 0 #a3a3a3,2px 0 0 #fff;
+
+    border-radius:4px 0 0 4px;
+}
+
+.fancyNav li:last-child{
+    border-radius: 0 4px 4px 0;
+}
+
+/* Treating the last LI and li:after elements separately */
+
+.fancyNav li:last-child:after,
+.fancyNav li.selected:last-child:after{
+    box-shadow:-1px 0 0 #a3a3a3,-2px 0 0 #fff;
+    -moz-box-shadow:-1px 0 0 #a3a3a3,-2px 0 0 #fff;
+    -webkit-box-shadow:-1px 0 0 #a3a3a3,-2px 0 0 #fff;
+
+    border-radius:0 4px 4px 0;
+}
+
+.fancyNav li:hover:after,
+.fancyNav li.selected:after,
+.fancyNav li:target:after{
+    /* This property triggers the CSS3 transition */
+    opacity:1;
+}
+
+.fancyNav:hover li.selected:after,
+.fancyNav:hover li:target:after{
+    /* Hides the targeted li when we are hovering on the UL */
+    opacity:0;
+}
+
+.fancyNav li.selected:hover:after,
+.fancyNav li:target:hover:after{
+    opacity:1 !important;
+}
+
+/* Styling the anchor elements */
+
+.fancyNav li a{
+    color: #5d5d5d;
+    display: inline-block;
+    font: 16px/Arial,sans-serif;
+    padding: 6px 34px 8px;
+    position: relative;
+    text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.6);
+    z-index:2;
+    text-decoration:none !important;
+    white-space:nowrap;
 }

@@ -42,7 +42,7 @@ function printMap($type = 'main')
 	
 	if ($type == 'main')
 	{
-		echo ('<script src="//maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script>');
+		echo ('<script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script>');
 	}
 ?> 
 		<script type="text/javascript">
@@ -150,7 +150,7 @@ function printMap($type = 'main')
 					$servers_js = array();
 					foreach ($map_location['servers'] as $server)
 					{
-						$search_pattern = array("/[^A-Za-z0-9\[\]*.,=()!\"$%&^`Â´':;ÃŸË›Å‚#+~_\-|<>\/@{}Ã¤Ã¶Ã¼Ã„Ã–Ãœ ]/");
+						$search_pattern = array("/[^A-Za-z0-9\[\]*.,=()!\"$%&^`´':;ß²³#+~_\-|<>\/@{}äöüÄÖÜ ]/");
 						$replace_pattern = array("");
 						$server['name'] = preg_replace($search_pattern, $replace_pattern, $server['name']);
 						$temp = "[" . $server['serverId'] . ',';
@@ -183,7 +183,7 @@ function printMap($type = 'main')
 					{
 						$players[$row['cli_lat'] . ',' . $row['cli_lng']] = array('cli_lat' => $row['cli_lat'], 'cli_lng' => $row['cli_lng'], 'cli_city' => $row['cli_city'], 'cli_country' => $row['cli_country']);
 					}
-					$search_pattern = array("/[^A-Za-z0-9\[\]*.,=()!\"$%&^`Â´':;ÃŸË›Å‚#+~_\-|<>\/@{}Ã¤Ã¶Ã¼Ã„Ã–Ãœ ]/");
+					$search_pattern = array("/[^A-Za-z0-9\[\]*.,=()!\"$%&^`´':;ß²³#+~_\-|<>\/@{}äöüÄÖÜ ]/");
 					$replace_pattern = array("");
 					$row['name'] = preg_replace($search_pattern, $replace_pattern, $row['name']);
 
@@ -246,7 +246,7 @@ function printMap($type = 'main')
 							'country' => $row['country']
 						);
 					}
-					$search_pattern = array("/[^A-Za-z0-9\[\]*.,=()!\"$%&^`Â´':;ÃŸË›Å‚#+~_\-|<>\/@{}Ã¤Ã¶Ã¼Ã„Ã–Ãœ ]/");
+					$search_pattern = array("/[^A-Za-z0-9\[\]*.,=()!\"$%&^`´':;ß²³#+~_\-|<>\/@{}äöüÄÖÜ ]/");
 					$replace_pattern = array("");
 					$row['name'] = preg_replace($search_pattern, $replace_pattern, $row['name']);
 					

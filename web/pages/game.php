@@ -60,7 +60,6 @@ For support and installation notes visit http://www.hlxcommunity.com
 				hlstats_Players
 			WHERE 
 				game='$game'
-				AND hideranking = 0
 	";
 	$result = $db->query($query);
 	list($total_players) = $db->fetch_row($result);

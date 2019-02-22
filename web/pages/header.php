@@ -98,14 +98,8 @@ For support and installation notes visit http://www.hlxcommunity.com
 	}
 	
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=8" />
-	<meta http-equiv="X-UA-Compatible" content="chrome=1" />
-	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 	<link rel="stylesheet" type="text/css" href="hlstats.css" />
 	<link rel="stylesheet" type="text/css" href="styles/<?php echo $selectedStyle; ?>" />
 	<link rel="stylesheet" type="text/css" href="css/SqueezeBox.css" />
@@ -286,55 +280,54 @@ For support and installation notes visit http://www.hlxcommunity.com
 	if ($game != '') {
 
 ?>    
-
-    <span class="fHeading">&nbsp;<img src="<?php echo IMAGE_PATH; ?>/downarrow.gif" alt="" />&nbsp;Sections</span><p />
-		<ul class="navbar">
-			<li><a href="<?php echo $g_options['scripturl']  . "?game=$game";  ?>" class="fHeading"><img src="<?php echo $iconpath; ?>/nav-servers.png" alt="Servers" /></a> <a href="<?php echo $g_options['scripturl']  . "?game=$game";  ?>" class="fHeading">Servers</a></li>
+		<nav>
+		<ul class="fancyNav">
+			<li><a href="<?php echo $g_options['scripturl']  . "?game=$game";  ?>" class="fHeading">Servers</a></li>
 
 <?php
 	if ($g_options['nav_globalchat']==1) {
 ?>
-			<li><a href="<?php echo $g_options['scripturl']  . "?mode=chat&amp;game=$game";  ?>" class="fHeading"><img src="<?php echo $iconpath; ?>/nav-chat.png" alt="Chat" /></a> <a href="<?php echo $g_options['scripturl']  . "?mode=chat&amp;game=$game";  ?>" class="fHeading">Chat</a></li>
+			<li><a href="<?php echo $g_options['scripturl']  . "?mode=chat&amp;game=$game";  ?>" class="fHeading">Chat</a></li>
 <?php
 	}
 ?>
-			<li><a href="<?php echo $g_options['scripturl'] . "?mode=players&amp;game=$game"; ?>" class="fHeading"><img src="<?php echo $iconpath; ?>/nav-players.png" alt="Players" /></a> <a href="<?php echo $g_options['scripturl'] . "?mode=players&amp;game=$game"; ?>" class="fHeading">Players</a></li>
-			<li><a href="<?php echo $g_options['scripturl'] . "?mode=clans&amp;game=$game"; ?>" class="fHeading"><img src="<?php echo $iconpath; ?>/nav-clans.png" alt="Clans" /></a> <a href="<?php echo $g_options['scripturl'] . "?mode=clans&amp;game=$game"; ?>" class="fHeading">Clans</a></li>
+			<li><a href="<?php echo $g_options['scripturl'] . "?mode=players&amp;game=$game"; ?>" class="fHeading">Players</a></li>
+			<li><a href="<?php echo $g_options['scripturl'] . "?mode=clans&amp;game=$game"; ?>" class="fHeading">Clans</a></li>
 
 <?php
 	if ($g_options["countrydata"]==1) {
 ?>
-			<li><a href="<?php echo $g_options['scripturl']  . "?mode=countryclans&amp;game=$game";  ?>" class="fHeading"><img src="<?php echo $iconpath; ?>/nav-countryclans.png" alt="CountryClans" /></a> <a href="<?php echo $g_options['scripturl']  . "?mode=countryclans&amp;game=$game&amp;sort=nummembers";  ?>" class="fHeading">Countries</a></li>
+			<li><a href="<?php echo $g_options['scripturl']  . "?mode=countryclans&amp;game=$game&amp;sort=nummembers";  ?>" class="fHeading">Countries</a></li>
 <?php
 	}
 ?>
-			<li><a href="<?php echo $g_options['scripturl'] . "?mode=awards&amp;game=$game"; ?>" class="fHeading"><img src="<?php echo $iconpath; ?>/nav-awards.png" alt="Awards" /></a> <a href="<?php echo $g_options['scripturl'] . "?mode=awards&amp;game=$game"; ?>" class="fHeading">Awards</a></li>
+			<li><a href="<?php echo $g_options['scripturl'] . "?mode=awards&amp;game=$game"; ?>" class="fHeading">Awards</a></li>
 <?php
 	// look for actions
 	$db->query("SELECT game FROM hlstats_Actions WHERE game='".$game."' LIMIT 1");
 	if ($db->num_rows()>0) {
 ?> 
-			<li><a href="<?php echo $g_options['scripturl'] . "?mode=actions&amp;game=$game"; ?>" class="fHeading"><img src="<?php echo $iconpath; ?>/nav-actions.png" alt="Actions" /></a> <a href="<?php echo $g_options['scripturl'] . "?mode=actions&amp;game=$game"; ?>" class="fHeading">Actions</a></li>
+			<li><a href="<?php echo $g_options['scripturl'] . "?mode=actions&amp;game=$game"; ?>" class="fHeading">Actions</a></li>
 <?php
 	}
 ?>
-			<li><a href="<?php echo $g_options['scripturl'] . "?mode=weapons&amp;game=$game"; ?>" class="fHeading"><img src="<?php echo $iconpath; ?>/nav-weapons.png" alt="Weapons" /></a> <a href="<?php echo $g_options['scripturl'] . "?mode=weapons&amp;game=$game"; ?>" class="fHeading">Weapons</a></li>
-			<li><a href="<?php echo $g_options['scripturl'] . "?mode=maps&amp;game=$game"; ?>" class="fHeading"><img src="<?php echo $iconpath; ?>/nav-maps.png" alt="Maps" /></a> <a href="<?php echo $g_options['scripturl'] . "?mode=maps&amp;game=$game"; ?>" class="fHeading">Maps</a></li>
+			<li><a href="<?php echo $g_options['scripturl'] . "?mode=weapons&amp;game=$game"; ?>" class="fHeading">Weapons</a></li>
+			<li><a href="<?php echo $g_options['scripturl'] . "?mode=maps&amp;game=$game"; ?>" class="fHeading">Maps</a></li>
 <?php
 	$result = $db->query("SELECT game from hlstats_Roles WHERE game='$game' AND hidden = '0'");
 	$numitems = $db->num_rows($result);
 	if ($numitems > 0) {
 ?>
-			<li><a href="<?php echo $g_options['scripturl'] . "?mode=roles&amp;game=$game"; ?>" class="fHeading"><img src="<?php echo $iconpath; ?>/nav-roles.png" alt="Roles" /></a> <a href="<?php echo $g_options['scripturl'] . "?mode=roles&amp;game=$game"; ?>" class="fHeading">Roles</a></li>
+			<li><a href="<?php echo $g_options['scripturl'] . "?mode=roles&amp;game=$game"; ?>" class="fHeading">Roles</a></li>
 <?php
 	}
 	if ($g_options['nav_cheaters'] == 1) {
 ?>
-			<li><a href="<?php echo $g_options['scripturl'] . "?mode=bans&amp;game=$game"; ?>" class="fHeading"><img src="<?php echo $iconpath; ?>/nav-bans.png" alt="Banned" /></a> <a href="<?php echo $g_options['scripturl'] . "?mode=bans&amp;game=$game"; ?>" class="fHeading">Bans</a></li>
+			<li><a href="<?php echo $g_options['scripturl'] . "?mode=bans&amp;game=$game"; ?>" class="fHeading">Bans</a></li>
 <?php
 	} 
 ?>
-	</ul>
+	</ul></nav>
 <?php
 	}
 ?>  

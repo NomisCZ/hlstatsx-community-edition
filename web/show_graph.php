@@ -46,7 +46,6 @@ For support and installation notes visit http://www.hlxcommunity.com
 	  
 			if ($key == 'PHP_SELF') {
 				if ((strrchr($entry, '/') !== '/hlstats.php') &&
-					(strrchr($entry, '/') !== '/ingame.php') &&
 					(strrchr($entry, '/') !== '/show_graph.php') &&
 					(strrchr($entry, '/') !== '/sig.php') &&
 					(strrchr($entry, '/') !== '/sig2.php') &&

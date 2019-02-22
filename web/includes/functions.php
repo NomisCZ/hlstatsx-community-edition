@@ -89,7 +89,7 @@ function getFlag($flag, $type='url')
  */
 function valid_request($str, $numeric = false)
 {
-	$search_pattern = array("/[^A-Za-z0-9\[\]*.,=()!\"$%&^`´':;ß˛ł#+~_\-|<>\/\\\\@{}äöüÄÖÜ ]/");
+	$search_pattern = array("/[^A-Za-z0-9\[\]*.,=()!\"$%&^`�':;߲�#+~_\-|<>\/\\\\@{}������ ]/");
 	$replace_pattern = array('');
 	$str = preg_replace($search_pattern, $replace_pattern, $str);
 	if ( $numeric == false )
@@ -205,8 +205,6 @@ function pageHeader($title = '', $location = '')
 	global $db, $g_options;
 	if ( defined('PAGE') && PAGE == 'HLSTATS' )
 		include (PAGE_PATH . '/header.php');
-	elseif ( defined('PAGE') && PAGE == 'INGAME' )
-		include (PAGE_PATH . '/ingame/header.php');
 }
 
 
@@ -226,8 +224,6 @@ function pageFooter()
 	global $g_options;
 	if ( defined('PAGE') && PAGE == 'HLSTATS' )
 		include (PAGE_PATH . '/footer.php');
-	elseif ( defined('PAGE') && PAGE == 'INGAME' )
-		include (PAGE_PATH . '/ingame/footer.php');
 }
 
 /**
@@ -511,6 +507,7 @@ function get_player_rank($playerdata) {
 		WHERE
 			game='".$playerdata['game']."'
 			AND hideranking = 0
+			AND kills >= 1
 			AND (
 					(".$g_options['rankingtype']." > '".$playerdata[$g_options['rankingtype']]."') OR (
 						(".$g_options['rankingtype']." = '".$playerdata[$g_options['rankingtype']]."') AND (kills/IF(deaths=0,1,deaths) > ".($playerdata['kills']/$tempdeaths).")

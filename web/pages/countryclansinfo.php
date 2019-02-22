@@ -125,21 +125,10 @@ For support and installation notes visit http://www.hlxcommunity.com
 					<td style="width:45%;"><?php
 						echo 'Activity:';
 					?></td>
-					<td align="left" width="40%"><?php
-						$width = sprintf('%d%%', $clandata['activity'] + 0.5);
-						$bar_type = 1;
-						if ($clandata['activity'] > 40)
-							$bar_type = 6;
-						elseif ($clandata['activity'] > 30)
-							$bar_type = 5;
-						elseif ($clandata['activity'] > 20)
-							$bar_type = 4;
-						elseif ($clandata['activity'] > 10)
-							$bar_type = 3;
-						elseif ($clandata['activity'] > 5)
-							$bar_type = 2;
-						echo '<img src="' . IMAGE_PATH . "/bar$bar_type.gif\" style=\"width:$width;height:10px;border:0;\" alt=\"".$clandata['activity'].'%" />';            
-					?></td>
+					<td align="left" width="40%">
+		                                <meter min="0" max="100" low="25" high="50" optimum="75" value="<?php
+                                        echo $clandata['activity'] ?>"></meter>
+					</td>
 					<td style="width:15%;"><?php
 						echo sprintf('%0.2f', $clandata['activity']).'%';
 					?></td>
@@ -245,8 +234,13 @@ For support and installation notes visit http://www.hlxcommunity.com
 			new TableColumn(
 				'lastName',
 				'Name',
-				'width=32&flag=1&link=' . urlencode('mode=playerinfo&amp;player=%k')
+				'width=28&flag=1&link=' . urlencode('mode=playerinfo&amp;player=%k')
 			),
+                        new TableColumn(
+                                'mmrank',
+                                'Rank',
+                                'width=4&type=elorank'
+                        ),
 			new TableColumn(
 				'skill',
 				'Points',
@@ -306,6 +300,7 @@ For support and installation notes visit http://www.hlxcommunity.com
 			hlstats_Players.country,
 			hlstats_Players.flag,
 			hlstats_Players.skill,
+			hlstats_Players.mmrank,
 			hlstats_Players.connection_time,
 			hlstats_Players.kills,
 			hlstats_Players.deaths,

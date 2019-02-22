@@ -1553,7 +1553,7 @@
       {
        if ( $SerieName == "" || $SerieName == $ColName )
         {
-         $XIn = ""; $Yin = ""; $Yt = ""; $U = "";
+         $XIn = array(); $Yin = array(); $Yt = array(); $U = array();
          $XIn[0] = 0; $YIn[0] = 0;
 
          $ID = 0;
@@ -1688,10 +1688,10 @@
        $un = 0;
        $Yt[$Index] = ($un - $qn * $U[$Index-1]) / ($qn * $Yt[$Index-1] + 1);
 
-       for($k=$Index-1;$k>=1;$k--)
+       for($k=$Index-1;$k>=1;$k--) 
         $Yt[$k] = $Yt[$k] * $Yt[$k+1] + $U[$k];
 
-       $Points   = "";
+       $Points   = array();
        $Points[] = $this->GAreaXOffset;
        $Points[] = $LayerHeight;
 

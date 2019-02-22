@@ -94,6 +94,7 @@ For support and installation notes visit http://www.hlxcommunity.com
 			hlstats_Players.email,
 			hlstats_Players.homepage,
 			hlstats_Players.icq,
+			hlstats_Players.mmrank,
 			hlstats_Players.game,
 			hlstats_Players.hideranking,
 			hlstats_Players.blockavatar,

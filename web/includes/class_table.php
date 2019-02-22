@@ -67,7 +67,7 @@ class Table
 	var $maxpagenumbers = 20;
 
 
-	function Table ($columns, $keycol, $sort_default, $sort_default2,
+	function __construct($columns, $keycol, $sort_default, $sort_default2,
 	                $showranking=false, $numperpage=50, $var_page='page',
 	                $var_sort='sort', $var_sortorder='sortorder', $sorthash='',
 	                $sort_default_order='desc', $ajax = false)
@@ -181,7 +181,7 @@ class Table
 		$numpages = ceil($numitems / $this->numperpage);
 ?>
 
-<div class="subblock" style="width:<?php echo $width; ?>%;text-align:<?php echo $align; ?>;">
+<div class="subblock" style="text-align:<?php echo $align; ?>;">
 
 <table class="data-table">
 
@@ -302,6 +302,12 @@ class Table
 				
 				switch ($col->type)
 				{
+					case 'elorank':
+	                                        if ($colval == '') {
+        	                                      $colval = '0';
+                	                        }
+						$cellbody = '<img src="' . IMAGE_PATH  . "/mmranks/" . $colval . ".png\" class=\"tableicon\" alt=\"elorank\" style=\"height:20px;width:50px;\" />";
+						break;
 					case 'timestamp':
 						$cellbody  = timestamp_to_str($colval);
 						break;           
@@ -346,29 +352,7 @@ class Table
 						break;
 
 					case 'bargraph':
-						$cellbody .= '<img src="' . IMAGE_PATH . '/bar';
-						if ($colval > 40)
-							$cellbody .= '6';
-						elseif ($colval > 30)
-							$cellbody .= '5';
-						elseif ($colval > 20)
-							$cellbody .= '4';
-						elseif ($colval > 10)
-							$cellbody .= '3';
-						elseif ($colval > 5)
-							$cellbody .= '2';
-						else
-							$cellbody .= '1';
-
-						$cellbody .= '.gif" style="width:';
-						if ($colval < 1)
-							$cellbody .= '1';
-						elseif ($colval > 100)
-							$cellbody .= '100';
-						else
-							$cellbody .= sprintf("%d", $colval + 0.5);
-
-						$cellbody .= "%;\" class=\"bargraph\" alt=\"$colval%\" />";
+						$cellbody .= '<meter min="0" max="100" low="25" high="50" optimum="75" value="'.$colval.'"></meter>';
 						break;
 					case 'heatmap':
 						$heatmap = getImage("/games/$game/heatmaps/$colval-kill");
@@ -520,13 +504,14 @@ class TableColumn
 	var $align = 'left';
 	var $width = 20;
 	var $icon;
+	var $mmrank;
 	var $link;
 	var $sort = 'yes';
 	var $type = 'text';
 	var $embedlink = 'no';
 	var $flag;    
 
-	function TableColumn ($name, $title, $attrs="", $fname=null)
+	function __construct($name, $title, $attrs="", $fname=null)
 	{
 		$this->name = $name;
 		$this->title= $title;
@@ -535,6 +520,7 @@ class TableColumn
 			'align',
 			'width',
 			'icon',
+			'mmrank',
 			'link',
 			'sort',
 			'append',
