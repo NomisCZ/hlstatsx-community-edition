@@ -673,112 +673,6 @@ sub updatePlayerProfile
 
 
 #
-# mixed getClanId (string name)
-#
-# Looks up a player's clan ID from their name. Compares the player's name to tag
-# patterns in hlstats_ClanTags. Patterns look like:  [AXXXXX] (matches 1 to 6
-# letters inside square braces, e.g. [ZOOM]Player)  or  =\*AAXX\*= (matches
-# 2 to 4 letters between an equals sign and an asterisk, e.g.  =*RAGE*=Player).
-#
-# Special characters in the pattern:
-#    A    matches one character  (i.e. a character is required)
-#    X    matches zero or one characters  (i.e. a character is optional)
-#    a    matches literal A or a
-#    x    matches literal X or x
-#
-# If no clan exists for the tag, it will be created. Returns the clan's ID, or
-# 0 if the player is not in a clan.
-#
-
-sub getClanId
-{
-	my ($name) = @_;
-	my $clanTag  = "";
-	my $clanName = "";
-	my $clanId   = 0;
-	my $result = &doQuery("
-		SELECT
-			pattern,
-			position,
-			LENGTH(pattern) AS pattern_length
-		FROM
-			hlstats_ClanTags
-		ORDER BY
-			pattern_length DESC,
-			id
-	");
-	
-	while ( my($pattern, $position) = $result->fetchrow_array) {
-		my $regpattern = quotemeta($pattern);
-		$regpattern =~ s/([A-Za-z0-9]+[A-Za-z0-9_-]*)/\($1\)/; # to find clan name from tag
-		$regpattern =~ s/A/./g;
-		$regpattern =~ s/X/.?/g;
-		
-		if ($g_debug > 2) {
-			&printNotice("regpattern=$regpattern");
-		}
-		
-		if ((($position eq "START" || $position eq "EITHER") && $name =~ /^($regpattern).+/i) ||
-			(($position eq "END"   || $position eq "EITHER") && $name =~ /.+($regpattern)$/i)) {
-			
-			if ($g_debug > 2) {
-				&printNotice("pattern \"$regpattern\" matches \"$name\"! 1=\"$1\" 2=\"$2\"");
-			}
-			
-			$clanTag  = $1;
-			$clanName = $2;
-			last;
-		}
-	}
-	
-	unless ($clanTag) {
-		return 0;
-	}
-
-	my $query = "
-		SELECT
-			clanId
-		FROM
-			hlstats_Clans
-		WHERE
-			tag='" . &quoteSQL($clanTag) . "' AND
-			game='$g_servers{$s_addr}->{game}'
-		";
-	$result = &doQuery($query);
-
-	if ($result->rows) {
-		($clanId) = $result->fetchrow_array;
-		$result->finish;
-		return $clanId;
-	} else {
-		# The clan doesn't exist yet, so we create it.
-		$query = "
-			REPLACE INTO
-				hlstats_Clans
-				(
-					tag,
-					name,
-					game
-				)
-			VALUES
-			(
-				'" . &quoteSQL($clanTag)  . "',
-				'" . &quoteSQL($clanName) . "',
-				'".&quoteSQL($g_servers{$s_addr}->{game})."'
-			)
-		";
-		&execNonQuery($query);
-		
-		$clanId = $db_conn->{'mysql_insertid'};
-
-		&printNotice("Created clan \"$clanName\" <C:$clanId> with tag "
-				. "\"$clanTag\" for player \"$name\"");
-		return $clanId;
-	}
-}
-
-
-#
 # object getServer (string address, int port)
 #
 # Looks up a server's ID number in the Servers table, by searching for a
@@ -1061,6 +955,7 @@ sub getPlayerInfo
 		my $haveplayer  = 0;
 		
 		$plainuniqueid = $uniqueid;
+		$uniqueid =~ s!\[U:1:(\d+)\]!'STEAM_0:'.($1 % 2).':'.int($1 / 2)!eg;
 		$uniqueid =~ s/^STEAM_[0-9]+?\://;
 		
 		if (($uniqueid eq "Console") && ($team eq "Console")) {
@@ -1190,7 +1085,8 @@ sub getPlayerInfo
 						name     => $name,
 						userid   => $userid,
 						uniqueid => $uniqueid,
-						team     => $team
+						team     => $team,
+						is_bot   => $bot
 					};
 				}
 			}
@@ -1715,11 +1611,14 @@ sub readDatabaseConfig()
 	my $geotell = ((!defined($g_gi)) ? -1 : tell $g_gi{fh});
 	
 	if ($g_geoip_binary > 0 && $geotell == -1) {
-		my $geoipfile = "$opt_libdir/GeoLiteCity/GeoLiteCity.dat";
+		my $geoipfile = "$opt_libdir/GeoLiteCity/GeoLite2-City.mmdb";
 		if (-r $geoipfile) {
-			eval "use Geo::IP::PurePerl"; my $hasGeoIP = $@ ? 0 : 1;
+			eval "use GeoIP2::Database::Reader"; my $hasGeoIP = $@ ? 0 : 1;
 			if ($hasGeoIP) {
-				$g_gi = Geo::IP::PurePerl->open($geoipfile, "GEOIP_STANDARD");
+				$g_gi = GeoIP2::Database::Reader->new(
+						file    => $geoipfile,
+						locales => [ 'en' ]
+				);
 			} else {
 				&printEvent("ERROR", "GeoIP method set to binary file lookup but Geo::IP::PurePerl module NOT FOUND", 1);
 				$g_gi = undef;
@@ -2852,11 +2751,54 @@ while ($loop = &getLine()) {
 					);
 				}
 			}
+		} elsif ($s_output =~ /^"(.+?(?:<.+?>)*?)" triggered "clantag" \(value "(.+?)?"\)$/) {
+			# L 08/14/2014 - 18:04:21: "Laam4<7><STEAM_1:0:106564><Unassigned>" triggered "clantag" (value "Kunіngas")
+			$ev_player = $1;
+			$ev_clantag = $2;
+			
+		#	if ($ev_clantag) {
+				my $playerinfo = &getPlayerInfo($ev_player, 1);
+				
+				$ev_type = 600;
+				
+				if ($playerinfo) {
+					$ev_status = &doEvent_Clan(
+						$playerinfo->{"userid"},
+						$playerinfo->{"uniqueid"},
+						$ev_clantag
+					);
+				}
+		#	}
+		} elsif ($s_output =~ /^"(.+?(?:<.+?>)*?)"(?:\s\[(-?\d+)\s(-?\d+)\s(-?\d+)\]) ([a-zA-Z,_\s]+) "(.+?)"(.*)$/) {
+			# 4. Suicide for CS:GO
+			$ev_player = $1;
+			$ev_Xcoord = $2;
+			$ev_Ycoord = $3;
+			$ev_Zcoord = $4;
+			$ev_verb   = $5;
+			$ev_obj_a  = $6;
+			
+			if ($ev_verb eq "committed suicide with") {
+				my $playerinfo = &getPlayerInfo($ev_player, 1);
+				
+				$ev_type = 4;
+				
+				if ($playerinfo) {
+					$ev_status = &doEvent_Suicide(
+						$playerinfo->{"userid"},
+						$playerinfo->{"uniqueid"},
+						$ev_obj_a,
+						$ev_Xcoord,
+						$ev_Ycoord,
+						$ev_Zcoord
+					);
+				}
+			}
 		} elsif ($s_output =~ /^"(.+?(?:<.+?>)*?)" ([a-zA-Z,_\s]+) "(.+?)"(.*)$/) {
 			# Prototype: "player" verb "obj_a"[properties]
 			# Matches:
 			#  1. Connection
-			#  4. Suicides
+			#  4. Suicides (Fixed above for CSGO)
 			#  5. Team Selection
 			#  6. Role Selection
 			#  7. Change Name
@@ -2903,19 +2845,6 @@ while ($loop = &getLine()) {
 							$ipAddr
 						);
 					}
-				}
-			} elsif ($ev_verb eq "committed suicide with") {
-				my $playerinfo = &getPlayerInfo($ev_player, 1);
-				
-				$ev_type = 4;
-				
-				if ($playerinfo) {
-					$ev_status = &doEvent_Suicide(
-						$playerinfo->{"userid"},
-						$playerinfo->{"uniqueid"},
-						$ev_obj_a,
-						%ev_properties
-					);
 				}
 			} elsif ($ev_verb eq "joined team") {
 				my $playerinfo = &getPlayerInfo($ev_player, 1);
@@ -3326,7 +3255,7 @@ while ($loop = &getLine()) {
 				$ev_obj_a
 			);
 		} elsif ($g_servers{$s_addr}->{play_game} == DYSTOPIA()) {
-			if ($s_output =~ /^weapon { steam_id: 'STEAM_\d+:(.+?)', weapon_id: (\d+), class: \d+, team: \d+, shots: \((\d+),(\d+)\), hits: \((\d+),(\d+)\), damage: \((\d+),(\d+)\), headshots: \((\d+),(\d+)\), kills: \(\d+,\d+\) }$/ && $g_mode eq "Normal") {
+				if ($s_output =~ /^weapon \{ steam_id: 'STEAM_\d+:(.+?)', weapon_id: (\d+), class: \d+, team: \d+, shots: \((\d+),(\d+)\), hits: \((\d+),(\d+)\), damage: \((\d+),(\d+)\), headshots: \((\d+),(\d+)\), kills: \(\d+,\d+\) \}$/ && $g_mode eq "Normal") {
 			
 				# Prototype: weapon { steam_id: 'STEAMID', weapon_id: X, class: X, team: X, shots: (X,X), hits: (X,X), damage: (X,X), headshots: (X,X), kills: (X,X) }
 				# Matches:
@@ -3360,7 +3289,7 @@ while ($loop = &getLine()) {
 						last;
 					}
 				}
-			} elsif ($s_output =~ /^(?:join|change)_class { steam_id: 'STEAM_\d+:(.+?)', .* (?:new_|)class: (\d+), .* }$/ && $g_mode eq "Normal") {
+			} elsif ($s_output =~ /^(?:join|change)_class \{ steam_id: 'STEAM_\d+:(.+?)', .* (?:new_|)class: (\d+), .* \}$/ && $g_mode eq "Normal") {
 				# Prototype: join_class { steam_id: 'STEAMID', team: X, class: Y, time: ZZZZZZZZZ }
 				# Matches:
 				#  6. Role Selection (Dystopia)
@@ -3379,7 +3308,7 @@ while ($loop = &getLine()) {
 						last;
 					}
 				}
-			} elsif ($s_output =~ /^objective { steam_id: 'STEAM_\d+:(.+?)', class: \d+, team: \d+, objective: '(.+?)', time: \d+ }$/ && $g_mode eq "Normal") {
+			} elsif ($s_output =~ /^objective \{ steam_id: 'STEAM_\d+:(.+?)', class: \d+, team: \d+, objective: '(.+?)', time: \d+ \}$/ && $g_mode eq "Normal") {
 				# Prototype: objective { steam_id: 'STEAMID', class: X, team: X, objective: 'TEXT', time: X }
 				# Matches:
 				# 11. Player Action (Dystopia Objectives)

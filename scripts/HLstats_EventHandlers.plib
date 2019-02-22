@@ -690,6 +690,85 @@ sub doEvent_Disconnect
 	return $desc . $playerstr . " disconnected ".$ev_properties;
 }
 
+#
+# 600. Clan
+#
+
+sub doEvent_Clan
+{
+	my ($playerId, $playerUniqueId, $clantag) = @_;
+	
+	my $desc;
+	my $info;
+	my $player = lookupPlayer($s_addr, $playerId, $playerUniqueId);
+	my $playerstr = &getPlayerInfoString($player, $playerId);
+	my $clanId   = 0;
+	
+	if (!$player)
+	{
+		$desc = "(IGNORED) NOPLAYERINFO: ";
+	}
+	elsif (!$clantag)
+	{
+		$desc = "(IGNORED) NOCLANTAG: ";
+		if ($player->{clan} == 0) {
+			$info = " Nothing to update";
+		} else {
+			$player->set("clan", 0);
+			$player->updateDB();
+			$info = " Removed clanID";
+			# check if no players on clan? remove clan?
+		}
+	}
+	else
+	{
+		my $query = "
+		SELECT
+			clanId
+		FROM
+			hlstats_Clans
+		WHERE
+			tag='" . &quoteSQL($clantag) . "' AND
+			game='$g_servers{$s_addr}->{game}'
+		";
+	$result = &doQuery($query);
+	if ($result->rows) {
+		($clanId) = $result->fetchrow_array;
+		$result->finish;
+		if ($player->{clan} == $clanId) {
+			$info = " ClanId already set"
+		} else {
+			$player->set("clan", $clanId);
+			$player->updateDB();
+			$info = " Added clanID \"$clanId\" and clantag \"$clantag\"";
+		}
+	} else {
+		# The clan doesn't exist yet, so we create it.
+		$query = "
+			REPLACE INTO
+				hlstats_Clans
+				(
+					tag,
+					name,
+					game
+				)
+			VALUES
+			(
+				'" . &quoteSQL($clantag)  . "',
+				'" . &quoteSQL($clantag) . "',
+				'".&quoteSQL($g_servers{$s_addr}->{game})."'
+			)
+		";
+		&execNonQuery($query);
+		
+		$clanId = $db_conn->{'mysql_insertid'};
+		$player->set("clan", $clanId);
+		$player->updateDB();
+		$info = " Created clan \"$clantag\" and added clanID \"$clanId\"";
+		}
+		return $desc . $playerstr . $info;
+	}
+}
 
 #
 # 004. Suicide
@@ -697,18 +776,8 @@ sub doEvent_Disconnect
 
 sub doEvent_Suicide
 {	
-	my ($playerId, $playerUniqueId, $weapon, %properties) = @_;
+	my ($playerId, $playerUniqueId, $weapon, $x, $y, $z) = @_;
 	
-	$x = undef;
-	$y = undef;
-	$z = undef;
-	
-	if (defined($properties{attacker_position})) {
-		$coords = $properties{attacker_position};
-		# print "\nCoords SUICIDE: ".$coords."\n\n";
-		($x,$y,$z) = split(/ /,$coords);
-	}
-
 	my $desc;
 	my $player = lookupPlayer($s_addr, $playerId, $playerUniqueId);
 	my $playerstr = &getPlayerInfoString($player, $playerId);
@@ -1858,20 +1927,20 @@ sub doEvent_TeamAction
 		}
 	}
 	if ($g_servers{$s_addr}->{round_status} == 0) {
-		if (($action eq "CTs_Win")  || ($action eq "Bomb_Defused")) {
+		if (($action eq "SFUI_Notice_CTs_Win")  || ($action eq "SFUI_Notice_Bomb_Defused")) {
 			$g_servers{$s_addr}->increment("round_status");
 			$g_servers{$s_addr}->increment("ct_wins");
 			$g_servers{$s_addr}->increment("map_ct_wins");
 			$g_servers{$s_addr}->add_round_winner("ct");
-			if ($action eq "Bomb_Defused") {
+			if ($action eq "SFUI_Notice_Bomb_Defused") {
 				$g_servers{$s_addr}->increment("bombs_defused");
 			}  
-		} elsif (($action eq "Terrorists_Win") || ($action eq "Target_Bombed")) {
+		} elsif (($action eq "SFUI_Notice_Terrorists_Win") || ($action eq "SFUI_Notice_Target_Bombed")) {
 			$g_servers{$s_addr}->increment("round_status");
 			$g_servers{$s_addr}->increment("ts_wins");
 			$g_servers{$s_addr}->increment("map_ts_wins");
 			$g_servers{$s_addr}->add_round_winner("ts");
-			if ($action eq "Target_Bombed") {
+			if ($action eq "SFUI_Notice_Target_Bombed") {
 				$g_servers{$s_addr}->increment("bombs_planted");
 			}  
 		}
@@ -2099,6 +2168,8 @@ sub doEvent_Chat
 				&updatePlayerProfile($player, "homepage", $set_value);
 			} elsif ($set_field eq "icq" || $set_field eq "uin") {
 				&updatePlayerProfile($player, "icq", $set_value);
+			} elsif ($set_field eq "rank" || $set_field eq "mmrank") {
+				&updatePlayerProfile($player, "mmrank", $set_value);
 			} elsif ($set_field eq "geo") {
 				# string parsen aus $set_value
 				my $flag = substr($set_value,0,2);

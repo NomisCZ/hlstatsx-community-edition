@@ -165,7 +165,7 @@ sub new
 	$self->{mod}                           = "";
 	$self->{switch_admins}                 = 0;
 	$self->{public_commands}               = 1;
-	$self->{connect_announce}			   = 1;
+	$self->{connect_announce}			   = 0;
 	$self->{update_hostname}			   = 0;
 	
 	$self->{lastblueflagdefend}			   = 0;
@@ -1226,15 +1226,35 @@ sub update_server_loc
 		if(!defined($::g_gi)) {
 			return;
 		}
-		my ($country_code, $country_code3, $country_name, $region, $city, $postal_code, $latitude, $longitude,
-$metro_code, $area_code) = $::g_gi->get_city_record($server_ip);
+
+		my $geoCity = $::g_gi->city( ip => $server_ip );
+
+		if ($geoCity) {
+
+			my $geoCityRec = $geoCity->city();
+			my $geoCountryRec = $geoCity->country();
+			my $geoLocationRec = $geoCity->location();
+			my $geoPostalRec = $geoCity->postal();
+			my $geoMostSpecificSubdivision = $geoCity->most_specific_subdivision();
+
+			$country_code = $geoCountryRec->iso_code();
+			$country_name = $geoCountryRec->name();
+			$region = $geoMostSpecificSubdivision->name();
+			$city = $geoCityRec->name();
+			$postal_code = $geoPostalRec->code();
+			$latitude = $geoLocationRec->latitude();
+			$longitude = $geoLocationRec->longitude();
+		}			
+		
 		if ($longitude) {
+
 			$found++;
 			$servcity = ((defined($city))?encode("utf8",$city):"");
 			$servcountry = ((defined($country_name))?encode("utf8",$country_name):"");
 			$servlat = $latitude;
 			$servlng = $longitude;
 		}
+	
 	} else {
 		my @ipp = split (/\./,$server_ip);
 		my $ip_number = $ipp[0]*16777216+$ipp[1]*65536+$ipp[2]*256+$ipp[3];

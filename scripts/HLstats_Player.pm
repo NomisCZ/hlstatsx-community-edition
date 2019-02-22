@@ -485,13 +485,13 @@ sub setName
 	
 	$self->{name} = $name;
 
-	my $is_bot = $self->{is_bot};
-    my $server_address = $self->{server};
-	if (($is_bot == 1) && ($::g_servers{$server_address}->{ignore_bots} == 1)) {
-		$self->{clan} = "";
-	} else {
-		$self->{clan} = &::getClanId($name);
-  	}  
+#	my $is_bot = $self->{is_bot};
+#    my $server_address = $self->{server};
+#	if (($is_bot == 1) && ($::g_servers{$server_address}->{ignore_bots} == 1)) {
+#		$self->{clan} = "";
+#	} else {
+#		$self->{clan} = &::getClanId($name);
+# 	}  
 	
 	my $playerid = $self->{playerid};
 	
@@ -953,7 +953,26 @@ sub geoLookup
 			if(!defined($::g_gi)) {
 				return;
 			}
-			($country_code, $country_code3, $country_name, $region, $city, $postal_code, $lat, $lng, $metro_code, $area_code) = $::g_gi->get_city_record($ip_address);
+			
+			my $geoCity = $::g_gi->city( ip => $ip_address );
+
+			if ($geoCity) {
+
+				my $geoCityRec = $geoCity->city();
+				my $geoCountryRec = $geoCity->country();
+				my $geoLocationRec = $geoCity->location();
+				my $geoPostalRec = $geoCity->postal();
+				my $geoMostSpecificSubdivision = $geoCity->most_specific_subdivision();
+
+				$country_code = $geoCountryRec->iso_code();
+				$country_name = $geoCountryRec->name();
+				$region = $geoMostSpecificSubdivision->name();
+				$city = $geoCityRec->name();
+				$postal_code = $geoPostalRec->code();
+				$lat = $geoLocationRec->latitude();
+				$lng = $geoLocationRec->longitude();
+			}			
+			
 			if ($lng) {
 				$found++;
 				$self->{city} = ((defined($city))?encode("utf8",$city):"");
@@ -1061,6 +1080,7 @@ sub getRank
 			WHERE
 				game=?
 				AND hideranking = 0
+				AND kills >= 1
 				AND (
 						(skill > ?) OR (
 							(skill = ?) AND ((kills/IF(deaths=0,1,deaths)) > ?)

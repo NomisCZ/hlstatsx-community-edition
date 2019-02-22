@@ -36,10 +36,11 @@
 
 # *** You should not need to configure anything in this script. ***
 # URL is the location to download the GeoLiteCity.dat.gz file from.
-URL=http://geolite.maxmind.com/download/geoip/database/
+URL=https://geolite.maxmind.com/download/geoip/database/
 
 # File is the file to download from the server above, as well as what to store it as locally.
-FILE=GeoLiteCity.dat.gz
+FILE=GeoLite2-City.tar.gz
+FILE_BASE=$(basename $FILE .tar.gz)
 
 # ***** NOTHING TO CONFIGURE BELOW HERE *****
 
@@ -49,6 +50,9 @@ cd `dirname $0`
 echo Downloading a new copy of GeoLiteCity, if needed.
 wget -N -q $URL$FILE
 echo Uncompressing database
-gzip -dc < $FILE > $(basename $FILE .gz)
-chmod 777 *.dat
+tar -zxvf $FILE
+mv ./${FILE_BASE}_*/${FILE_BASE}.mmdb ./
+rm -R ./${FILE_BASE}_*
+rm $FILE
+chmod 777 GeoLite2-City.mmdb
 echo Done

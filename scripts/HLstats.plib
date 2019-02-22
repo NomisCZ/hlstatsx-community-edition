@@ -162,7 +162,7 @@ sub doConnect
 			$db_user, $db_pass, { mysql_enable_utf8 => 1 }
 		);
 	}
-	$db_conn->do("SET NAMES 'utf8'");
+	$db_conn->do("SET NAMES 'utf8mb4'");
 	&printEvent("MYSQL", "Connecting to MySQL database '$db_name' on '$db_host' as user '$db_user' ... connected ok", 1);
 	%db_stmt_cache = ();
 }
