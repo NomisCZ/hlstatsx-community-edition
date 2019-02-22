@@ -25,20 +25,20 @@
 #define LOG_HIT_LEFTLEG    13
 #define LOG_HIT_RIGHTLEG   14
 
-new Handle:g_weapon_trie = INVALID_HANDLE;
+Handle g_weapon_trie = INVALID_HANDLE;
 
-CreatePopulateWeaponTrie()
+void CreatePopulateWeaponTrie()
 {
 	// Create a Trie
 	g_weapon_trie = CreateTrie();
 	
 	// Initial populate
-	for (new i = 0; i < MAX_LOG_WEAPONS; i++)
+	for (int i = 0; i < MAX_LOG_WEAPONS; i++)
 	{
 		if (g_weapon_list[i][0] == 0)
 		{
 			// some games have a couple blanks as place holders (so array indexes match with weapon ids)
-			decl String:randomKey[6];
+			char randomKey[6];
 			Format(randomKey, sizeof(randomKey), "%c%c%c%c%c%c", GetURandomInt(), GetURandomInt(), GetURandomInt(), GetURandomInt(), GetURandomInt(), GetURandomInt());
 			SetTrieValue(g_weapon_trie, randomKey, i);
 			continue;
@@ -48,38 +48,26 @@ CreatePopulateWeaponTrie()
 	}
 }
 
-dump_player_stats(client)
+void dump_player_stats(int client)
 {
-	if (IsClientInGame(client) && IsClientConnected(client))
+	if (IsClientInGame(client) && IsClientConnected(client) && !IsFakeClient(client))
 	{
-		decl String: player_authid[64];
-		if (!GetClientAuthString(client, player_authid, sizeof(player_authid)))
+		char player_authid[64];
+		if (!GetClientAuthId(client, AuthId_Steam2, player_authid, sizeof(player_authid)))
 		{
 			strcopy(player_authid, sizeof(player_authid), "UNKNOWN");
 		}
-		new player_team_index = GetClientTeam(client);
+		int player_team_index = GetClientTeam(client);
 
-		new player_userid = GetClientUserId(client);
+		int player_userid = GetClientUserId(client);
 
-		new is_logged;
-		for (new i = 0; (i < MAX_LOG_WEAPONS); i++)
+		int is_logged;
+		for (int i = 0; (i < MAX_LOG_WEAPONS); i++)
 		{
-			#if defined INS
-			if (g_weapon_stats[client][i][LOG_HIT_HITS] > 0)
-			{
-				LogToGame("\"%N<%d><%s><%s>\" triggered \"weaponstats\" (weapon \"weapon_%s\") (shots \"%d\") (hits \"%d\") (kills \"%d\") (headshots \"%d\") (tks \"%d\") (damage \"%d\") (deaths \"%d\")", client, player_userid, player_authid, g_team_list[player_team_index], g_weapon_list[i], g_weapon_stats[client][i][LOG_HIT_SHOTS], g_weapon_stats[client][i][LOG_HIT_HITS], g_weapon_stats[client][i][LOG_HIT_KILLS], g_weapon_stats[client][i][LOG_HIT_HEADSHOTS], g_weapon_stats[client][i][LOG_HIT_TEAMKILLS], g_weapon_stats[client][i][LOG_HIT_DAMAGE], g_weapon_stats[client][i][LOG_HIT_DEATHS]); 
-				LogToGame("\"%N<%d><%s><%s>\" triggered \"weaponstats2\" (weapon \"weapon_%s\") (head \"%d\") (chest \"%d\") (stomach \"%d\") (leftarm \"%d\") (rightarm \"%d\") (leftleg \"%d\") (rightleg \"%d\")", client, player_userid, player_authid, g_team_list[player_team_index], g_weapon_list[i], g_weapon_stats[client][i][LOG_HIT_HEAD], g_weapon_stats[client][i][LOG_HIT_CHEST], g_weapon_stats[client][i][LOG_HIT_STOMACH], g_weapon_stats[client][i][LOG_HIT_LEFTARM], g_weapon_stats[client][i][LOG_HIT_RIGHTARM], g_weapon_stats[client][i][LOG_HIT_LEFTLEG], g_weapon_stats[client][i][LOG_HIT_RIGHTLEG]);
-			#else
 			if (g_weapon_stats[client][i][LOG_HIT_SHOTS] > 0)
 			{
-				#if defined GES
-				LogToGame("\"%N<%d><%s><%s>\" triggered \"weaponstats\" (weapon \"weapon_%s\") (shots \"%d\") (hits \"%d\") (kills \"%d\") (headshots \"%d\") (tks \"%d\") (damage \"%d\") (deaths \"%d\")", client, player_userid, player_authid, g_team_list[player_team_index], g_weapon_loglist[i], g_weapon_stats[client][i][LOG_HIT_SHOTS], g_weapon_stats[client][i][LOG_HIT_HITS], g_weapon_stats[client][i][LOG_HIT_KILLS], g_weapon_stats[client][i][LOG_HIT_HEADSHOTS], g_weapon_stats[client][i][LOG_HIT_TEAMKILLS], g_weapon_stats[client][i][LOG_HIT_DAMAGE], g_weapon_stats[client][i][LOG_HIT_DEATHS]); 
-				LogToGame("\"%N<%d><%s><%s>\" triggered \"weaponstats2\" (weapon \"weapon_%s\") (head \"%d\") (chest \"%d\") (stomach \"%d\") (leftarm \"%d\") (rightarm \"%d\") (leftleg \"%d\") (rightleg \"%d\")", client, player_userid, player_authid, g_team_list[player_team_index], g_weapon_loglist[i], g_weapon_stats[client][i][LOG_HIT_HEAD], g_weapon_stats[client][i][LOG_HIT_CHEST], g_weapon_stats[client][i][LOG_HIT_STOMACH], g_weapon_stats[client][i][LOG_HIT_LEFTARM], g_weapon_stats[client][i][LOG_HIT_RIGHTARM], g_weapon_stats[client][i][LOG_HIT_LEFTLEG], g_weapon_stats[client][i][LOG_HIT_RIGHTLEG]); 
-				#else
-				LogToGame("\"%N<%d><%s><%s>\" triggered \"weaponstats\" (weapon \"%s\") (shots \"%d\") (hits \"%d\") (kills \"%d\") (headshots \"%d\") (tks \"%d\") (damage \"%d\") (deaths \"%d\")", client, player_userid, player_authid, g_team_list[player_team_index], g_weapon_list[i], g_weapon_stats[client][i][LOG_HIT_SHOTS], g_weapon_stats[client][i][LOG_HIT_HITS], g_weapon_stats[client][i][LOG_HIT_KILLS], g_weapon_stats[client][i][LOG_HIT_HEADSHOTS], g_weapon_stats[client][i][LOG_HIT_TEAMKILLS], g_weapon_stats[client][i][LOG_HIT_DAMAGE], g_weapon_stats[client][i][LOG_HIT_DEATHS]); 
+				LogToGame("\"%N<%d><%s><%s>\" triggered \"weaponstats\" (weapon \"%s\") (shots \"%d\") (hits \"%d\") (kills \"%d\") (headshots \"%d\") (tks \"%d\") (damage \"%d\") (deaths \"%d\")", client, player_userid, player_authid, g_team_list[player_team_index], g_weapon_list[i], g_weapon_stats[client][i][LOG_HIT_SHOTS], g_weapon_stats[client][i][LOG_HIT_HITS], g_weapon_stats[client][i][LOG_HIT_KILLS], g_weapon_stats[client][i][LOG_HIT_HEADSHOTS], g_weapon_stats[client][i][LOG_HIT_TEAMKILLS], g_weapon_stats[client][i][LOG_HIT_DAMAGE], g_weapon_stats[client][i][LOG_HIT_DEATHS]);
 				LogToGame("\"%N<%d><%s><%s>\" triggered \"weaponstats2\" (weapon \"%s\") (head \"%d\") (chest \"%d\") (stomach \"%d\") (leftarm \"%d\") (rightarm \"%d\") (leftleg \"%d\") (rightleg \"%d\")", client, player_userid, player_authid, g_team_list[player_team_index], g_weapon_list[i], g_weapon_stats[client][i][LOG_HIT_HEAD], g_weapon_stats[client][i][LOG_HIT_CHEST], g_weapon_stats[client][i][LOG_HIT_STOMACH], g_weapon_stats[client][i][LOG_HIT_LEFTARM], g_weapon_stats[client][i][LOG_HIT_RIGHTARM], g_weapon_stats[client][i][LOG_HIT_LEFTLEG], g_weapon_stats[client][i][LOG_HIT_RIGHTLEG]);
-				#endif
-			#endif
 				is_logged++;
 			}
 		}
@@ -90,9 +78,9 @@ dump_player_stats(client)
 	}
 }
 
-reset_player_stats(client)
+void reset_player_stats(int client)
 {
-	for (new i = 0; (i < MAX_LOG_WEAPONS); i++)
+	for (int i = 0; (i < MAX_LOG_WEAPONS); i++)
 	{
 		g_weapon_stats[client][i][LOG_HIT_SHOTS]     = 0;
 		g_weapon_stats[client][i][LOG_HIT_HITS]      = 0;
@@ -112,23 +100,23 @@ reset_player_stats(client)
 	}
 }
 
-stock get_weapon_index(const String:weapon_name[])
+stock int get_weapon_index(const char[] weapon_name)
 {
-	new index = -1;
+	int index = -1;
 	GetTrieValue(g_weapon_trie, weapon_name, index);
 	return index;
 }
 
 
-WstatsDumpAll()
+void WstatsDumpAll()
 {
-	for (new i = 1; i <= MaxClients; i++)
+	for (int i = 1; i <= MaxClients; i++)
 	{
 		dump_player_stats(i);
 	}
 }
 
-OnPlayerDisconnect(client)
+public void OnPlayerDisconnect(int client)
 {
 	if(client > 0 && IsClientInGame(client))
 	{

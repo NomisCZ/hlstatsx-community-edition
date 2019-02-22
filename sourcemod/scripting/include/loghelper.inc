@@ -1,20 +1,20 @@
-#define LOGHELPER_VERSION 3
+#define LOGHELPER_VERSION 5
 
 #include <sourcemod>
 #include <sdktools>
 
-new String:g_team_list[16][64];
+char g_team_list[16][64];
 
 // Call this on map start to cache team names in g_team_list
 
-stock GetTeams(bool:insmod = false)
+stock void GetTeams(bool insmod = false)
 {
 	if (!insmod)
 	{
-		new max_teams_count = GetTeamCount();
-		for (new team_index = 0; (team_index < max_teams_count); team_index++)
+		int max_teams_count = GetTeamCount();
+		for (int team_index = 0; (team_index < max_teams_count); team_index++)
 		{
-			decl String: team_name[64];
+			char team_name[64];
 			GetTeamName(team_index, team_name, sizeof(team_name));
 
 			if (strcmp(team_name, "") != 0)
@@ -26,7 +26,7 @@ stock GetTeams(bool:insmod = false)
 	else
 	{
 		// they really need to get their act together... GetTeamName() would be awesome since they can't even keep their team indexes consistent
-		decl String:mapname[64];
+		char mapname[64];
 		GetCurrentMap(mapname, sizeof(mapname));
 		if (strcmp(mapname, "ins_karam") == 0 || strcmp(mapname, "ins_baghdad") == 0)
 		{
@@ -43,19 +43,19 @@ stock GetTeams(bool:insmod = false)
 	}
 }
 
-stock LogPlayerEvent(client, const String:verb[], const String:event[], bool:display_location = false, const String:properties[] = "")
+stock void LogPlayerEvent(int client, const char[] verb, const char[] event, bool display_location = false, const char[] properties = "")
 {
 	if (IsValidPlayer(client))
 	{
-		decl String:player_authid[32];
-		if (!GetClientAuthString(client, player_authid, sizeof(player_authid)))
+		char player_authid[32];
+		if (!GetClientAuthId(client, AuthId_Engine, player_authid, sizeof(player_authid), false))
 		{
 			strcopy(player_authid, sizeof(player_authid), "UNKNOWN");
 		}
 
 		if (display_location)
 		{
-			decl Float:player_origin[3];
+			float player_origin[3];
 			GetClientAbsOrigin(client, player_origin);
 			LogToGame("\"%N<%d><%s><%s>\" %s \"%s\"%s (position \"%d %d %d\")", client, GetClientUserId(client), player_authid, g_team_list[GetClientTeam(client)], verb, event, properties, RoundFloat(player_origin[0]), RoundFloat(player_origin[1]), RoundFloat(player_origin[2])); 
 		}
@@ -66,27 +66,27 @@ stock LogPlayerEvent(client, const String:verb[], const String:event[], bool:dis
 	}
 }
 
-stock LogPlyrPlyrEvent(client, victim, const String:verb[], const String:event[], bool:display_location = false, const String:properties[] = "")
+stock void LogPlyrPlyrEvent(int client, int victim, const char[] verb, const char[] event, bool display_location = false, const char[] properties = "")
 {
 	if (IsValidPlayer(client) && IsValidPlayer(victim))
 	{
-		decl String:player_authid[32];
-		if (!GetClientAuthString(client, player_authid, sizeof(player_authid)))
+		char player_authid[32];
+		if (!GetClientAuthId(client, AuthId_Engine, player_authid, sizeof(player_authid), false))
 		{
 			strcopy(player_authid, sizeof(player_authid), "UNKNOWN");
 		}
-		decl String:victim_authid[32];
-		if (!GetClientAuthString(victim, victim_authid, sizeof(victim_authid)))
+		char victim_authid[32];
+		if (!GetClientAuthId(victim, AuthId_Engine, victim_authid, sizeof(victim_authid), false))
 		{
 			strcopy(victim_authid, sizeof(victim_authid), "UNKNOWN");
 		}
 		
 		if (display_location)
 		{
-			decl Float:player_origin[3];
+			float player_origin[3];
 			GetClientAbsOrigin(client, player_origin);
 			
-			decl Float:victim_origin[3];
+			float victim_origin[3];
 			GetClientAbsOrigin(victim, victim_origin);
 			
 			LogToGame("\"%N<%d><%s><%s>\" %s \"%s\" against \"%N<%d><%s><%s>\"%s (position \"%d %d %d\") (victim_position \"%d %d %d\")", client, GetClientUserId(client), player_authid, g_team_list[GetClientTeam(client)], verb, event, victim, GetClientUserId(victim), victim_authid, g_team_list[GetClientTeam(victim)], properties, RoundFloat(player_origin[0]), RoundFloat(player_origin[1]), RoundFloat(player_origin[2]), RoundFloat(victim_origin[0]), RoundFloat(victim_origin[1]), RoundFloat(victim_origin[2])); 
@@ -98,26 +98,26 @@ stock LogPlyrPlyrEvent(client, victim, const String:verb[], const String:event[]
 	}
 }
 
-stock LogKill(attacker, victim, const String:weapon[], bool:display_location = false, const String:properties[] = "")
+stock void LogKill(int attacker, int victim, const char[] weapon, bool display_location = false, const char[] properties = "")
 {
 	if (IsValidPlayer(attacker) && IsValidPlayer(victim))
 	{
-		decl String:attacker_authid[32];
-		if (!GetClientAuthString(attacker, attacker_authid, sizeof(attacker_authid)))
+		char attacker_authid[32];
+		if (!GetClientAuthId(attacker, AuthId_Engine, attacker_authid, sizeof(attacker_authid), false))
 		{
 			strcopy(attacker_authid, sizeof(attacker_authid), "UNKNOWN");
 		}
-		decl String:victim_authid[32];
-		if (!GetClientAuthString(victim, victim_authid, sizeof(victim_authid)))
+		char victim_authid[32];
+		if (!GetClientAuthId(victim, AuthId_Engine, victim_authid, sizeof(victim_authid), false))
 		{
 			strcopy(victim_authid, sizeof(victim_authid), "UNKNOWN");
 		}
 			
 		if (display_location)
 		{
-			decl Float:attacker_origin[3];
+			float attacker_origin[3];
 			GetClientAbsOrigin(attacker, attacker_origin);
-			decl Float:victim_origin[3];
+			float victim_origin[3];
 			GetClientAbsOrigin(victim, victim_origin);
 			
 			LogToGame("\"%N<%d><%s><%s>\" killed \"%N<%d><%s><%s>\" with \"%s\"%s (attacker_position \"%d %d %d\") (victim_position \"%d %d %d\")", attacker, GetClientUserId(attacker), attacker_authid, g_team_list[GetClientTeam(attacker)], victim, GetClientUserId(victim), victim_authid, g_team_list[GetClientTeam(victim)], weapon, properties, RoundFloat(attacker_origin[0]), RoundFloat(attacker_origin[1]), RoundFloat(attacker_origin[2]), RoundFloat(victim_origin[0]), RoundFloat(victim_origin[1]), RoundFloat(victim_origin[2])); 
@@ -129,25 +129,49 @@ stock LogKill(attacker, victim, const String:weapon[], bool:display_location = f
 	}
 }
 
+stock void LogSuicide(int victim, const char[] weapon, bool display_location = false, const char[] properties = "")
+{
+	if (IsValidPlayer(victim))
+	{
+		char victim_authid[32];
+		if (!GetClientAuthId(victim, AuthId_Engine, victim_authid, sizeof(victim_authid), false))
+		{
+			strcopy(victim_authid, sizeof(victim_authid), "UNKNOWN");
+		}
+			
+		if (display_location)
+		{
+			float victim_origin[3];
+			GetClientAbsOrigin(victim, victim_origin);
+			
+			LogToGame("\"%N<%d><%s><%s>\" committed suicide with \"%s\"%s (victim_position \"%d %d %d\")", victim, GetClientUserId(victim), victim_authid, g_team_list[GetClientTeam(victim)], weapon, properties, RoundFloat(victim_origin[0]), RoundFloat(victim_origin[1]), RoundFloat(victim_origin[2])); 
+		}
+		else
+		{
+			LogToGame("\"%N<%d><%s><%s>\" committed suicide with \"%s\"%s", victim, GetClientUserId(victim), victim_authid, g_team_list[GetClientTeam(victim)], weapon, properties); 
+		}
+	}
+}
+
 // For Psychostats "KTRAJ" kill trajectory log lines
-stock LogPSKillTraj(attacker, victim, const String:weapon[])
+stock void LogPSKillTraj(int attacker, int victim, const char[] weapon)
 {
 	if (IsValidPlayer(attacker) && IsValidPlayer(victim))
 	{
-		decl String:attacker_authid[32];
-		if (!GetClientAuthString(attacker, attacker_authid, sizeof(attacker_authid)))
+		char attacker_authid[32];
+		if (!GetClientAuthId(attacker, AuthId_Engine, attacker_authid, sizeof(attacker_authid), false))
 		{
 			strcopy(attacker_authid, sizeof(attacker_authid), "UNKNOWN");
 		}
-		decl String:victim_authid[32];
-		if (!GetClientAuthString(victim, victim_authid, sizeof(victim_authid)))
+		char victim_authid[32];
+		if (!GetClientAuthId(victim, AuthId_Engine, victim_authid, sizeof(victim_authid), false))
 		{
 			strcopy(victim_authid, sizeof(victim_authid), "UNKNOWN");
 		}
 		
-		decl Float:attacker_origin[3];
+		float attacker_origin[3];
 		GetClientAbsOrigin(attacker, attacker_origin);
-		decl Float:victim_origin[3];
+		float victim_origin[3];
 		GetClientAbsOrigin(victim, victim_origin);
 		
 		LogToGame("[KTRAJ] \"%N<%d><%s><%s>\" killed \"%N<%d><%s><%s>\" with \"%s\" (attacker_position \"%d %d %d\") (victim_position \"%d %d %d\")", attacker, GetClientUserId(attacker), attacker_authid, g_team_list[GetClientTeam(attacker)], victim, GetClientUserId(victim), victim_authid, g_team_list[GetClientTeam(victim)], weapon, RoundFloat(attacker_origin[0]), RoundFloat(attacker_origin[1]), RoundFloat(attacker_origin[2]), RoundFloat(victim_origin[0]), RoundFloat(victim_origin[1]), RoundFloat(victim_origin[2]));
@@ -155,7 +179,7 @@ stock LogPSKillTraj(attacker, victim, const String:weapon[])
 }
 
 // Verb should always be "triggered" for this.
-stock LogTeamEvent(team, const String:verb[], const String:event[], const String:properties[] = "")
+stock void LogTeamEvent(int team, const char[] verb, const char[] event, const char[] properties = "")
 {
 	if (team > -1)
 	{
@@ -163,32 +187,55 @@ stock LogTeamEvent(team, const String:verb[], const String:event[], const String
 	}
 }
 
-stock LogKillLoc(attacker, victim)
+stock void LogKillLoc(int attacker, int victim)
 {
 	if (attacker > 0 && victim > 0)
 	{
-		decl Float:attacker_origin[3];
+		float attacker_origin[3];
 		GetClientAbsOrigin(attacker, attacker_origin);
-		decl Float:victim_origin[3];
+		float victim_origin[3];
 		GetClientAbsOrigin(victim, victim_origin);
 				
 		LogToGame("World triggered \"killlocation\" (attacker_position \"%d %d %d\") (victim_position \"%d %d %d\")", RoundFloat(attacker_origin[0]), RoundFloat(attacker_origin[1]), RoundFloat(attacker_origin[2]), RoundFloat(victim_origin[0]), RoundFloat(victim_origin[1]), RoundFloat(victim_origin[2]));
 	}
 }
 
-stock LogRoleChange(client, const String:role[], const String:properties[] = "")
+stock void LogTeamChange(int client, int newteam, const char[] properties = "")
 {
-	LogPlayerEvent( client, "changed role to", role, false, properties );
+	if (IsValidPlayer(client))
+	{
+		char player_authid[32];
+		if (!GetClientAuthId(client, AuthId_Engine, player_authid, sizeof(player_authid), false))
+		{
+			strcopy(player_authid, sizeof(player_authid), "UNKNOWN");
+		}
+		
+		LogToGame("\"%N<%d><%s><%s>\" joined team \"%s\"%s", client, GetClientUserId(client), player_authid, g_team_list[GetClientTeam(client)], g_team_list[newteam], properties);
+	}
 }
 
-stock LogMapLoad()
+stock void LogRoleChange(int client, const char[] role, const char[] properties = "")
 {
-	decl String:map[64];
+	if (IsValidPlayer(client))
+	{
+		char player_authid[32];
+		if (!GetClientAuthId(client, AuthId_Engine, player_authid, sizeof(player_authid), false))
+		{
+			strcopy(player_authid, sizeof(player_authid), "UNKNOWN");
+		}
+		
+		LogToGame("\"%N<%d><%s><%s>\" changed role to \"%s\"%s", client, GetClientUserId(client), player_authid, g_team_list[GetClientTeam(client)], role, properties);
+	}
+}
+
+stock void LogMapLoad()
+{
+	char map[64];
 	GetCurrentMap(map, sizeof(map));
 	LogToGame("Loading map \"%s\"", map);
 }
 
-stock IsValidPlayer(client)
+static stock bool IsValidPlayer(int client)
 {
 	if (client > 0 && client <= MaxClients && IsClientInGame(client))
 	{
