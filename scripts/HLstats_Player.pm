@@ -39,6 +39,7 @@ package HLstats_Player;
 #
 
 use Encode;
+use Syntax::Keyword::Try;
 
 do "$::opt_libdir/HLstats_GameConstants.plib";
 
@@ -954,7 +955,10 @@ sub geoLookup
 				return;
 			}
 			
-			my $geoCity = $::g_gi->city( ip => $ip_address );
+			my $geoCity = undef;
+	
+			try { $geoCity = $::g_gi->city( ip => $ip_address ); }
+			catch { $geoCity = undef; }
 
 			if ($geoCity) {
 

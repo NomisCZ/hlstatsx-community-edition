@@ -38,6 +38,7 @@ use POSIX;
 use IO::Socket;
 use Socket;
 use Encode;
+use Syntax::Keyword::Try;
 
 do "$::opt_libdir/HLstats_GameConstants.plib";
 
@@ -1218,8 +1219,8 @@ sub update_server_loc
 		}
 	}
 	my $found = 0;
-	my $servcity = "";
-	my $servcountry = "";
+	my $servcity = undef;
+	my $servcountry = undef;
 	my $servlat=undef;
 	my $servlng=undef;
 	if ($::g_geoip_binary > 0) {
@@ -1227,7 +1228,10 @@ sub update_server_loc
 			return;
 		}
 
-		my $geoCity = $::g_gi->city( ip => $server_ip );
+		my $geoCity = undef;
+
+		try { $geoCity = $::g_gi->city( ip => $server_ip ); }
+		catch { $geoCity = undef; }
 
 		if ($geoCity) {
 
