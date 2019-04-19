@@ -162,7 +162,7 @@ For support and installation notes visit http://www.hlxcommunity.com
 				eventDesc VARCHAR(255) NOT NULL,
 				serverName VARCHAR(255) NOT NULL,
 				map VARCHAR(64) NOT NULL
-			) DEFAULT CHARSET=utf8
+			) DEFAULT CHARSET=utf8mb4
 	");
 	function insertEvents ($table, $select)
 	{
