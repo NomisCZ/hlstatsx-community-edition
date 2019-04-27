@@ -2,7 +2,7 @@
 
 -- This file is only needed for new installations.
 
-SET @DBVERSION="78";
+SET @DBVERSION="79";
 SET @VERSION="1.6.19";
 
 -- --------------------------------------------------------
@@ -2108,7 +2108,7 @@ INSERT INTO `hlstats_Countries` (`flag`, `name`) VALUES
 
 CREATE TABLE IF NOT EXISTS `hlstats_Events_Admin` (
   `id` int(10) unsigned NOT NULL auto_increment,
-  `eventTime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `eventTime` datetime default NULL,
   `serverId` int(10) unsigned NOT NULL default '0',
   `map` varchar(64) NOT NULL default '',
   `type` varchar(64) NOT NULL default 'Unknown',
@@ -2125,7 +2125,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_Admin` (
 
 CREATE TABLE IF NOT EXISTS `hlstats_Events_ChangeName` (
   `id` int(10) unsigned NOT NULL auto_increment,
-  `eventTime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `eventTime` datetime default NULL,
   `serverId` int(10) unsigned NOT NULL default '0',
   `map` varchar(64) NOT NULL default '',
   `playerId` int(10) unsigned NOT NULL default '0',
@@ -2144,7 +2144,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_ChangeName` (
 
 CREATE TABLE IF NOT EXISTS `hlstats_Events_ChangeRole` (
   `id` int(10) unsigned NOT NULL auto_increment,
-  `eventTime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `eventTime` datetime default NULL,
   `serverId` int(10) unsigned NOT NULL default '0',
   `map` varchar(64) NOT NULL default '',
   `playerId` int(10) unsigned NOT NULL default '0',
@@ -2161,7 +2161,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_ChangeRole` (
 
 CREATE TABLE IF NOT EXISTS `hlstats_Events_ChangeTeam` (
   `id` int(10) unsigned NOT NULL auto_increment,
-  `eventTime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `eventTime` datetime default NULL,
   `serverId` int(10) unsigned NOT NULL default '0',
   `map` varchar(64) NOT NULL default '',
   `playerId` int(10) unsigned NOT NULL default '0',
@@ -2178,7 +2178,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_ChangeTeam` (
 
 CREATE TABLE IF NOT EXISTS `hlstats_Events_Chat` (
   `id` int(10) unsigned NOT NULL auto_increment,
-  `eventTime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `eventTime` datetime default NULL,
   `serverId` int(10) unsigned NOT NULL default '0',
   `map` varchar(64) NOT NULL default '',
   `playerId` int(10) unsigned NOT NULL default '0',
@@ -2198,7 +2198,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_Chat` (
 
 CREATE TABLE IF NOT EXISTS `hlstats_Events_Connects` (
   `id` int(10) unsigned NOT NULL auto_increment,
-  `eventTime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `eventTime` datetime default NULL,
   `serverId` int(10) unsigned NOT NULL default '0',
   `map` varchar(64) NOT NULL default '',
   `playerId` int(10) unsigned NOT NULL default '0',
@@ -2218,7 +2218,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_Connects` (
 
 CREATE TABLE IF NOT EXISTS `hlstats_Events_Disconnects` (
   `id` int(10) unsigned NOT NULL auto_increment,
-  `eventTime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `eventTime` datetime default NULL,
   `serverId` int(10) unsigned NOT NULL default '0',
   `map` varchar(64) NOT NULL default '',
   `playerId` int(10) unsigned NOT NULL default '0',
@@ -2233,7 +2233,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_Disconnects` (
 
 CREATE TABLE IF NOT EXISTS `hlstats_Events_Entries` (
   `id` int(10) unsigned NOT NULL auto_increment,
-  `eventTime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `eventTime` datetime default NULL,
   `serverId` int(10) unsigned NOT NULL default '0',
   `map` varchar(64) NOT NULL default '',
   `playerId` int(10) unsigned NOT NULL default '0',
@@ -2249,7 +2249,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_Entries` (
 
 CREATE TABLE IF NOT EXISTS `hlstats_Events_Frags` (
   `id` int(10) unsigned NOT NULL auto_increment,
-  `eventTime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `eventTime` datetime default NULL,
   `serverId` int(10) unsigned NOT NULL default '0',
   `map` varchar(64) NOT NULL default '',
   `killerId` int(10) unsigned NOT NULL default '0',
@@ -2282,7 +2282,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_Frags` (
 
 CREATE TABLE IF NOT EXISTS `hlstats_Events_Latency` (
   `id` int(10) unsigned NOT NULL auto_increment,
-  `eventTime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `eventTime` datetime default NULL,
   `serverId` int(10) unsigned NOT NULL default '0',
   `map` varchar(64) NOT NULL default '',
   `playerId` int(10) unsigned NOT NULL default '0',
@@ -2299,7 +2299,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_Latency` (
 
 CREATE TABLE IF NOT EXISTS `hlstats_Events_PlayerActions` (
   `id` int(10) unsigned NOT NULL auto_increment,
-  `eventTime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `eventTime` datetime default NULL,
   `serverId` int(10) unsigned NOT NULL default '0',
   `map` varchar(64) NOT NULL default '',
   `playerId` int(10) unsigned NOT NULL default '0',
@@ -2321,7 +2321,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_PlayerActions` (
 
 CREATE TABLE IF NOT EXISTS `hlstats_Events_PlayerPlayerActions` (
   `id` int(10) unsigned NOT NULL auto_increment,
-  `eventTime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `eventTime` datetime default NULL,
   `serverId` int(10) unsigned NOT NULL default '0',
   `map` varchar(64) NOT NULL default '',
   `playerId` int(10) unsigned NOT NULL default '0',
@@ -2348,7 +2348,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_PlayerPlayerActions` (
 
 CREATE TABLE IF NOT EXISTS `hlstats_Events_Rcon` (
   `id` int(10) unsigned NOT NULL auto_increment,
-  `eventTime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `eventTime` datetime default NULL,
   `serverId` int(10) unsigned NOT NULL default '0',
   `map` varchar(64) NOT NULL default '',
   `type` varchar(6) NOT NULL default 'UNK',
@@ -2366,7 +2366,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_Rcon` (
 
 CREATE TABLE IF NOT EXISTS `hlstats_Events_Statsme` (
   `id` int(10) unsigned NOT NULL auto_increment,
-  `eventTime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `eventTime` datetime default NULL,
   `serverId` int(10) unsigned NOT NULL default '0',
   `map` varchar(64) NOT NULL default '',
   `playerId` int(10) unsigned NOT NULL default '0',
@@ -2390,7 +2390,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_Statsme` (
 
 CREATE TABLE IF NOT EXISTS `hlstats_Events_Statsme2` (
   `id` int(10) unsigned NOT NULL auto_increment,
-  `eventTime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `eventTime` datetime default NULL,
   `serverId` int(10) unsigned NOT NULL default '0',
   `map` varchar(64) NOT NULL default '',
   `playerId` int(10) unsigned NOT NULL default '0',
@@ -2415,7 +2415,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_Statsme2` (
 
 CREATE TABLE IF NOT EXISTS `hlstats_Events_StatsmeLatency` (
   `id` int(10) unsigned NOT NULL auto_increment,
-  `eventTime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `eventTime` datetime default NULL,
   `serverId` int(10) unsigned NOT NULL default '0',
   `map` varchar(64) NOT NULL default '',
   `playerId` int(10) unsigned NOT NULL default '0',
@@ -2432,7 +2432,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_StatsmeLatency` (
 
 CREATE TABLE IF NOT EXISTS `hlstats_Events_StatsmeTime` (
   `id` int(10) unsigned NOT NULL auto_increment,
-  `eventTime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `eventTime` datetime default NULL,
   `serverId` int(10) unsigned NOT NULL default '0',
   `map` varchar(64) NOT NULL default '',
   `playerId` int(10) unsigned NOT NULL default '0',
@@ -2449,7 +2449,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_StatsmeTime` (
 
 CREATE TABLE IF NOT EXISTS `hlstats_Events_Suicides` (
   `id` int(10) unsigned NOT NULL auto_increment,
-  `eventTime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `eventTime` datetime default NULL,
   `serverId` int(10) unsigned NOT NULL default '0',
   `map` varchar(64) NOT NULL default '',
   `playerId` int(10) unsigned NOT NULL default '0',
@@ -2469,7 +2469,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_Suicides` (
 
 CREATE TABLE IF NOT EXISTS `hlstats_Events_TeamBonuses` (
   `id` int(10) unsigned NOT NULL auto_increment,
-  `eventTime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `eventTime` datetime default NULL,
   `serverId` int(10) unsigned NOT NULL default '0',
   `map` varchar(64) NOT NULL default '',
   `playerId` int(10) unsigned NOT NULL default '0',
@@ -2488,7 +2488,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_TeamBonuses` (
 
 CREATE TABLE IF NOT EXISTS `hlstats_Events_Teamkills` (
   `id` int(10) unsigned NOT NULL auto_increment,
-  `eventTime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `eventTime` datetime default NULL,
   `serverId` int(10) unsigned NOT NULL default '0',
   `map` varchar(64) NOT NULL default '',
   `killerId` int(10) unsigned NOT NULL default '0',
@@ -4070,7 +4070,7 @@ INSERT INTO `hlstats_Options_Choices` (`keyname`, `value`, `text`, `isDefault`) 
 CREATE TABLE IF NOT EXISTS `hlstats_PlayerNames` (
   `playerId` int(10) unsigned NOT NULL default '0',
   `name` varchar(64) NOT NULL default '',
-  `lastuse` datetime NOT NULL default '0000-00-00 00:00:00',
+  `lastuse` datetime default NULL,
   `connection_time` int(11) unsigned NOT NULL default '0',
   `numuses` int(10) unsigned NOT NULL default '0',
   `kills` int(11) unsigned NOT NULL default '0',
@@ -4153,7 +4153,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Players_Awards` (
 
 CREATE TABLE IF NOT EXISTS `hlstats_Players_History` (
   `playerId` int(10) unsigned NOT NULL default '0',
-  `eventTime` date NOT NULL default '0000-00-00',
+  `eventTime` date default NULL,
   `connection_time` int(10) unsigned NOT NULL default '0',
   `kills` int(11) unsigned NOT NULL default '0',
   `deaths` int(11) unsigned NOT NULL default '0',
@@ -7546,6 +7546,7 @@ INSERT INTO `hlstats_Weapons` (`game`, `code`, `name`, `modifier`) VALUES
 ('csgo', 'm249', 'M249 PARA Light Machine Gun', 1.00),
 ('csgo', 'inferno', 'Incendiary Grenade', 1.80),
 ('csgo', 'taser', 'Zeus x27', 1.00),
+('csgo', 'mp5sd', 'MP5-SD', 1.00),
 ('dinodday', 'fists', 'Berserk Punch', 1.30),
 ('dinodday', 'flechette', 'Flechette Gun', 1.40),
 ('dinodday', 'jackrabbit', 'Jackrabbit', 1.40),
