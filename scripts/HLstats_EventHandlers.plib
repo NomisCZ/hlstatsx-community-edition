@@ -429,6 +429,10 @@ sub doEvent_Connect
 	
 	if ($player)
 	{
+		if ($ipAddr eq "") {
+		    $ipAddr = $player->{address};
+		}
+
 		if (($g_servers{$s_addr}->{ignore_bots} == 1) && ($player->{is_bot} == 1))
 		{
 			$player->set("connect_time", time());
@@ -456,7 +460,7 @@ sub doEvent_Connect
 			{
 				$player->set("uniqueid", $ipAddr);
 			}
-			
+
 			&recordEvent(
 				"Connects", 0,
 				$player->{playerid},
@@ -502,6 +506,7 @@ sub doEvent_EnterGame
 			{
 				$hostgroup = &getHostGroup($hostname);
 			}
+			
 			if ($g_stdin == 0 && $g_servers{$s_addr}->{connect_announce} > 0)
 			{
 				my $player_rank = $player->getRank();
@@ -828,7 +833,7 @@ sub doEvent_Suicide
 					);
 				}
 			}
-			
+
 			&recordEvent(
 				"Suicides", 0,
 				$player->{playerid},

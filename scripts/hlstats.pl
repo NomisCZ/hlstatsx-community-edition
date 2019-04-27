@@ -2969,6 +2969,7 @@ while ($loop = &getLine()) {
 		} elsif ($s_output =~ /^(?:Kick: )?"(.+?(?:<.+?>)*)" ([^\(]+)(.*)$/) {
 			# Prototype: "player" verb[properties]
 			# Matches:
+			#	 1. Connection (CS:GO only)
 			#  2. Enter Game
 			#  3. Disconnection
 			
@@ -3001,11 +3002,17 @@ while ($loop = &getLine()) {
 				}
 			}
 			elsif (like($ev_verb, "STEAM USERID validated") || like($ev_verb, "VALVE USERID validated")) {               
-				my $playerinfo = &getPlayerInfo($ev_player, 0);
+				
+				my $isCSGO = ($g_servers{$s_addr}->{play_game} == CSGO());
+				my $playerinfo = &getPlayerInfo($ev_player, $isCSGO ? 1 : 0);
 	
 				if ($playerinfo) {                       
+					
 					$ev_type = 1;
 					
+					if ($isCSGO) {
+						$ev_status = &doEvent_Connect($playerinfo->{userid}, $playerinfo->{uniqueid}, $playerinfo->{address});
+					}	
 				}
 			}
 		} elsif ($s_output =~ /^Team "(.+?)" ([^"\(]+) "([^"]+)"(.*)$/) {
