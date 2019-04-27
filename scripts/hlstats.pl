@@ -1608,9 +1608,7 @@ sub readDatabaseConfig()
 		&printEvent("S_CONFIG", $addr, 1);
 	}
 	
-	my $geotell = ((!defined($g_gi)) ? -1 : tell $g_gi{fh});
-	
-	if ($g_geoip_binary > 0 && $geotell == -1) {
+	if ($g_geoip_binary > 0 && !defined($g_gi)) {
 		my $geoipfile = "$opt_libdir/GeoLiteCity/GeoLite2-City.mmdb";
 		if (-r $geoipfile) {
 			eval "use GeoIP2::Database::Reader"; my $hasGeoIP = $@ ? 0 : 1;
@@ -1627,8 +1625,8 @@ sub readDatabaseConfig()
 			&printEvent("ERROR", "GeoIP method set to binary file lookup but $geoipfile NOT FOUND", 1);
 			$g_gi = undef;
 		}
-	} elsif ($g_geoip_binary == 0 && $geotell > -1) {
-		close($g_gi{fh});
+	} elsif ($g_geoip_binary == 0 && defined($g_gi)) {
+		$g_gi->close();
 		$g_gi = undef;
 	}
 } 
