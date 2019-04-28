@@ -58,7 +58,7 @@ public Event_PlayerDisconnect(Handle:event, const String:name[], bool:dontBroadc
 	decl String:cname[MAX_NAME_LENGTH];
 	GetClientName(client, cname, sizeof(cname));
 	decl String:cauth[32];
-	GetClientAuthString(client, cauth, 32);
+	GetClientAuthId(client, AuthId_Engine, cauth, sizeof(cauth));
 	decl String:creason[128];
 	GetEventString(event, "reason", creason, sizeof(creason));
 

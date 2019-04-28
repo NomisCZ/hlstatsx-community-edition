@@ -131,7 +131,7 @@ public OnPluginStart()
 	HookConVarChange(g_cvar_meleeoverride, OnCvarMeleeOverrideChange);
 	CreateConVar("superlogs_l4d_version", VERSION, NAME, FCVAR_SPONLY|FCVAR_REPLICATED|FCVAR_NOTIFY);
 		
-	if (GuessSDKVersion() != SOURCE_SDK_LEFT4DEAD)
+	if (GetEngineVersion() != Engine_Left4Dead)
 	{
 		g_bIsL4D2 = true;
 	}

@@ -113,7 +113,7 @@ new String: message_prefix[32];
 new bool:g_bPlyrCanDoMotd[MAXPLAYERS+1];
 new bool:g_bGameCanDoMotd = true;
 new bool:g_bTrackColors4Chat;
-new g_iSDKVersion = SOURCE_SDK_UNKNOWN;
+EngineVersion g_evEngineVersion = Engine_Unknown;
 new Handle:g_cvarTeamPlay = INVALID_HANDLE;
 new bool:g_bTeamPlay;
 new bool:g_bLateLoad = false;
@@ -203,19 +203,19 @@ public OnPluginStart()
 		}
 	}
 	
-	CreateConVar("hlxce_plugin_version", VERSION, "HLstatsX:CE Ingame Plugin", FCVAR_PLUGIN|FCVAR_NOTIFY);
-	CreateConVar("hlxce_version", "", "HLstatsX:CE", FCVAR_PLUGIN|FCVAR_NOTIFY);
-	CreateConVar("hlxce_webpage", "http://www.hlxcommunity.com", "http://www.hlxcommunity.com", FCVAR_PLUGIN|FCVAR_NOTIFY);
+	CreateConVar("hlxce_plugin_version", VERSION, "HLstatsX:CE Ingame Plugin", FCVAR_NOTIFY);
+	CreateConVar("hlxce_version", "", "HLstatsX:CE", FCVAR_NOTIFY);
+	CreateConVar("hlxce_webpage", "http://www.hlxcommunity.com", "http://www.hlxcommunity.com", FCVAR_NOTIFY);
 	
-	hlx_block_chat_commands = CreateConVar("hlx_block_commands", "1", "If activated HLstatsX commands are blocked from the chat area", FCVAR_PLUGIN);
-	hlx_message_prefix = CreateConVar("hlx_message_prefix", "", "Define the prefix displayed on every HLstatsX ingame message", FCVAR_PLUGIN);
-	hlx_protect_address = CreateConVar("hlx_protect_address", "", "Address to be protected for logging/forwarding", FCVAR_PLUGIN);
+	hlx_block_chat_commands = CreateConVar("hlx_block_commands", "1", "If activated HLstatsX commands are blocked from the chat area");
+	hlx_message_prefix = CreateConVar("hlx_message_prefix", "", "Define the prefix displayed on every HLstatsX ingame message");
+	hlx_protect_address = CreateConVar("hlx_protect_address", "", "Address to be protected for logging/forwarding");
 	hlx_server_tag = CreateConVar("hlx_server_tag", "1", "If enabled, adds \"HLstatsX:CE\" to server tags on supported games. 1 = Enabled (default), 0 = Disabled",
-		FCVAR_PLUGIN, true, 0.0, true, 1.0);
+		_, true, 0.0, true, 1.0);
 	
 	g_hCustomTags = CreateArray(SVTAGSIZE);
 	sv_tags = FindConVar("sv_tags");
-	g_iSDKVersion = GuessSDKVersion();
+	g_evEngineVersion = GetEngineVersion();
 	
 	if (g_bLateLoad)
 	{
@@ -281,7 +281,7 @@ public OnMapStart()
 
 bool:BTagsSupported()
 {
-	return (sv_tags != INVALID_HANDLE && (g_iSDKVersion == SOURCE_SDK_EPISODE2 || g_iSDKVersion == SOURCE_SDK_EPISODE2VALVE || gamemod == Game_ND));
+	return (sv_tags != INVALID_HANDLE && (g_evEngineVersion == Engine_SourceSDK2007 || g_evEngineVersion == Engine_DODS || g_evEngineVersion == Engine_HL2DM || g_evEngineVersion == Engine_TF2 || gamemod == Game_ND));
 }
 
 stock MyAddServerTag(const String:tag[])
@@ -1292,13 +1292,13 @@ public Action:hlx_sm_psay2(args)
 	new j = 0;
 	for (new i = 0; i < sizeof(client_message); i++)
 	{
-		new char = client_message[i];
-		if (char < 5 && char > 0)
+		new sChar = client_message[i];
+		if (sChar < 5 && sChar > 0)
 		{
 			continue;
 		}
 		buffer_message[j] = client_message[i];
-		if (char == 0)
+		if (sChar == 0)
 		{
 			break;
 		}

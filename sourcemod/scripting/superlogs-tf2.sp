@@ -213,7 +213,7 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 
 public OnPluginStart()
 {
-	CreateConVar("superlogs_tf_version", VERSION, NAME, FCVAR_PLUGIN|FCVAR_NOTIFY);
+	CreateConVar("superlogs_tf_version", VERSION, NAME, FCVAR_NOTIFY);
 
 	cvar_crits = FindConVar("tf_weapon_criticals");
 	cvar_actions = CreateConVar("superlogs_actions", "1", "Enable logging of most player actions, such as \"stun\" (default on)", 0, true, 0.0, true, 1.0);
@@ -561,7 +561,7 @@ public Event_PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
 		decl String:owner[96];
 		decl String:player_authid[32];
 		decl String:objname[24];
-		if (!GetClientAuthString(client, player_authid, sizeof(player_authid)))
+		if (!GetClientAuthId(client, AuthId_Engine, player_authid, sizeof(player_authid)))
 			strcopy(player_authid, sizeof(player_authid), "UNKNOWN");
 		Format(owner, sizeof(owner), "\"%N<%d><%s><%s>\"", client, userid, player_authid, g_team_list[GetClientTeam(client)]);
 		new objecttype;
@@ -789,7 +789,7 @@ public Event_ObjectDestroyed(Handle:event, const String:name[], bool:dontBroadca
 		new victim = GetClientOfUserId(victimuid);
 		if (victim == 0 || !IsClientInGame(victim))
 			return;
-		GetClientAuthString(victim, auth, sizeof(auth));
+		GetClientAuthId(victim, AuthId_Engine, auth, sizeof(auth));
 		GetTeamName(GetClientTeam(victim), team, sizeof(team));
 		Format(properties, sizeof(properties), " (object \"OBJ_SENTRYGUN_MINI\") (weapon \"%s\") (objectowner \"%N<%d><%s><%s>\")", weapon, victim, victimuid, auth, team);
 		LogPlayerEvent(GetClientOfUserId(GetEventInt(event, "attacker")), "triggered", "killedobject", true, properties);
@@ -1347,7 +1347,7 @@ DumpWeaponStats(client)
 	if(IsClientInGame(client))
 	{
 		decl String:player_authid[64];
-		if(!GetClientAuthString(client, player_authid, sizeof(player_authid)))
+		if(!GetClientAuthId(client, AuthId_Engine, player_authid, sizeof(player_authid)))
 			strcopy(player_authid, sizeof(player_authid), "UNKNOWN");
 		new player_team = GetClientTeam(client);
 		new player_userid = GetClientUserId(client);

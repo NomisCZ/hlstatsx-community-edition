@@ -56,7 +56,7 @@ new const String:g_weapon_list[MAX_LOG_WEAPONS][MAX_WEAPON_LEN] = {
 									"golden_pp7"
 								};
 
-new const String:g_weapon_loglist[MAX_LOG_WEAPONS][] = {
+/*new const String:g_weapon_loglist[MAX_LOG_WEAPONS][] = {
 									"#GE_PP7",
 									"#GE_PP7_SILENCED",
 									"#GE_DD44",
@@ -76,7 +76,7 @@ new const String:g_weapon_loglist[MAX_LOG_WEAPONS][] = {
 									"#GE_SilverPP7",
 									"#GE_GoldPP7"
 								};
-								
+*/								
 new Handle:g_cvar_wstats = INVALID_HANDLE;
 new Handle:g_cvar_headshots = INVALID_HANDLE;
 new Handle:g_cvar_locations = INVALID_HANDLE;
