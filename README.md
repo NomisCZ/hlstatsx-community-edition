@@ -16,6 +16,6 @@ For installation help, please visit AlliedModders forums.
 
 ---
 
-<p align="center">⚠️ We we are currently working on documentation, so be patient. ⚠️</p>
+<p align="center">⚠️ We are currently working on documentation, so be patient. ⚠️</p>
 
 ---
