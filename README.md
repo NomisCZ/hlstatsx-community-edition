@@ -12,3 +12,10 @@ a PHP frontend.
 
 For installation help, please visit AlliedModders forums.
 - https://forums.alliedmods.net/forumdisplay.php?f=156
+
+
+---
+
+<p align="center">⚠️ We we are currently working on documentation, so be patient. ⚠️</p>
+
+---
