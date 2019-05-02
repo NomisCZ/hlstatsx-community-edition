@@ -2,7 +2,7 @@
 
 -- This file is only needed for new installations.
 
-SET @DBVERSION="79";
+SET @DBVERSION="80";
 SET @VERSION="1.6.19";
 
 -- --------------------------------------------------------
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `geoLiteCity_Blocks` (
   `startIpNum` bigint(11) unsigned NOT NULL default '0',
   `endIpNum` bigint(11) unsigned NOT NULL default '0',
   `locId` bigint(11) unsigned NOT NULL default '0'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `geoLiteCity_Location` (
   `latitude` decimal(14,4) default NULL,
   `longitude` decimal(14,4) default NULL,
   PRIMARY KEY  (`locId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -56,71 +56,71 @@ CREATE TABLE IF NOT EXISTS `hlstats_Actions` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `gamecode` (`code`,`game`,`team`),
   KEY `code` (`code`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `hlstats_Actions`
 --
 
 INSERT INTO `hlstats_Actions` (`game`, `code`, `reward_player`, `reward_team`, `team`, `description`, `for_PlayerActions`, `for_PlayerPlayerActions`, `for_TeamActions`, `for_WorldActions`) VALUES
-('tf', 'flagevent_defended', 1, 0, '', 'Defended the flag', '1', '', '', ''),
-('tf', 'flagevent_captured', 5, 1, '', 'Captured the flag', '1', '', '', ''),
-('tf', 'flagevent_dropped', -2, 0, '', 'Dropped the flag (while alive)', '1', '', '', ''),
-('tf', 'flagevent_dropped_death', 0, 0, '', 'Dropped the flag (on death)', '1', '', '', ''),
-('tf', 'flagevent_picked_up', 2, 0, '', 'Picked up the flag', '1', '', '', ''),
-('tf', 'killedobject_obj_teleporter', 2, 0, '', 'Destroyed a teleporter', '1', '', '', ''),
-('tf', 'killedobject_obj_dispenser', 3, 0, '', 'Destroyed a dispenser', '1', '', '', ''),
-('tf', 'killedobject_obj_sentrygun', 4, 0, '', 'Destroyed a sentry gun', '1', '', '', ''),
-('tf', 'killedobject_obj_sentrygun_mini', 4, 0, '', 'Destroyed a mini sentry gun', '1', '', '', ''),
-('tf', 'builtobject_obj_teleporter', 2, 0, '', 'Built a teleporter', '1', '', '', ''),
-('tf', 'builtobject_obj_dispenser', 3, 0, '', 'Built a dispenser', '1', '', '', ''),
-('tf', 'builtobject_obj_sentrygun', 3, 0, '', 'Built a sentry gun', '1', '', '', ''),
-('tf', 'builtobject_obj_sentrygun_mini', 3, 0, '', 'Built a mini sentry gun', '1', '', '', ''),
-('tf', 'captureblocked', 1, 0, '', 'Capture Blocked', '1', '', '', ''),
-('tf', 'pointcaptured', 5, 5, '', 'Point Captured', '1', '', '1', ''),
-('tf', 'kill assist', 2, 0, '', 'Kill Assist', '1', '', '', ''),
-('tf', 'builtobject_obj_attachment_sapper', 2, 0, '', 'Attached a Sapper', '1', '', '', ''),
-('tf', 'killedobject_obj_attachment_sapper', 1, 0, '', 'Removed a Sapper', '1', '', '', ''),
-('tf', 'chargedeployed', 1, 0, '', 'Ubercharge', '1', '', '', ''),
-('tf', 'domination', 5, 0, '', 'Domination', '', '1', '', ''),
-('tf', 'revenge', 3, 0, '', 'Revenge', '', '1', '', ''),
-('tf', 'Round_Win', 0, 10, '', 'Round Win', '', '', '1', ''),
-('tf', 'Mini_Round_Win', 0, 5, '', 'Mini-Round Win', '', '', '1', ''),
-('tf', 'owner_killedobject_obj_sentrygun', -3, 0, '', 'Disassembled a sentry gun', '1', '', '', ''),
-('tf', 'owner_killedobject_obj_sentrygun_mini', -3, 0, '', 'Disassembled a mini sentry gun', '1', '', '', ''),
-('tf', 'owner_killedobject_obj_dispenser', -3, 0, '', 'Disassembled a dispenser', '1', '', '', ''),
-('tf', 'owner_killedobject_obj_teleporter', -2, 0, '', 'Disassembled a teleporter', '1', '', '', ''),
-('tf', 'owner_killedobject_obj_attachment_sapper', -2, 0, '', 'Console-killed sapper', '1', '', '', ''),
-('tf', 'backstab', 2, 0, '', 'Backstab Kill', '1', '', '', ''),
-('tf', 'headshot', 2, 0, '', 'Headshot Kill', '1', '', '', ''),
+('tf', 'flagevent_defended', 1, 0, '', 'Defended the flag', '1', '0', '0', '0'),
+('tf', 'flagevent_captured', 5, 1, '', 'Captured the flag', '1', '0', '0', '0'),
+('tf', 'flagevent_dropped', -2, 0, '', 'Dropped the flag (while alive)', '1', '0', '0', '0'),
+('tf', 'flagevent_dropped_death', 0, 0, '', 'Dropped the flag (on death)', '1', '0', '0', '0'),
+('tf', 'flagevent_picked_up', 2, 0, '', 'Picked up the flag', '1', '0', '0', '0'),
+('tf', 'killedobject_obj_teleporter', 2, 0, '', 'Destroyed a teleporter', '1', '0', '0', '0'),
+('tf', 'killedobject_obj_dispenser', 3, 0, '', 'Destroyed a dispenser', '1', '0', '0', '0'),
+('tf', 'killedobject_obj_sentrygun', 4, 0, '', 'Destroyed a sentry gun', '1', '0', '0', '0'),
+('tf', 'killedobject_obj_sentrygun_mini', 4, 0, '', 'Destroyed a mini sentry gun', '1', '0', '0', '0'),
+('tf', 'builtobject_obj_teleporter', 2, 0, '', 'Built a teleporter', '1', '0', '0', '0'),
+('tf', 'builtobject_obj_dispenser', 3, 0, '', 'Built a dispenser', '1', '0', '0', '0'),
+('tf', 'builtobject_obj_sentrygun', 3, 0, '', 'Built a sentry gun', '1', '0', '0', '0'),
+('tf', 'builtobject_obj_sentrygun_mini', 3, 0, '', 'Built a mini sentry gun', '1', '0', '0', '0'),
+('tf', 'captureblocked', 1, 0, '', 'Capture Blocked', '1', '0', '0', '0'),
+('tf', 'pointcaptured', 5, 5, '', 'Point Captured', '1', '0', '1', '0'),
+('tf', 'kill assist', 2, 0, '', 'Kill Assist', '1', '0', '0', '0'),
+('tf', 'builtobject_obj_attachment_sapper', 2, 0, '', 'Attached a Sapper', '1', '0', '0', '0'),
+('tf', 'killedobject_obj_attachment_sapper', 1, 0, '', 'Removed a Sapper', '1', '0', '0', '0'),
+('tf', 'chargedeployed', 1, 0, '', 'Ubercharge', '1', '0', '0', '0'),
+('tf', 'domination', 5, 0, '', 'Domination', '0', '1', '0', '0'),
+('tf', 'revenge', 3, 0, '', 'Revenge', '0', '1', '0', '0'),
+('tf', 'Round_Win', 0, 10, '', 'Round Win', '0', '0', '1', '0'),
+('tf', 'Mini_Round_Win', 0, 5, '', 'Mini-Round Win', '0', '0', '1', '0'),
+('tf', 'owner_killedobject_obj_sentrygun', -3, 0, '', 'Disassembled a sentry gun', '1', '0', '0', '0'),
+('tf', 'owner_killedobject_obj_sentrygun_mini', -3, 0, '', 'Disassembled a mini sentry gun', '1', '0', '0', '0'),
+('tf', 'owner_killedobject_obj_dispenser', -3, 0, '', 'Disassembled a dispenser', '1', '0', '0', '0'),
+('tf', 'owner_killedobject_obj_teleporter', -2, 0, '', 'Disassembled a teleporter', '1', '0', '0', '0'),
+('tf', 'owner_killedobject_obj_attachment_sapper', -2, 0, '', 'Console-killed sapper', '1', '0', '0', '0'),
+('tf', 'backstab', 2, 0, '', 'Backstab Kill', '1', '0', '0', '0'),
+('tf', 'headshot', 2, 0, '', 'Headshot Kill', '1', '0', '0', '0'),
 ('tf', 'kill_assist_medic', 3, 0, '', 'Kill Assist - Medic', '1', '0', '0', '0'),
-('tf', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '', '', ''),
-('tf', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '', '', ''),
-('tf', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '', '', ''),
-('tf', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '', '', ''),
-('tf', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '', '', ''),
-('tf', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '', '', ''),
-('tf', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '', '', ''),
-('tf', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '', '', ''),
-('tf', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '', '', ''),
-('tf', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '', '', ''),
-('tf', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '', '', ''),
-('tf', 'sandvich', 0, 0, '', 'Ate a Sandvich', '1', '', '', ''),
-('tf', 'crit_kill', 0, 0, '', 'Critical Kill', '1', '', '', ''),
-('tf', 'force_suicide', 0, 0, '', 'Force Suicide', '1', '', '', ''),
-('tf', 'hit_by_train', 0, 0, '', 'LOL TRAIN''D', '1', '', '', ''),
-('tf', 'first_blood', 1, 0, '', 'First Blood', '1', '', '', ''),
-('tf', 'steal_sandvich', 2, 0, '', 'Steal Sandvich', '', '1', '', ''),
-('tf', 'stun', 0, 0, '', 'Stun', '', '1', '', ''),
-('tf', 'drowned', 0, 0, '', 'Drowned', '1', '', '', ''),
-('tf', 'pyro_extinguish', 1, 0, '', 'Extinguished Teammate (Pyro)', '1', '', '', ''),
-('tf', 'sniper_extinguish', 1, 0, '', 'Extinguished Teammate (Sniper)', '1', '', '', ''),
-('tf', 'medic_extinguish', 1, 0, '', 'Extinguished Teammate (Medic)', '1', '', '', ''),
-('tf', 'engineer_extinguish', 1, 0, '', 'Extinguished Teammate (Engineer)', '1', '', '', ''),
-('tf', 'teleport', 1, 0, '', 'Teleporter used', '1', '', '', ''),
-('tf', 'teleport_self', 0, 0, '', 'Teleporter used (self)', '1', '', '', ''),
-('tf', 'killed_charged_medic', 1, 0, '', 'Killed charged medic', '1', '', '', ''),
-('tf', 'death_sawblade', 0, 0, '', 'LOL SAW''D', '1', '', '', ''),
+('tf', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '0', '0', '0'),
+('tf', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '0', '0', '0'),
+('tf', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '0', '0', '0'),
+('tf', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '0', '0', '0'),
+('tf', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '0', '0', '0'),
+('tf', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '0', '0', '0'),
+('tf', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '0', '0', '0'),
+('tf', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '0', '0', '0'),
+('tf', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '0', '0', '0'),
+('tf', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '0', '0', '0'),
+('tf', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '0', '0', '0'),
+('tf', 'sandvich', 0, 0, '', 'Ate a Sandvich', '1', '0', '0', '0'),
+('tf', 'crit_kill', 0, 0, '', 'Critical Kill', '1', '0', '0', '0'),
+('tf', 'force_suicide', 0, 0, '', 'Force Suicide', '1', '0', '0', '0'),
+('tf', 'hit_by_train', 0, 0, '', 'LOL TRAIN''D', '1', '0', '0', '0'),
+('tf', 'first_blood', 1, 0, '', 'First Blood', '1', '0', '0', '0'),
+('tf', 'steal_sandvich', 2, 0, '', 'Steal Sandvich', '0', '1', '0', '0'),
+('tf', 'stun', 0, 0, '', 'Stun', '0', '1', '0', '0'),
+('tf', 'drowned', 0, 0, '', 'Drowned', '1', '0', '0', '0'),
+('tf', 'pyro_extinguish', 1, 0, '', 'Extinguished Teammate (Pyro)', '1', '0', '0', '0'),
+('tf', 'sniper_extinguish', 1, 0, '', 'Extinguished Teammate (Sniper)', '1', '0', '0', '0'),
+('tf', 'medic_extinguish', 1, 0, '', 'Extinguished Teammate (Medic)', '1', '0', '0', '0'),
+('tf', 'engineer_extinguish', 1, 0, '', 'Extinguished Teammate (Engineer)', '1', '0', '0', '0'),
+('tf', 'teleport', 1, 0, '', 'Teleporter used', '1', '0', '0', '0'),
+('tf', 'teleport_self', 0, 0, '', 'Teleporter used (self)', '1', '0', '0', '0'),
+('tf', 'killed_charged_medic', 1, 0, '', 'Killed charged medic', '1', '0', '0', '0'),
+('tf', 'death_sawblade', 0, 0, '', 'LOL SAW''D', '1', '0', '0', '0'),
 ('tf', 'jarate', 1, 0, '', 'Jarated player', '0', '1', '0', '0'),
 ('tf', 'shield_blocked', 0, 0, '', 'Blocked with Shield', '0', '1', '0', '0'),
 ('tf', 'mvp1', 5, 0, '', 'MVP #1', '1', '0', '0', '0'),
@@ -160,174 +160,174 @@ INSERT INTO `hlstats_Actions` (`game`, `code`, `reward_player`, `reward_team`, `
 ('tf', 'teleport_self_again', 0, 0, '', 'Teleported Self Again (Past 10 Seconds)', '1', '0', '0', '0'),
 ('tf', 'teleport_used', 0, 0, '', 'Teleporter Used (Not Own)', '1', '0', '0', '0'),
 ('tf', 'teleport_used_again', 0, 0, '', 'Teleporter Used Again (Past 10 Seconds) (Not Own)', '1', '0', '0', '0'),
-('tf', 'dalokohs', 0, 0, '', 'Ate a Dalokohs Bar', '1', '', '', ''),
+('tf', 'dalokohs', 0, 0, '', 'Ate a Dalokohs Bar', '1', '0', '0', '0'),
 ('tf', 'dalokohs_healself', 0, 0, '', 'Ate Dalokohs Bar for Health', '1', '0', '0', '0'),
 ('tf', 'steak', 0, 0, '', 'Ate a Buffalo Steak Sandvich', '1', '0', '0', '0'),
 ('tf', 'madmilk', 0, 0, '', 'Mad Milking a player', '0', '1', '0', '0'),
-('tf', 'scout_extinguish', 1, 0, '', 'Extinguished Teammate (Scout)', '1', '', '', ''),
-('tf', 'player_penetration', 4, 0, '', 'Player Penetration', '1', '', '', ''),
-('css','Begin_Bomb_Defuse_Without_Kit',0,0,'CT','Start Defusing the Bomb Without a Defuse Kit','1','','',''),
-('css','Begin_Bomb_Defuse_With_Kit',0,0,'CT','Start Defusing the Bomb With a Defuse Kit','1','','',''),
-('css','Planted_The_Bomb',10,2,'TERRORIST','Plant the Bomb','1','','',''),
-('css','Defused_The_Bomb',10,0,'CT','Defuse the Bomb','1','','',''),
-('css','Touched_A_Hostage',0,0,'CT','Touch a Hostage','1','','',''),
-('css','Rescued_A_Hostage',5,1,'CT','Rescue a Hostage','1','','',''),
-('css','Killed_A_Hostage',-15,1,'CT','Kill a Hostage','1','','',''),
-('css','Spawned_With_The_Bomb',2,0,'TERRORIST','Spawn with the Bomb','1','','',''),
-('css','Got_The_Bomb',2,0,'TERRORIST','Pick up the Bomb','1','','',''),
-('css','Dropped_The_Bomb',-2,0,'TERRORIST','Drop the Bomb','1','','',''),
-('css','CTs_Win',0,2,'CT','All Terrorists eliminated','','','1',''),
-('css','Terrorists_Win',0,2,'TERRORIST','All Counter-Terrorists eliminated','','','1',''),
-('css','All_Hostages_Rescued',0,10,'CT','Counter-Terrorists rescued all the hostages','','','1',''),
-('css','Target_Bombed',0,5,'TERRORIST','Terrorists bombed the target','','','1',''),
-('css','Bomb_Defused',0,5,'CT','Counter-Terrorists defused the bomb','','','1',''),
-('css','Escaped_As_VIP',0,10,'CT','VIP escaped','','','1',''),
-('css','Assassinated_The_VIP',0,6,'TERRORIST','Terrorists assassinated the VIP','','','1',''),
-('css','Became_VIP',1,0,'CT','Become the VIP','1','','',''),
-('css','headshot',1,0,'','Headshot','1','','',''),
-('css','round_mvp',0,0,'','Round MVP','1','','',''),
-('css', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '', '', ''),
-('css', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '', '', ''),
-('css', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '', '', ''),
-('css', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '', '', ''),
-('css', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '', '', ''),
-('css', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '', '', ''),
-('css', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '', '', ''),
-('css', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '', '', ''),
-('css', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '', '', ''),
-('css', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '', '', ''),
-('css', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '', '', ''),
-('css', 'domination', 5, 0, '', 'Domination', '', '1', '', ''),
-('css', 'revenge', 3, 0, '', 'Revenge', '', '1', '', ''),
-('hl2ctf','ctf_flag_capture',15,0,'','Captured Enemy Flag','1','','',''),
-('hl2ctf','ctf_flag_defend',2,0,'','Defended the Flag','1','','',''),
-('hl2ctf','ctf_kill_carrier',5,0,'','Killed Enemy Flag Carrier','1','','',''),
-('hl2ctf','ctf_flag_return',5,0,'','Returned Flag','1','','',''),
-('hl2ctf','ctf_flag_stolen',1,0,'','Stole Enemy Flag','1','','',''),
-('hl2ctf','ctf_protect_carrier',5,0,'','Protected Flag Carrier','1','','',''),
-('hl2ctf', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '', '', ''),
-('hl2ctf', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '', '', ''),
-('hl2ctf', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '', '', ''),
-('hl2ctf', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '', '', ''),
-('hl2ctf', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '', '', ''),
-('hl2ctf', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '', '', ''),
-('hl2ctf', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '', '', ''),
-('hl2ctf', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '', '', ''),
-('hl2ctf', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '', '', ''),
-('hl2ctf', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '', '', ''),
-('hl2ctf', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '', '', ''),
-('dods','capblock',6,1,'','Capture Blocked','1','','1',''),
-('dods','captured_loc',6,1,'','Area Captured','1','','1',''),
-('dods','kill_planter',2,0,'','Bomb Planter Killed','1','','',''),
-('dods','bomb_defuse',6,1,'','Bomb Defused','1','','1',''),
-('dods','bomb_plant',6,1,'','Bomb Planted','1','','1',''),
-('dods','round_win',0,5,'','Round Win','','','1',''),
-('dods', 'domination', 5, 0, '', 'Domination', '', '1', '', ''),
-('dods', 'revenge', 3, 0, '', 'Revenge', '', '1', '', ''),
-('dods', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '', '', ''),
-('dods', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '', '', ''),
-('dods', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '', '', ''),
-('dods', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '', '', ''),
-('dods', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '', '', ''),
-('dods', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '', '', ''),
-('dods', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '', '', ''),
-('dods', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '', '', ''),
-('dods', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '', '', ''),
-('dods', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '', '', ''),
-('dods', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '', '', ''),
-('hl2mp', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '', '', ''),
-('hl2mp', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '', '', ''),
-('hl2mp', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '', '', ''),
-('hl2mp', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '', '', ''),
-('hl2mp', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '', '', ''),
-('hl2mp', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '', '', ''),
-('hl2mp', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '', '', ''),
-('hl2mp', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '', '', ''),
-('hl2mp', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '', '', ''),
-('hl2mp', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '', '', ''),
-('hl2mp', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '', '', ''),
+('tf', 'scout_extinguish', 1, 0, '', 'Extinguished Teammate (Scout)', '1', '0', '0', '0'),
+('tf', 'player_penetration', 4, 0, '', 'Player Penetration', '1', '0', '0', '0'),
+('css','Begin_Bomb_Defuse_Without_Kit',0,0,'CT','Start Defusing the Bomb Without a Defuse Kit','1','0', '0', '0'),
+('css','Begin_Bomb_Defuse_With_Kit',0,0,'CT','Start Defusing the Bomb With a Defuse Kit','1','0', '0', '0'),
+('css','Planted_The_Bomb',10,2,'TERRORIST','Plant the Bomb','1','0', '0', '0'),
+('css','Defused_The_Bomb',10,0,'CT','Defuse the Bomb','1','0', '0', '0'),
+('css','Touched_A_Hostage',0,0,'CT','Touch a Hostage','1','0', '0', '0'),
+('css','Rescued_A_Hostage',5,1,'CT','Rescue a Hostage','1','0', '0', '0'),
+('css','Killed_A_Hostage',-15,1,'CT','Kill a Hostage','1','0', '0', '0'),
+('css','Spawned_With_The_Bomb',2,0,'TERRORIST','Spawn with the Bomb','1','0', '0', '0'),
+('css','Got_The_Bomb',2,0,'TERRORIST','Pick up the Bomb','1','0', '0', '0'),
+('css','Dropped_The_Bomb',-2,0,'TERRORIST','Drop the Bomb','1','0', '0', '0'),
+('css','CTs_Win',0,2,'CT','All Terrorists eliminated','0','0','1','0'),
+('css','Terrorists_Win',0,2,'TERRORIST','All Counter-Terrorists eliminated','0','0','1','0'),
+('css','All_Hostages_Rescued',0,10,'CT','Counter-Terrorists rescued all the hostages','0','0','1','0'),
+('css','Target_Bombed',0,5,'TERRORIST','Terrorists bombed the target','0','0','1','0'),
+('css','Bomb_Defused',0,5,'CT','Counter-Terrorists defused the bomb','0','0','1','0'),
+('css','Escaped_As_VIP',0,10,'CT','VIP escaped','0','0','1','0'),
+('css','Assassinated_The_VIP',0,6,'TERRORIST','Terrorists assassinated the VIP','0','0','1','0'),
+('css','Became_VIP',1,0,'CT','Become the VIP','1','0', '0', '0'),
+('css','headshot',1,0,'','Headshot','1','0', '0', '0'),
+('css','round_mvp',0,0,'','Round MVP','1','0', '0', '0'),
+('css', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '0', '0', '0'),
+('css', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '0', '0', '0'),
+('css', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '0', '0', '0'),
+('css', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '0', '0', '0'),
+('css', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '0', '0', '0'),
+('css', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '0', '0', '0'),
+('css', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '0', '0', '0'),
+('css', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '0', '0', '0'),
+('css', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '0', '0', '0'),
+('css', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '0', '0', '0'),
+('css', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '0', '0', '0'),
+('css', 'domination', 5, 0, '', 'Domination', '0', '1', '0', '0'),
+('css', 'revenge', 3, 0, '', 'Revenge', '0', '1', '0', '0'),
+('hl2ctf','ctf_flag_capture',15,0,'','Captured Enemy Flag','1','0', '0', '0'),
+('hl2ctf','ctf_flag_defend',2,0,'','Defended the Flag','1','0', '0', '0'),
+('hl2ctf','ctf_kill_carrier',5,0,'','Killed Enemy Flag Carrier','1','0', '0', '0'),
+('hl2ctf','ctf_flag_return',5,0,'','Returned Flag','1','0', '0', '0'),
+('hl2ctf','ctf_flag_stolen',1,0,'','Stole Enemy Flag','1','0', '0', '0'),
+('hl2ctf','ctf_protect_carrier',5,0,'','Protected Flag Carrier','1','0', '0', '0'),
+('hl2ctf', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '0', '0', '0'),
+('hl2ctf', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '0', '0', '0'),
+('hl2ctf', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '0', '0', '0'),
+('hl2ctf', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '0', '0', '0'),
+('hl2ctf', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '0', '0', '0'),
+('hl2ctf', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '0', '0', '0'),
+('hl2ctf', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '0', '0', '0'),
+('hl2ctf', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '0', '0', '0'),
+('hl2ctf', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '0', '0', '0'),
+('hl2ctf', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '0', '0', '0'),
+('hl2ctf', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '0', '0', '0'),
+('dods','capblock',6,1,'','Capture Blocked','1','0','1','0'),
+('dods','captured_loc',6,1,'','Area Captured','1','0','1','0'),
+('dods','kill_planter',2,0,'','Bomb Planter Killed','1','0', '0', '0'),
+('dods','bomb_defuse',6,1,'','Bomb Defused','1','0','1','0'),
+('dods','bomb_plant',6,1,'','Bomb Planted','1','0','1','0'),
+('dods','round_win',0,5,'','Round Win','0','0','1','0'),
+('dods', 'domination', 5, 0, '', 'Domination', '0', '1', '0', '0'),
+('dods', 'revenge', 3, 0, '', 'Revenge', '0', '1', '0', '0'),
+('dods', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '0', '0', '0'),
+('dods', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '0', '0', '0'),
+('dods', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '0', '0', '0'),
+('dods', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '0', '0', '0'),
+('dods', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '0', '0', '0'),
+('dods', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '0', '0', '0'),
+('dods', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '0', '0', '0'),
+('dods', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '0', '0', '0'),
+('dods', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '0', '0', '0'),
+('dods', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '0', '0', '0'),
+('dods', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '0', '0', '0'),
+('hl2mp', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '0', '0', '0'),
+('hl2mp', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '0', '0', '0'),
+('hl2mp', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '0', '0', '0'),
+('hl2mp', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '0', '0', '0'),
+('hl2mp', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '0', '0', '0'),
+('hl2mp', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '0', '0', '0'),
+('hl2mp', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '0', '0', '0'),
+('hl2mp', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '0', '0', '0'),
+('hl2mp', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '0', '0', '0'),
+('hl2mp', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '0', '0', '0'),
+('hl2mp', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '0', '0', '0'),
 ('hl2mp', 'headshot', 0, 0, '', 'Headshot Kill', '1', '0', '0', '0'),
-('insmod', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '', '', ''),
-('insmod', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '', '', ''),
-('insmod', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '', '', ''),
-('insmod', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '', '', ''),
-('insmod', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '', '', ''),
-('insmod', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '', '', ''),
-('insmod', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '', '', ''),
-('insmod', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '', '', ''),
-('insmod', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '', '', ''),
-('insmod', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '', '', ''),
-('insmod', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '', '', ''),
-('insmod', 'headshot', 1, 0, '', 'Headshot Kill', '1', '', '', ''),
-('insmod', 'Round_Win', 0, 10, '', 'Round Win', '', '', '1', ''),
-('insmod', 'captured_a', 0, 5, '', 'Captured Objective A', '', '', '1', ''),
-('insmod', 'captured_b', 0, 5, '', 'Captured Objective B', '', '', '1', ''),
-('insmod', 'captured_c', 0, 5, '', 'Captured Objective C', '', '', '1', ''),
-('insmod', 'captured_d', 0, 5, '', 'Captured Objective D', '', '', '1', ''),
-('insmod', 'captured_e', 0, 5, '', 'Captured Objective E', '', '', '1', ''),
-('ff', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '', '', ''),
-('ff', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '', '', ''),
-('ff', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '', '', ''),
-('ff', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '', '', ''),
-('ff', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '', '', ''),
-('ff', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '', '', ''),
-('ff', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '', '', ''),
-('ff', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '', '', ''),
-('ff', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '', '', ''),
-('ff', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '', '', ''),
-('ff', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '', '', ''),
-('ff', 'headshot', 1, 0, '', 'Headshot kill', '1', '', '', ''),
-('ff', 'sentrygun_upgraded', 1, 0, '', 'Upgraded Sentry Gun', '1', '', '', ''),
-('ff', 'build_sentrygun', 1, 0, '', 'Built Sentry Gun', '1', '', '', ''),
-('ff', 'build_dispenser', 1, 0, '', 'Built Dispenser', '1', '', '', ''),
-('ff', 'dispenser_detonated', -1, 0, '', 'Dispenser Detonated', '1', '', '', ''),
-('ff', 'sentry_detonated', -1, 0, '', 'Sentry Gun Detonated', '1', '', '', ''),
-('ff', 'sentry_dismantled', -1, 0, '', 'Sentry Gun Dismantled', '1', '', '', ''),
-('ff', 'dispenser_dismantled', -1, 0, '', 'Dispenser Dismantled', '1', '', '', ''),
-('ff', 'build_mancannon', 1, 0, '', 'Built Jump Pad', '1', '', '', ''),
-('ff', 'mancannon_detonated', -1, 0, '', 'Detonated Jump Pad', '1', '', '', ''),
-('ff', 'build_detpack', 1, 0, '', 'Placed Detpack', '1', '', '', ''),
-('ff', 'flag_touch', 3, 0, '', 'Flag Picked Up', '1', '', '', ''),
-('ff', 'flag_capture', 3, 0, '', 'Flag Captured', '1', '', '', ''),
-('ff', 'flag_dropped', -3, 0, '', 'Flag Dropped', '1', '', '', ''),
-('ff', 'flag_thrown', -3, 0, '', 'Flag Thrown', '1', '', '', ''),
-('ff', 'disguise_lost', 1, 0, '', 'Uncovered Enemy', '', '1', '', ''),
-('hidden', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '', '', ''),
-('hidden', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '', '', ''),
-('hidden', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '', '', ''),
-('hidden', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '', '', ''),
-('hidden', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '', '', ''),
-('hidden', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '', '', ''),
-('hidden', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '', '', ''),
-('hidden', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '', '', ''),
-('hidden', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '', '', ''),
-('hidden', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '', '', ''),
-('hidden', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '', '', ''),
-('zps', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '', '', ''),
-('zps', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '', '', ''),
-('zps', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '', '', ''),
-('zps', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '', '', ''),
-('zps', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '', '', ''),
-('zps', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '', '', ''),
-('zps', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '', '', ''),
-('zps', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '', '', ''),
-('zps', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '', '', ''),
-('zps', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '', '', ''),
-('zps', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '', '', ''),
+('insmod', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '0', '0', '0'),
+('insmod', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '0', '0', '0'),
+('insmod', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '0', '0', '0'),
+('insmod', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '0', '0', '0'),
+('insmod', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '0', '0', '0'),
+('insmod', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '0', '0', '0'),
+('insmod', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '0', '0', '0'),
+('insmod', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '0', '0', '0'),
+('insmod', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '0', '0', '0'),
+('insmod', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '0', '0', '0'),
+('insmod', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '0', '0', '0'),
+('insmod', 'headshot', 1, 0, '', 'Headshot Kill', '1', '0', '0', '0'),
+('insmod', 'Round_Win', 0, 10, '', 'Round Win', '0', '0', '1', '0'),
+('insmod', 'captured_a', 0, 5, '', 'Captured Objective A', '0', '0', '1', '0'),
+('insmod', 'captured_b', 0, 5, '', 'Captured Objective B', '0', '0', '1', '0'),
+('insmod', 'captured_c', 0, 5, '', 'Captured Objective C', '0', '0', '1', '0'),
+('insmod', 'captured_d', 0, 5, '', 'Captured Objective D', '0', '0', '1', '0'),
+('insmod', 'captured_e', 0, 5, '', 'Captured Objective E', '0', '0', '1', '0'),
+('ff', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '0', '0', '0'),
+('ff', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '0', '0', '0'),
+('ff', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '0', '0', '0'),
+('ff', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '0', '0', '0'),
+('ff', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '0', '0', '0'),
+('ff', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '0', '0', '0'),
+('ff', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '0', '0', '0'),
+('ff', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '0', '0', '0'),
+('ff', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '0', '0', '0'),
+('ff', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '0', '0', '0'),
+('ff', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '0', '0', '0'),
+('ff', 'headshot', 1, 0, '', 'Headshot kill', '1', '0', '0', '0'),
+('ff', 'sentrygun_upgraded', 1, 0, '', 'Upgraded Sentry Gun', '1', '0', '0', '0'),
+('ff', 'build_sentrygun', 1, 0, '', 'Built Sentry Gun', '1', '0', '0', '0'),
+('ff', 'build_dispenser', 1, 0, '', 'Built Dispenser', '1', '0', '0', '0'),
+('ff', 'dispenser_detonated', -1, 0, '', 'Dispenser Detonated', '1', '0', '0', '0'),
+('ff', 'sentry_detonated', -1, 0, '', 'Sentry Gun Detonated', '1', '0', '0', '0'),
+('ff', 'sentry_dismantled', -1, 0, '', 'Sentry Gun Dismantled', '1', '0', '0', '0'),
+('ff', 'dispenser_dismantled', -1, 0, '', 'Dispenser Dismantled', '1', '0', '0', '0'),
+('ff', 'build_mancannon', 1, 0, '', 'Built Jump Pad', '1', '0', '0', '0'),
+('ff', 'mancannon_detonated', -1, 0, '', 'Detonated Jump Pad', '1', '0', '0', '0'),
+('ff', 'build_detpack', 1, 0, '', 'Placed Detpack', '1', '0', '0', '0'),
+('ff', 'flag_touch', 3, 0, '', 'Flag Picked Up', '1', '0', '0', '0'),
+('ff', 'flag_capture', 3, 0, '', 'Flag Captured', '1', '0', '0', '0'),
+('ff', 'flag_dropped', -3, 0, '', 'Flag Dropped', '1', '0', '0', '0'),
+('ff', 'flag_thrown', -3, 0, '', 'Flag Thrown', '1', '0', '0', '0'),
+('ff', 'disguise_lost', 1, 0, '', 'Uncovered Enemy', '0', '1', '0', '0'),
+('hidden', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '0', '0', '0'),
+('hidden', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '0', '0', '0'),
+('hidden', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '0', '0', '0'),
+('hidden', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '0', '0', '0'),
+('hidden', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '0', '0', '0'),
+('hidden', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '0', '0', '0'),
+('hidden', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '0', '0', '0'),
+('hidden', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '0', '0', '0'),
+('hidden', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '0', '0', '0'),
+('hidden', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '0', '0', '0'),
+('hidden', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '0', '0', '0'),
+('zps', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '0', '0', '0'),
+('zps', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '0', '0', '0'),
+('zps', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '0', '0', '0'),
+('zps', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '0', '0', '0'),
+('zps', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '0', '0', '0'),
+('zps', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '0', '0', '0'),
+('zps', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '0', '0', '0'),
+('zps', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '0', '0', '0'),
+('zps', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '0', '0', '0'),
+('zps', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '0', '0', '0'),
+('zps', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '0', '0', '0'),
 ('zps', 'headshot', 1, 0, '', 'Headshot Kill', '1', '0', '0', '0'),
-('aoc', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '', '', ''),
-('aoc', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '', '', ''),
-('aoc', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '', '', ''),
-('aoc', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '', '', ''),
-('aoc', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '', '', ''),
-('aoc', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '', '', ''),
-('aoc', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '', '', ''),
-('aoc', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '', '', ''),
-('aoc', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '', '', ''),
-('aoc', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '', '', ''),
-('aoc', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '', '', ''),
-('aoc', 'headshot', 2, 0, '', 'Headshot/Decapitate Kill', '1', '', '', ''),
-('aoc', 'Round_Win', 0, 2, '', 'Round Win', '', '', '1', ''),
+('aoc', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '0', '0', '0'),
+('aoc', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '0', '0', '0'),
+('aoc', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '0', '0', '0'),
+('aoc', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '0', '0', '0'),
+('aoc', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '0', '0', '0'),
+('aoc', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '0', '0', '0'),
+('aoc', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '0', '0', '0'),
+('aoc', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '0', '0', '0'),
+('aoc', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '0', '0', '0'),
+('aoc', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '0', '0', '0'),
+('aoc', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '0', '0', '0'),
+('aoc', 'headshot', 2, 0, '', 'Headshot/Decapitate Kill', '1', '0', '0', '0'),
+('aoc', 'Round_Win', 0, 2, '', 'Round Win', '0', '0', '1', '0'),
 ('cstrike','Begin_Bomb_Defuse_Without_Kit',0,0,'CT','Start Defusing the Bomb Without a Defuse Kit','1','0','0','0'),
 ('cstrike','Begin_Bomb_Defuse_With_Kit',0,0,'CT','Start Defusing the Bomb With a Defuse Kit','1','0','0','0'),
 ('cstrike','Assassinated_The_VIP',10,0,'TERRORIST','Assassinate the VIP','1','0','0','0'),
@@ -347,18 +347,18 @@ INSERT INTO `hlstats_Actions` (`game`, `code`, `reward_player`, `reward_team`, `
 ('cstrike','VIP_Assassinated',0,6,'TERRORIST','Terrorists assassinated the VIP','0','0','1','0'),
 ('cstrike','Bomb_Defused',0,6,'CT','Counter-Terrorists defused the bomb','0','0','1','0'),
 ('cstrike','VIP_Escaped',0,10,'CT','VIP escaped','0','0','1','0'),
-('cstrike', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '', '', ''),
-('cstrike', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '', '', ''),
-('cstrike', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '', '', ''),
-('cstrike', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '', '', ''),
-('cstrike', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '', '', ''),
-('cstrike', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '', '', ''),
-('cstrike', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '', '', ''),
-('cstrike', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '', '', ''),
-('cstrike', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '', '', ''),
-('cstrike', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '', '', ''),
-('cstrike', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '', '', ''),
-('cstrike', 'headshot', 1, 0, '', 'Headshot', '1', '', '', ''),
+('cstrike', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '0', '0', '0'),
+('cstrike', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '0', '0', '0'),
+('cstrike', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '0', '0', '0'),
+('cstrike', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '0', '0', '0'),
+('cstrike', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '0', '0', '0'),
+('cstrike', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '0', '0', '0'),
+('cstrike', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '0', '0', '0'),
+('cstrike', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '0', '0', '0'),
+('cstrike', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '0', '0', '0'),
+('cstrike', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '0', '0', '0'),
+('cstrike', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '0', '0', '0'),
+('cstrike', 'headshot', 1, 0, '', 'Headshot', '1', '0', '0', '0'),
 ('tfc','rock2_bcave1',2,3,'','(rock2) Blow Red Cave','1','0','0','0'),
 ('tfc','rock2_rcave1',2,3,'','(rock2) Blow Blue Cave','1','0','0','0'),
 ('tfc','rock2_rholedet',2,3,'','(rock2) Blow Blue Yard','1','0','0','0'),
@@ -388,31 +388,31 @@ INSERT INTO `hlstats_Actions` (`game`, `code`, `reward_player`, `reward_team`, `
 ('tfc','Dispenser_Destroyed',5,0,'','Dispenser Destroyed','1','0','0','0'),
 ('tfc','Built_Dispenser',2,0,'','Built Dispenser','1','0','0','0'),
 ('tfc','headshot',1,0,'','Headshot Kill','1','0','0','0'),
-('tfc', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '', '', ''),
-('tfc', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '', '', ''),
-('tfc', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '', '', ''),
-('tfc', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '', '', ''),
-('tfc', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '', '', ''),
-('tfc', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '', '', ''),
-('tfc', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '', '', ''),
-('tfc', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '', '', ''),
-('tfc', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '', '', ''),
-('tfc', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '', '', ''),
-('tfc', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '', '', ''),
+('tfc', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '0', '0', '0'),
+('tfc', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '0', '0', '0'),
+('tfc', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '0', '0', '0'),
+('tfc', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '0', '0', '0'),
+('tfc', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '0', '0', '0'),
+('tfc', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '0', '0', '0'),
+('tfc', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '0', '0', '0'),
+('tfc', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '0', '0', '0'),
+('tfc', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '0', '0', '0'),
+('tfc', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '0', '0', '0'),
+('tfc', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '0', '0', '0'),
 ('dod','dod_control_point',6,1,'','Control Points Captured','1','0','1','0'),
 ('dod','dod_capture_area',6,1,'','Areas Captured','1','0','1','0'),
 ('dod','dod_object_goal',4,0,'','Objectives Achieved','1','0','0','0'),
-('dod', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '', '', ''),
-('dod', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '', '', ''),
-('dod', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '', '', ''),
-('dod', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '', '', ''),
-('dod', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '', '', ''),
-('dod', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '', '', ''),
-('dod', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '', '', ''),
-('dod', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '', '', ''),
-('dod', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '', '', ''),
-('dod', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '', '', ''),
-('dod', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '', '', ''),
+('dod', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '0', '0', '0'),
+('dod', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '0', '0', '0'),
+('dod', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '0', '0', '0'),
+('dod', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '0', '0', '0'),
+('dod', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '0', '0', '0'),
+('dod', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '0', '0', '0'),
+('dod', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '0', '0', '0'),
+('dod', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '0', '0', '0'),
+('dod', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '0', '0', '0'),
+('dod', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '0', '0', '0'),
+('dod', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '0', '0', '0'),
 ('ns','structure_built',1,0,'','Structures Built','1','0','0','0'),
 ('ns','structure_destroyed',2,0,'','Structures Destroyed','1','0','0','0'),
 ('ns','research_start',1,0,'','Researches Performed','1','0','0','0'),
@@ -468,18 +468,18 @@ INSERT INTO `hlstats_Actions` (`game`, `code`, `reward_player`, `reward_team`, `
 ('ns','structure_built_item_health',1,0,'','Created a Healthpack','1','0','0','0'),
 ('ns','structure_built_item_jetpack',1,0,'','Created a Jetpack','1','0','0','0'),
 ('ns','research_cancel',-1,0,'','Stopped Researching ','1','0','0','0'),
-('ns', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '', '', ''),
-('ns', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '', '', ''),
-('ns', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '', '', ''),
-('ns', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '', '', ''),
-('ns', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '', '', ''),
-('ns', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '', '', ''),
-('ns', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '', '', ''),
-('ns', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '', '', ''),
-('ns', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '', '', ''),
-('ns', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '', '', ''),
-('ns', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '', '', ''),
-('l4d', 'headshot', 0, 0, '', 'Headshot Kill', '1', '', '', ''),
+('ns', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '0', '0', '0'),
+('ns', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '0', '0', '0'),
+('ns', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '0', '0', '0'),
+('ns', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '0', '0', '0'),
+('ns', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '0', '0', '0'),
+('ns', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '0', '0', '0'),
+('ns', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '0', '0', '0'),
+('ns', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '0', '0', '0'),
+('ns', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '0', '0', '0'),
+('ns', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '0', '0', '0'),
+('ns', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '0', '0', '0'),
+('l4d', 'headshot', 0, 0, '', 'Headshot Kill', '1', '0', '0', '0'),
 ('l4d', 'rescued_survivor', 2, 0, '', 'Rescued Teammate', '1', '0', '0', '0'),
 ('l4d', 'healed_teammate', 5, 0, '', 'Healed Teammate', '1', '0', '0', '0'),
 ('l4d', 'revived_teammate', 3, 0, '', 'Revived Teammate', '1', '0', '0', '0'),
@@ -494,31 +494,31 @@ INSERT INTO `hlstats_Actions` (`game`, `code`, `reward_player`, `reward_team`, `
 ('l4d', 'killed_witch', 3, 0, '', 'Killed a Witch', '1', '0', '0', '0'),
 ('l4d', 'killed_survivor', 25, 0, '', 'Incapacitated/Killed Survivor', '0', '1', '0', '0'),
 ('l4d', 'friendly_fire', -10, 0, '', 'Friendly Fire', '1', '0', '0', '0'),
-('l4d', 'cr0wned', 0, 0, '', 'Cr0wned (killed witch with single headshot)', '1', '', '', ''),
-('l4d', 'hunter_punter', 0, 0, '', 'Hunter Punter (melee a Hunter mid-jump)', '1', '', '', ''),
-('l4d', 'tounge_twister', 0, 0, '', 'Tounge Twister (kill a Smoker while he is dragging you)', '1', '', '', ''),
-('l4d', 'protect_teammate', 0, 0, '', 'Protected Teammate', '1', '', '', ''),
-('l4d', 'no_death_on_tank', 0, 0, '', 'No survivors died/incapped from tank', '1', '', '', ''),
-('l4d', 'killed_all_survivors', 0, 0, '', 'Killed all survivors', '1', '', '', ''),
-('l4d2', 'headshot', 0, 0, '', 'Headshot Kill', '1', '', '', ''),
-('l4d2', 'killed_smoker', 1, 0, '', 'Killed a Smoker', '1', '', '', ''),
-('l4d2', 'killed_boomer', 1, 0, '', 'Killed a Boomer', '1', '', '', ''),
-('l4d2', 'killed_hunter', 1, 0, '', 'Killed a Hunter', '1', '', '', ''),
-('l4d2', 'killed_tank', 3, 0, '', 'Killed a Tank', '1', '', '', ''),
-('l4d2', 'killed_witch', 3, 0, '', 'Killed a Witch', '1', '', '', ''),
-('l4d2', 'killed_spitter', 3, 0, '', 'Killed a Spitter', '1', '', '', ''),
-('l4d2', 'killed_jockey', 3, 0, '', 'Killed a Jockey', '1', '', '', ''),
-('l4d2', 'killed_charger', 3, 0, '', 'Killed a Charger', '1', '', '', ''),
-('l4d2', 'killed_survivor', 25, 0, '', 'Incapacitated/Killed Survivor', '', '1', '', ''),
-('l4d2', 'tongue_grab', 6, 0, '', '(Smoker) Tongue Grabbed Survivor', '', '1', '', ''),
-('l4d2', 'scavenge_win', 0, 5, '', 'Scavenge Team Win', '', '', '1', ''),
-('l4d2', 'versus_win', 0, 5, '', 'Versus Team Win', '', '', '1', ''),
-('l4d2', 'defibrillated_teammate', 5, 0, '', 'Defibrillated Teammate', '1', '', '', ''),
-('l4d2', 'used_adrenaline', 0, 0, '', 'Used Adrenaline', '1', '', '', ''),
-('l4d2', 'jockey_ride', 5, 0, '', 'Going for a ride', '1', '', '', ''),
-('l4d2', 'charger_pummel', 5, 0, '', 'Charger Pummeling', '1', '', '', ''),
-('l4d2', 'bilebomb_tank', 5, 0, '', 'Tank Bilebombed', '1', '', '', ''),
-('l4d2', 'spitter_acidbath', 5, 0, '', 'Spitter Acid', '1', '', '', ''),
+('l4d', 'cr0wned', 0, 0, '', 'Cr0wned (killed witch with single headshot)', '1', '0', '0', '0'),
+('l4d', 'hunter_punter', 0, 0, '', 'Hunter Punter (melee a Hunter mid-jump)', '1', '0', '0', '0'),
+('l4d', 'tounge_twister', 0, 0, '', 'Tounge Twister (kill a Smoker while he is dragging you)', '1', '0', '0', '0'),
+('l4d', 'protect_teammate', 0, 0, '', 'Protected Teammate', '1', '0', '0', '0'),
+('l4d', 'no_death_on_tank', 0, 0, '', 'No survivors died/incapped from tank', '1', '0', '0', '0'),
+('l4d', 'killed_all_survivors', 0, 0, '', 'Killed all survivors', '1', '0', '0', '0'),
+('l4d2', 'headshot', 0, 0, '', 'Headshot Kill', '1', '0', '0', '0'),
+('l4d2', 'killed_smoker', 1, 0, '', 'Killed a Smoker', '1', '0', '0', '0'),
+('l4d2', 'killed_boomer', 1, 0, '', 'Killed a Boomer', '1', '0', '0', '0'),
+('l4d2', 'killed_hunter', 1, 0, '', 'Killed a Hunter', '1', '0', '0', '0'),
+('l4d2', 'killed_tank', 3, 0, '', 'Killed a Tank', '1', '0', '0', '0'),
+('l4d2', 'killed_witch', 3, 0, '', 'Killed a Witch', '1', '0', '0', '0'),
+('l4d2', 'killed_spitter', 3, 0, '', 'Killed a Spitter', '1', '0', '0', '0'),
+('l4d2', 'killed_jockey', 3, 0, '', 'Killed a Jockey', '1', '0', '0', '0'),
+('l4d2', 'killed_charger', 3, 0, '', 'Killed a Charger', '1', '0', '0', '0'),
+('l4d2', 'killed_survivor', 25, 0, '', 'Incapacitated/Killed Survivor', '0', '1', '0', '0'),
+('l4d2', 'tongue_grab', 6, 0, '', '(Smoker) Tongue Grabbed Survivor', '0', '1', '0', '0'),
+('l4d2', 'scavenge_win', 0, 5, '', 'Scavenge Team Win', '0', '0', '1', '0'),
+('l4d2', 'versus_win', 0, 5, '', 'Versus Team Win', '0', '0', '1', '0'),
+('l4d2', 'defibrillated_teammate', 5, 0, '', 'Defibrillated Teammate', '1', '0', '0', '0'),
+('l4d2', 'used_adrenaline', 0, 0, '', 'Used Adrenaline', '1', '0', '0', '0'),
+('l4d2', 'jockey_ride', 5, 0, '', 'Going for a ride', '1', '0', '0', '0'),
+('l4d2', 'charger_pummel', 5, 0, '', 'Charger Pummeling', '1', '0', '0', '0'),
+('l4d2', 'bilebomb_tank', 5, 0, '', 'Tank Bilebombed', '1', '0', '0', '0'),
+('l4d2', 'spitter_acidbath', 5, 0, '', 'Spitter Acid', '1', '0', '0', '0'),
 ('l4d2', 'rescued_survivor', 2, 0, '', 'Rescued Teammate', '1', '0', '0', '0'),
 ('l4d2', 'healed_teammate', 5, 0, '', 'Healed Teammate', '1', '0', '0', '0'),
 ('l4d2', 'revived_teammate', 3, 0, '', 'Revived Teammate', '1', '0', '0', '0'),
@@ -526,124 +526,124 @@ INSERT INTO `hlstats_Actions` (`game`, `code`, `reward_player`, `reward_team`, `
 ('l4d2', 'pounce', 6, 0, '', '(Hunter) Pounced on Survivor', '0', '1', '0', '0'),
 ('l4d2', 'vomit', 6, 0, '', '(Boomer) Vomited on Survivor', '0', '1', '0', '0'),
 ('l4d2', 'friendly_fire', -3, 0, '', 'Friendly Fire', '1', '0', '0', '0'),
-('l4d2', 'cr0wned', 0, 0, '', 'Cr0wned (killed witch with single headshot)', '1', '', '', ''),
-('l4d2', 'hunter_punter', 0, 0, '', 'Hunter Punter (melee a Hunter mid-jump)', '1', '', '', ''),
-('l4d2', 'tounge_twister', 0, 0, '', 'Tounge Twister (kill a Smoker while he is dragging you)', '1', '', '', ''),
-('l4d2', 'protect_teammate', 0, 0, '', 'Protected Teammate', '1', '', '', ''),
-('l4d2', 'no_death_on_tank', 0, 0, '', 'No survivors died/incapped from tank', '1', '', '', ''),
-('l4d2', 'killed_all_survivors', 0, 0, '', 'Killed all survivors', '1', '', '', ''),
-('fof', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '', '', ''),
-('fof', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '', '', ''),
-('fof', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '', '', ''),
-('fof', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '', '', ''),
-('fof', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '', '', ''),
-('fof', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '', '', ''),
-('fof', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '', '', ''),
-('fof', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '', '', ''),
-('fof', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '', '', ''),
-('fof', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '', '', ''),
-('fof', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '', '', ''),
-('fof', 'loot_drop', -2, 0, '', 'Dropped the loot', '1', '', '', ''),
-('fof', 'loot_capture', 8, 0, '', 'Captured the loot', '1', '', '', ''),
-('fof', 'carrier_protect', 5, 0, '', 'Protected the carrier', '1', '', '', ''),
-('fof', 'headshot', 1, 0, '', 'Headshot Kill', '1', '', '', ''),
-('ges', 'headshot', 1, 0, '', 'Headshot Kill', '1', '', '', ''),
-('ges', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '', '', ''),
-('ges', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '', '', ''),
-('ges', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '', '', ''),
-('ges', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '', '', ''),
-('ges', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '', '', ''),
-('ges', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '', '', ''),
-('ges', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '', '', ''),
-('ges', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '', '', ''),
-('ges', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '', '', ''),
-('ges', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '', '', ''),
-('ges', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '', '', ''),
-('ges', 'Round_Win', 5, 0, '', 'Round Win', '1', '', '', ''),
-('ges', 'Round_Win_Team', 0, 3, '', 'Team Round Win', '', '', '1', ''),
-('ges', 'GE_AWARD_DEADLY', 10, 0, '', 'Most Deadly', '1', '', '', ''),
-('ges', 'GE_AWARD_HONORABLE', 5, 0, '', 'Most Honorable', '1', '', '', ''),
-('ges', 'GE_AWARD_PROFESSIONAL', 10, 0, '', 'Most Professional', '1', '', '', ''),
-('ges', 'GE_AWARD_MARKSMANSHIP', 1, 0, '', 'Marksmanship Award', '1', '', '', ''),
-('ges', 'GE_AWARD_AC10', 2, 0, '', 'AC-10 Award', '1', '', '', ''),
-('ges', 'GE_AWARD_FRANTIC', 2, 0, '', 'Most Frantic', '1', '', '', ''),
-('ges', 'GE_AWARD_WTA', 1, 0, '', 'Where''s the Ammo?', '1', '', '', ''),
-('ges', 'GE_AWARD_LEMMING', -1, 0, '', 'Lemming (suicide)', '1', '', '', ''),
-('ges', 'GE_AWARD_LONGIN', 1, 0, '', 'Longest Innings', '1', '', '', ''),
-('ges', 'GE_AWARD_SHORTIN', -1, 0, '', 'Shortest Innings', '1', '', '', ''),
-('ges', 'GE_AWARD_DISHONORABLE', -10, 0, '', 'Most Dishonorable', '1', '', '', ''),
-('ges', 'GE_AWARD_NOTAC10', 4, 0, '', 'Where''s the Armor?', '1', '', '', ''),
-('ges', 'GE_AWARD_MOSTLYHARMLESS', -1, 0, '', 'Mostly Harmless', '1', '', '', ''),
-('bg2', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '', '', ''),
-('bg2', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '', '', ''),
-('bg2', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '', '', ''),
-('bg2', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '', '', ''),
-('bg2', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '', '', ''),
-('bg2', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '', '', ''),
-('bg2', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '', '', ''),
-('bg2', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '', '', ''),
-('bg2', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '', '', ''),
-('bg2', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '', '', ''),
-('bg2', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '', '', ''),
-('sgtls', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '', '', ''),
-('sgtls', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '', '', ''),
-('sgtls', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '', '', ''),
-('sgtls', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '', '', ''),
-('sgtls', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '', '', ''),
-('sgtls', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '', '', ''),
-('sgtls', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '', '', ''),
-('sgtls', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '', '', ''),
-('sgtls', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '', '', ''),
-('sgtls', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '', '', ''),
-('sgtls', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '', '', ''),
-('sgtls', 'Goa''uld_Win', 5, 0, '', 'Goa''uld Won Round', '', '', '1', ''),
-('sgtls', 'Tau''ri_Win', 5, 0, '', 'Tau''ri Won Round', '', '', '1', ''),
-('dystopia', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '', '', ''),
-('dystopia', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '', '', ''),
-('dystopia', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '', '', ''),
-('dystopia', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '', '', ''),
-('dystopia', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '', '', ''),
-('dystopia', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '', '', ''),
-('dystopia', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '', '', ''),
-('dystopia', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '', '', ''),
-('dystopia', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '', '', ''),
-('dystopia', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '', '', ''),
-('dystopia', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '', '', ''),
-('dystopia', 'Capture Guard Post', 2, 0, '', 'Capture Guard Post', '1', '', '', ''),
-('dystopia', 'Capture Interior Spawn', 2, 0, '', 'Capture Interior Spawn', '1', '', '', ''),
-('dystopia', 'Capture Internal Spawn', 2, 0, '', 'Capture Internal Spawn', '1', '', '', ''),
-('dystopia', 'Capture The Docks', 2, 0, '', 'Capture The Docks', '1', '', '', ''),
-('dystopia', 'Capture the Inner Base', 2, 0, '', 'Capture the Inner Base', '1', '', '', ''),
-('dystopia', 'Capture the Spawn', 2, 0, '', 'Capture the Spawn', '1', '', '', ''),
-('dystopia', 'Cut Entrance Spawn Power', 2, 0, '', 'Cut Entrance Spawn Power', '1', '', '', ''),
-('dystopia', 'Defend Interior Spawn', 2, 0, '', 'Defend Interior Spawn', '1', '', '', ''),
-('dystopia', 'Defend Middle Spawn', 2, 0, '', 'Defend Middle Spawn', '1', '', '', ''),
-('dystopia', 'Defend Security JIP', 2, 0, '', 'Defend Security JIP', '1', '', '', ''),
-('dystopia', 'Destroy Broadcast Server', 2, 0, '', 'Destroy Broadcast Server', '1', '', '', ''),
-('dystopia', 'Destroy Cooling Access Door', 2, 0, '', 'Destroy Cooling Access Door', '1', '', '', ''),
-('dystopia', 'Destroy Cooling Tank', 2, 0, '', 'Destroy Cooling Tank', '1', '', '', ''),
-('dystopia', 'Destroy The Bulkhead', 2, 0, '', 'Destroy The Bulkhead', '1', '', '', ''),
-('dystopia', 'Destroy The Core', 2, 0, '', 'Destroy The Core', '1', '', '', ''),
-('dystopia', 'Destroy the Firewall', 2, 0, '', 'Destroy the Firewall', '1', '', '', ''),
-('dystopia', 'Destroy the Reactor', 2, 0, '', 'Destroy the Reactor', '1', '', '', ''),
-('dystopia', 'Destroy Transformer', 2, 0, '', 'Destroy Transformer', '1', '', '', ''),
-('dystopia', 'Enable Auxilary Power Feed', 2, 0, '', 'Enable Auxilary Power Feed', '1', '', '', ''),
-('dystopia', 'Enable The 4-Point Override', 2, 0, '', 'Enable The 4-Point Override', '1', '', '', ''),
-('dystopia', 'Escort Hostage', 2, 0, '', 'Escort Hostage', '1', '', '', ''),
-('dystopia', 'Hack Middle Spawn', 2, 0, '', 'Hack Middle Spawn', '1', '', '', ''),
-('dystopia', 'Hack Spawn Controls', 2, 0, '', 'Hack Spawn Controls', '1', '', '', ''),
-('dystopia', 'Hack the Perimeter', 2, 0, '', 'Hack the Perimeter', '1', '', '', ''),
-('dystopia', 'Inject The Virus', 2, 0, '', 'Inject The Virus', '1', '', '', ''),
-('dystopia', 'Launch Missile', 2, 0, '', 'Launch Missile', '1', '', '', ''),
-('dystopia', 'Locate profile', 2, 0, '', 'Locate profile', '1', '', '', ''),
-('dystopia', 'Maintain Power Routing', 2, 0, '', 'Maintain Power Routing', '1', '', '', ''),
-('dystopia', 'Open And Destroy Data Stores / Establish An Uplink', 2, 0, '', 'Open And Destroy Data Stores / Establish An Uplink', '1', '', '', ''),
-('dystopia', 'Redirect Laser', 2, 0, '', 'Redirect Laser', '1', '', '', ''),
-('dystopia', 'Reroute Power To Control Room', 2, 0, '', 'Reroute Power To Control Room', '1', '', '', ''),
-('dystopia', 'Shut Down Security', 2, 0, '', 'Shut Down Security', '1', '', '', ''),
-('dystopia', 'Shutdown The Production Line', 2, 0, '', 'hutdown The Production Line', '1', '', '', ''),
-('dystopia', 'Smash Data Storage', 2, 0, '', 'Smash Data Storage', '1', '', '', ''),
-('dystopia', 'Turn Power Offline', 2, 0, '', 'Turn Power Offline', '1', '', '', ''),
+('l4d2', 'cr0wned', 0, 0, '', 'Cr0wned (killed witch with single headshot)', '1', '0', '0', '0'),
+('l4d2', 'hunter_punter', 0, 0, '', 'Hunter Punter (melee a Hunter mid-jump)', '1', '0', '0', '0'),
+('l4d2', 'tounge_twister', 0, 0, '', 'Tounge Twister (kill a Smoker while he is dragging you)', '1', '0', '0', '0'),
+('l4d2', 'protect_teammate', 0, 0, '', 'Protected Teammate', '1', '0', '0', '0'),
+('l4d2', 'no_death_on_tank', 0, 0, '', 'No survivors died/incapped from tank', '1', '0', '0', '0'),
+('l4d2', 'killed_all_survivors', 0, 0, '', 'Killed all survivors', '1', '0', '0', '0'),
+('fof', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '0', '0', '0'),
+('fof', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '0', '0', '0'),
+('fof', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '0', '0', '0'),
+('fof', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '0', '0', '0'),
+('fof', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '0', '0', '0'),
+('fof', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '0', '0', '0'),
+('fof', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '0', '0', '0'),
+('fof', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '0', '0', '0'),
+('fof', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '0', '0', '0'),
+('fof', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '0', '0', '0'),
+('fof', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '0', '0', '0'),
+('fof', 'loot_drop', -2, 0, '', 'Dropped the loot', '1', '0', '0', '0'),
+('fof', 'loot_capture', 8, 0, '', 'Captured the loot', '1', '0', '0', '0'),
+('fof', 'carrier_protect', 5, 0, '', 'Protected the carrier', '1', '0', '0', '0'),
+('fof', 'headshot', 1, 0, '', 'Headshot Kill', '1', '0', '0', '0'),
+('ges', 'headshot', 1, 0, '', 'Headshot Kill', '1', '0', '0', '0'),
+('ges', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '0', '0', '0'),
+('ges', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '0', '0', '0'),
+('ges', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '0', '0', '0'),
+('ges', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '0', '0', '0'),
+('ges', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '0', '0', '0'),
+('ges', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '0', '0', '0'),
+('ges', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '0', '0', '0'),
+('ges', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '0', '0', '0'),
+('ges', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '0', '0', '0'),
+('ges', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '0', '0', '0'),
+('ges', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '0', '0', '0'),
+('ges', 'Round_Win', 5, 0, '', 'Round Win', '1', '0', '0', '0'),
+('ges', 'Round_Win_Team', 0, 3, '', 'Team Round Win', '0', '0', '1', '0'),
+('ges', 'GE_AWARD_DEADLY', 10, 0, '', 'Most Deadly', '1', '0', '0', '0'),
+('ges', 'GE_AWARD_HONORABLE', 5, 0, '', 'Most Honorable', '1', '0', '0', '0'),
+('ges', 'GE_AWARD_PROFESSIONAL', 10, 0, '', 'Most Professional', '1', '0', '0', '0'),
+('ges', 'GE_AWARD_MARKSMANSHIP', 1, 0, '', 'Marksmanship Award', '1', '0', '0', '0'),
+('ges', 'GE_AWARD_AC10', 2, 0, '', 'AC-10 Award', '1', '0', '0', '0'),
+('ges', 'GE_AWARD_FRANTIC', 2, 0, '', 'Most Frantic', '1', '0', '0', '0'),
+('ges', 'GE_AWARD_WTA', 1, 0, '', 'Where''s the Ammo?', '1', '0', '0', '0'),
+('ges', 'GE_AWARD_LEMMING', -1, 0, '', 'Lemming (suicide)', '1', '0', '0', '0'),
+('ges', 'GE_AWARD_LONGIN', 1, 0, '', 'Longest Innings', '1', '0', '0', '0'),
+('ges', 'GE_AWARD_SHORTIN', -1, 0, '', 'Shortest Innings', '1', '0', '0', '0'),
+('ges', 'GE_AWARD_DISHONORABLE', -10, 0, '', 'Most Dishonorable', '1', '0', '0', '0'),
+('ges', 'GE_AWARD_NOTAC10', 4, 0, '', 'Where''s the Armor?', '1', '0', '0', '0'),
+('ges', 'GE_AWARD_MOSTLYHARMLESS', -1, 0, '', 'Mostly Harmless', '1', '0', '0', '0'),
+('bg2', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '0', '0', '0'),
+('bg2', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '0', '0', '0'),
+('bg2', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '0', '0', '0'),
+('bg2', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '0', '0', '0'),
+('bg2', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '0', '0', '0'),
+('bg2', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '0', '0', '0'),
+('bg2', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '0', '0', '0'),
+('bg2', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '0', '0', '0'),
+('bg2', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '0', '0', '0'),
+('bg2', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '0', '0', '0'),
+('bg2', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '0', '0', '0'),
+('sgtls', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '0', '0', '0'),
+('sgtls', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '0', '0', '0'),
+('sgtls', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '0', '0', '0'),
+('sgtls', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '0', '0', '0'),
+('sgtls', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '0', '0', '0'),
+('sgtls', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '0', '0', '0'),
+('sgtls', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '0', '0', '0'),
+('sgtls', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '0', '0', '0'),
+('sgtls', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '0', '0', '0'),
+('sgtls', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '0', '0', '0'),
+('sgtls', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '0', '0', '0'),
+('sgtls', 'Goa''uld_Win', 5, 0, '', 'Goa''uld Won Round', '0', '0', '1', '0'),
+('sgtls', 'Tau''ri_Win', 5, 0, '', 'Tau''ri Won Round', '0', '0', '1', '0'),
+('dystopia', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '0', '0', '0'),
+('dystopia', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '0', '0', '0'),
+('dystopia', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '0', '0', '0'),
+('dystopia', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '0', '0', '0'),
+('dystopia', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '0', '0', '0'),
+('dystopia', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '0', '0', '0'),
+('dystopia', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '0', '0', '0'),
+('dystopia', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '0', '0', '0'),
+('dystopia', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '0', '0', '0'),
+('dystopia', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '0', '0', '0'),
+('dystopia', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '0', '0', '0'),
+('dystopia', 'Capture Guard Post', 2, 0, '', 'Capture Guard Post', '1', '0', '0', '0'),
+('dystopia', 'Capture Interior Spawn', 2, 0, '', 'Capture Interior Spawn', '1', '0', '0', '0'),
+('dystopia', 'Capture Internal Spawn', 2, 0, '', 'Capture Internal Spawn', '1', '0', '0', '0'),
+('dystopia', 'Capture The Docks', 2, 0, '', 'Capture The Docks', '1', '0', '0', '0'),
+('dystopia', 'Capture the Inner Base', 2, 0, '', 'Capture the Inner Base', '1', '0', '0', '0'),
+('dystopia', 'Capture the Spawn', 2, 0, '', 'Capture the Spawn', '1', '0', '0', '0'),
+('dystopia', 'Cut Entrance Spawn Power', 2, 0, '', 'Cut Entrance Spawn Power', '1', '0', '0', '0'),
+('dystopia', 'Defend Interior Spawn', 2, 0, '', 'Defend Interior Spawn', '1', '0', '0', '0'),
+('dystopia', 'Defend Middle Spawn', 2, 0, '', 'Defend Middle Spawn', '1', '0', '0', '0'),
+('dystopia', 'Defend Security JIP', 2, 0, '', 'Defend Security JIP', '1', '0', '0', '0'),
+('dystopia', 'Destroy Broadcast Server', 2, 0, '', 'Destroy Broadcast Server', '1', '0', '0', '0'),
+('dystopia', 'Destroy Cooling Access Door', 2, 0, '', 'Destroy Cooling Access Door', '1', '0', '0', '0'),
+('dystopia', 'Destroy Cooling Tank', 2, 0, '', 'Destroy Cooling Tank', '1', '0', '0', '0'),
+('dystopia', 'Destroy The Bulkhead', 2, 0, '', 'Destroy The Bulkhead', '1', '0', '0', '0'),
+('dystopia', 'Destroy The Core', 2, 0, '', 'Destroy The Core', '1', '0', '0', '0'),
+('dystopia', 'Destroy the Firewall', 2, 0, '', 'Destroy the Firewall', '1', '0', '0', '0'),
+('dystopia', 'Destroy the Reactor', 2, 0, '', 'Destroy the Reactor', '1', '0', '0', '0'),
+('dystopia', 'Destroy Transformer', 2, 0, '', 'Destroy Transformer', '1', '0', '0', '0'),
+('dystopia', 'Enable Auxilary Power Feed', 2, 0, '', 'Enable Auxilary Power Feed', '1', '0', '0', '0'),
+('dystopia', 'Enable The 4-Point Override', 2, 0, '', 'Enable The 4-Point Override', '1', '0', '0', '0'),
+('dystopia', 'Escort Hostage', 2, 0, '', 'Escort Hostage', '1', '0', '0', '0'),
+('dystopia', 'Hack Middle Spawn', 2, 0, '', 'Hack Middle Spawn', '1', '0', '0', '0'),
+('dystopia', 'Hack Spawn Controls', 2, 0, '', 'Hack Spawn Controls', '1', '0', '0', '0'),
+('dystopia', 'Hack the Perimeter', 2, 0, '', 'Hack the Perimeter', '1', '0', '0', '0'),
+('dystopia', 'Inject The Virus', 2, 0, '', 'Inject The Virus', '1', '0', '0', '0'),
+('dystopia', 'Launch Missile', 2, 0, '', 'Launch Missile', '1', '0', '0', '0'),
+('dystopia', 'Locate profile', 2, 0, '', 'Locate profile', '1', '0', '0', '0'),
+('dystopia', 'Maintain Power Routing', 2, 0, '', 'Maintain Power Routing', '1', '0', '0', '0'),
+('dystopia', 'Open And Destroy Data Stores / Establish An Uplink', 2, 0, '', 'Open And Destroy Data Stores / Establish An Uplink', '1', '0', '0', '0'),
+('dystopia', 'Redirect Laser', 2, 0, '', 'Redirect Laser', '1', '0', '0', '0'),
+('dystopia', 'Reroute Power To Control Room', 2, 0, '', 'Reroute Power To Control Room', '1', '0', '0', '0'),
+('dystopia', 'Shut Down Security', 2, 0, '', 'Shut Down Security', '1', '0', '0', '0'),
+('dystopia', 'Shutdown The Production Line', 2, 0, '', 'hutdown The Production Line', '1', '0', '0', '0'),
+('dystopia', 'Smash Data Storage', 2, 0, '', 'Smash Data Storage', '1', '0', '0', '0'),
+('dystopia', 'Turn Power Offline', 2, 0, '', 'Turn Power Offline', '1', '0', '0', '0'),
 ('nts', 'headshot', 5, 0, '', 'Headshot Kill', '1', '0', '0', '0'),
 ('nts', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '0', '0', '0'),
 ('nts', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '0', '0', '0'),
@@ -657,17 +657,17 @@ INSERT INTO `hlstats_Actions` (`game`, `code`, `reward_player`, `reward_team`, `
 ('nts', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '0', '0', '0'),
 ('nts', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '0', '0', '0'),
 ('nts', 'Round_Win', 0, 20, '', 'Team Round Win', '0', '0', '1', '0'),
-('pvkii', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '', '', ''),
-('pvkii', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '', '', ''),
-('pvkii', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '', '', ''),
-('pvkii', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '', '', ''),
-('pvkii', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '', '', ''),
-('pvkii', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '', '', ''),
-('pvkii', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '', '', ''),
-('pvkii', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '', '', ''),
-('pvkii', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '', '', ''),
-('pvkii', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '', '', ''),
-('pvkii', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '', '', ''),
+('pvkii', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '0', '0', '0'),
+('pvkii', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '0', '0', '0'),
+('pvkii', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '0', '0', '0'),
+('pvkii', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '0', '0', '0'),
+('pvkii', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '0', '0', '0'),
+('pvkii', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '0', '0', '0'),
+('pvkii', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '0', '0', '0'),
+('pvkii', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '0', '0', '0'),
+('pvkii', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '0', '0', '0'),
+('pvkii', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '0', '0', '0'),
+('pvkii', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '0', '0', '0'),
 ('pvkii', 'kill assist', 2, 0, '', 'Kill Assist', '1', '0', '0', '0'),
 ('pvkii', 'mvp1', 5, 0, '', 'Most Valuable Player #1', '1', '0', '0', '0'),
 ('pvkii', 'mvp2', 0, 0, '', 'Most Valuable Player #2', '1', '0', '0', '0'),
@@ -679,29 +679,29 @@ INSERT INTO `hlstats_Actions` (`game`, `code`, `reward_player`, `reward_team`, `
 ('pvkii', 'killed_parrot', 1, 0, '', 'Killed Parrot', '1', '0', '0', '0'),
 ('pvkii', 'domination', 5, 0, '', 'Domination', '0', '1', '0', '0'),
 ('pvkii', 'revenge', 3, 0, '', 'Revenge', '0', '1', '0', '0'),
-('csp', 'headshot', 1, 0, '', 'Headshot', '1', '', '', ''),
-('csp', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '', '', ''),
-('csp', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '', '', ''),
-('csp', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '', '', ''),
-('csp', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '', '', ''),
-('csp', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '', '', ''),
-('csp', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '', '', ''),
-('csp', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '', '', ''),
-('csp', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '', '', ''),
-('csp', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '', '', ''),
-('csp', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '', '', ''),
-('csp', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '', '', ''),
-('valve', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '', '', ''),
-('valve', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '', '', ''),
-('valve', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '', '', ''),
-('valve', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '', '', ''),
-('valve', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '', '', ''),
-('valve', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '', '', ''),
-('valve', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '', '', ''),
-('valve', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '', '', ''),
-('valve', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '', '', ''),
-('valve', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '', '', ''),
-('valve', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '', '', ''),
+('csp', 'headshot', 1, 0, '', 'Headshot', '1', '0', '0', '0'),
+('csp', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '0', '0', '0'),
+('csp', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '0', '0', '0'),
+('csp', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '0', '0', '0'),
+('csp', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '0', '0', '0'),
+('csp', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '0', '0', '0'),
+('csp', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '0', '0', '0'),
+('csp', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '0', '0', '0'),
+('csp', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '0', '0', '0'),
+('csp', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '0', '0', '0'),
+('csp', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '0', '0', '0'),
+('csp', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '0', '0', '0'),
+('valve', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '0', '0', '0'),
+('valve', 'kill_streak_3', 2, 0, '', 'Triple Kill (3 kills)', '1', '0', '0', '0'),
+('valve', 'kill_streak_4', 3, 0, '', 'Domination (4 kills)', '1', '0', '0', '0'),
+('valve', 'kill_streak_5', 4, 0, '', 'Rampage (5 kills)', '1', '0', '0', '0'),
+('valve', 'kill_streak_6', 5, 0, '', 'Mega Kill (6 kills)', '1', '0', '0', '0'),
+('valve', 'kill_streak_7', 6, 0, '', 'Ownage (7 kills)', '1', '0', '0', '0'),
+('valve', 'kill_streak_8', 7, 0, '', 'Ultra Kill (8 kills)', '1', '0', '0', '0'),
+('valve', 'kill_streak_9', 8, 0, '', 'Killing Spree (9 kills)', '1', '0', '0', '0'),
+('valve', 'kill_streak_10', 9, 0, '', 'Monster Kill (10 kills)', '1', '0', '0', '0'),
+('valve', 'kill_streak_11', 10, 0, '', 'Unstoppable (11 kills)', '1', '0', '0', '0'),
+('valve', 'kill_streak_12', 11, 0, '', 'God Like (12+ kills)', '1', '0', '0', '0'),
 ('valve', 'headshot', 1, 0, '', 'Headshot Kill', '1', '0', '0', '0'),
 ('nd', 'headshot', 1, 0, '', 'Headshot', '1', '0', '0', '0'),
 ('nd', 'kill_streak_2', 1, 0, '', 'Double Kill (2 kills)', '1', '0', '0', '0'),
@@ -805,7 +805,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Awards` (
   `g_winner_count` int(10) unsigned default NULL,  
   PRIMARY KEY  (`awardId`),
   UNIQUE KEY `code` (`game`,`awardType`,`code`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `hlstats_Awards`
@@ -1786,7 +1786,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Clans` (
   PRIMARY KEY  (`clanId`),
   UNIQUE KEY `tag` (`game`,`tag`),
   KEY `game` (`game`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -1800,7 +1800,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_ClanTags` (
   `position` enum('EITHER','START','END') NOT NULL default 'EITHER',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `pattern` (`pattern`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `hlstats_ClanTags`
@@ -1847,7 +1847,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Countries` (
   `flag` varchar(16) NOT NULL,
   `name` varchar(50) NOT NULL,
   PRIMARY KEY  (`flag`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `hlstats_Countries`
@@ -2115,7 +2115,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_Admin` (
   `message` varchar(255) NOT NULL default '',
   `playerName` varchar(64) NOT NULL default '',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -2133,7 +2133,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_ChangeName` (
   `newName` varchar(64) NOT NULL default '',
   PRIMARY KEY  (`id`),
   KEY `playerId` (`playerId`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 -- --------------------------------------------------------
@@ -2151,7 +2151,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_ChangeRole` (
   `role` varchar(64) NOT NULL default '',
   PRIMARY KEY  (`id`),
   KEY `playerId` (`playerId`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -2168,7 +2168,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_ChangeTeam` (
   `team` varchar(64) NOT NULL default '',
   PRIMARY KEY  (`id`),
   KEY `playerId` (`playerId`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -2188,7 +2188,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_Chat` (
   KEY `playerId` (`playerId`),
   KEY `serverId` (`serverId`),
   FULLTEXT KEY `message` (`message`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -2208,7 +2208,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_Connects` (
   `eventTime_Disconnect` datetime default NULL,
   PRIMARY KEY  (`id`),
   KEY `playerId` (`playerId`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -2223,7 +2223,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_Disconnects` (
   `map` varchar(64) NOT NULL default '',
   `playerId` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -2239,7 +2239,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_Entries` (
   `playerId` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `playerId` (`playerId`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -2272,7 +2272,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_Frags` (
   KEY `map` (`map`(5)),
   KEY `weapon16` (`weapon`(16)),
   KEY `killerRole` (`killerRole`(8))
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -2289,7 +2289,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_Latency` (
   `ping` int(32) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `playerId` (`playerId`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -2311,7 +2311,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_PlayerActions` (
   PRIMARY KEY  (`id`),
   KEY `playerId` (`playerId`),
   KEY `actionId` (`actionId`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -2338,7 +2338,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_PlayerPlayerActions` (
   KEY `playerId` (`playerId`),
   KEY `actionId` (`actionId`),
 	KEY `victimId` (`victimId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -2356,7 +2356,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_Rcon` (
   `password` varchar(128) NOT NULL default '',
   `command` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -2380,7 +2380,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_Statsme` (
   PRIMARY KEY  (`id`),
   KEY `playerId` (`playerId`),
   KEY `weapon` (`weapon`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -2405,7 +2405,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_Statsme2` (
   PRIMARY KEY  (`id`),
   KEY `playerId` (`playerId`),
   KEY `weapon` (`weapon`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -2422,7 +2422,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_StatsmeLatency` (
   `ping` int(6) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `playerId` (`playerId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -2439,7 +2439,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_StatsmeTime` (
   `time` time NOT NULL default '00:00:00',
   PRIMARY KEY  (`id`),
   KEY `playerId` (`playerId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -2459,7 +2459,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_Suicides` (
   `pos_z` MEDIUMINT default NULL,
   PRIMARY KEY  (`id`),
   KEY `playerId` (`playerId`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -2478,7 +2478,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_TeamBonuses` (
   PRIMARY KEY  (`id`),
   KEY `playerId` (`playerId`),
   KEY `actionId` (`actionId`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -2502,7 +2502,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Events_Teamkills` (
   `pos_victim_z` MEDIUMINT default NULL,
   PRIMARY KEY  (`id`),
   KEY `killerId` (`killerId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -2516,7 +2516,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Games` (
   `hidden` enum('0','1') NOT NULL default '0',
   `realgame` varchar(32) NOT NULL default 'hl2mp',
   PRIMARY KEY  (`code`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `hlstats_Games`
@@ -2558,7 +2558,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Games_Defaults` (
   `parameter` varchar(50) NOT NULL,
   `value` varchar(128) NOT NULL,
   PRIMARY KEY  (`code`,`parameter`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `hlstats_Games_Defaults`
@@ -3238,7 +3238,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Games_Supported` (
   `code` varchar(32) NOT NULL,
   `name` varchar(128) NOT NULL,
   PRIMARY KEY  (`code`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `hlstats_Games_Supported`
@@ -3293,7 +3293,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Heatmap_Config` (
   `cropy2` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `gamemap` (`map`, `game`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `hlstats_Heatmap_Config`
@@ -3752,7 +3752,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_HostGroups` (
   `pattern` varchar(255) NOT NULL default '',
   `name` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -3786,24 +3786,24 @@ CREATE TABLE IF NOT EXISTS `hlstats_Livestats` (
   `skill_change` int(10) NOT NULL default '0',
   `skill` int(10) NOT NULL default '0',
   PRIMARY KEY  (`player_id`)
-) ENGINE=MEMORY DEFAULT CHARSET=utf8;
+) ENGINE=MEMORY DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `hlstats_Maps_Counts` (
   `rowId` int(11) NOT NULL auto_increment,
-  `game` varchar(32) character set utf8 NOT NULL,
-  `map` varchar(64) character set utf8 NOT NULL,
+  `game` varchar(32) NOT NULL,
+  `map` varchar(64) NOT NULL,
   `kills` int(11) NOT NULL,
   `headshots` int(11) NOT NULL,
   PRIMARY KEY  (`game`,`map`),
   INDEX ( `rowId` )
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `hlstats_Mods_Defaults` (
   `code` varchar(32) NOT NULL,
   `parameter` varchar(50) NOT NULL,
   `value` varchar(128) NOT NULL,
   PRIMARY KEY  (`code`,`parameter`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `hlstats_Mods_Defaults`
@@ -3852,7 +3852,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Mods_Supported` (
   `code` varchar(32) NOT NULL,
   `name` varchar(128) NOT NULL,
   PRIMARY KEY  (`code`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `hlstats_Mods_Supported`
@@ -3877,7 +3877,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Options` (
   `opttype` TINYINT NOT NULL DEFAULT '1',
   PRIMARY KEY  (`keyname`),
   INDEX ( `opttype` )
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `hlstats_Options`
@@ -3959,7 +3959,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Options_Choices` (
   `isDefault` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`keyname`,`value`),
   KEY `keyname` (`keyname`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 INSERT INTO `hlstats_Options_Choices` (`keyname`, `value`, `text`, `isDefault`) VALUES
@@ -4081,7 +4081,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_PlayerNames` (
   `hits` int(11) unsigned NOT NULL default '0',
   PRIMARY KEY  (`playerId`,`name`),
   KEY `name16` (`name`(16))
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Table structure for table `hlstats_Players`
@@ -4128,7 +4128,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Players` (
   KEY `game` (`game`),
   KEY `kills` (`kills`),
   KEY `hideranking` (`hideranking`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -4143,7 +4143,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Players_Awards` (
   `count` int(11) unsigned NOT NULL default '0',
   `game` varchar(32) NOT NULL,
   PRIMARY KEY  (`awardTime`,`awardId`,`playerId`,`game`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -4169,7 +4169,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Players_History` (
   `skill_change` int(11) NOT NULL default '0',
   UNIQUE KEY `eventTime` (`eventTime`,`playerId`,`game`),
   KEY `playerId` (`playerId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -4181,7 +4181,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Players_Ribbons` (
   `playerId` int(11) unsigned NOT NULL default '0',
   `ribbonId` int(11) unsigned NOT NULL default '0',
   `game` varchar(32) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -4196,7 +4196,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_PlayerUniqueIds` (
   `merge` int(10) unsigned default NULL,
   PRIMARY KEY  (`uniqueId`,`game`),
   KEY `playerId` (`playerId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -4214,7 +4214,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Ranks` (
   PRIMARY KEY  (`rankId`),
   UNIQUE KEY `rankgame` (`image`,`game`),
   KEY `game` (`game`(8))
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `hlstats_Ranks`
@@ -4383,7 +4383,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Ribbons` (
   `ribbonName` varchar(50) NOT NULL,
   PRIMARY KEY  (`ribbonId`),
   UNIQUE KEY `award` (`awardCode`,`awardCount`,`game`, `special`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `hlstats_Ribbons`
@@ -6206,7 +6206,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Roles` (
   `deaths` int(6) unsigned NOT NULL default '0',
   PRIMARY KEY  (`roleId`),
   UNIQUE KEY `gamecode` (`game`,`code`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `hlstats_Roles`
@@ -6422,7 +6422,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Servers` (
   `last_event` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`serverId`),
   UNIQUE KEY `addressport` (`address`,`port`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 PACK_KEYS=0;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci PACK_KEYS=0;
 
 -- --------------------------------------------------------
 
@@ -6437,7 +6437,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Servers_Config` (
   `serverConfigId` int(11) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`serverId`,`parameter`),
   KEY `serverConfigId` (`serverConfigId`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -6448,9 +6448,9 @@ CREATE TABLE IF NOT EXISTS `hlstats_Servers_Config` (
 CREATE TABLE IF NOT EXISTS `hlstats_Servers_Config_Default` (
   `parameter` varchar(50) NOT NULL,
   `value` varchar(128) NOT NULL,
-  `description` mediumtext character set utf8 collate utf8_unicode_ci,
+  `description` mediumtext,
   PRIMARY KEY  (`parameter`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `hlstats_Servers_Config_Default`
@@ -6506,7 +6506,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Servers_VoiceComm` (
   `serverType` tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (`serverId`),
   UNIQUE KEY `address` (`addr`,`UDPPort`,`queryPort`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -6525,7 +6525,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_server_load` (
   `fps` varchar(10) NOT NULL default '0',
   KEY `server_id` (`server_id`),
   KEY `timestamp` (`timestamp`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -6544,7 +6544,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Teams` (
   `playerlist_index` tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (`teamId`),
   UNIQUE KEY `gamecode` (`game`,`code`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `hlstats_Teams`
@@ -6635,7 +6635,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Trend` (
   `max_slots` int(11) NOT NULL default '0',
   KEY `game` (`game`),
   KEY `timestamp` (`timestamp`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -6649,7 +6649,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Users` (
   `acclevel` int(11) NOT NULL default '0',
   `playerId` int(11) NOT NULL default '0',
   PRIMARY KEY  (`username`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `hlstats_Users`
@@ -6675,7 +6675,7 @@ CREATE TABLE IF NOT EXISTS `hlstats_Weapons` (
   UNIQUE KEY `gamecode` (`game`,`code`),
   KEY `code` (`code`),
   KEY `modifier` (`modifier`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `hlstats_Weapons`
