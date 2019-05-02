@@ -1618,7 +1618,7 @@ sub readDatabaseConfig()
 						locales => [ 'en' ]
 				);
 			} else {
-				&printEvent("ERROR", "GeoIP method set to binary file lookup but Geo::IP::PurePerl module NOT FOUND", 1);
+				&printEvent("ERROR", "GeoIP method set to binary file lookup but GeoIP2::Database::Reader module NOT FOUND", 1);
 				$g_gi = undef;
 			}
 		} else {
