@@ -660,10 +660,10 @@ public hlx_amx_csay(id, level, cid)
 	read_args(message, 191)
 	remove_quotes(message)
 	
-	new color3[0][] = {255, 255, 255}
+	new color3[] = {255, 255, 255}
 	new Float:verpos = 0.3
-	
-	set_hudmessage(color3[0][0], color3[0][1], color3[0][2], -1.0, verpos, 0, 6.0, 6.0, 0.5, 0.15, -1)
+    
+	set_hudmessage(color3[0], color3[1], color3[2], -1.0, verpos, 0, 6.0, 6.0, 0.5, 0.15, -1)
 	show_hudmessage(0, "%s", message)
 
 	return PLUGIN_HANDLED
