@@ -57,6 +57,7 @@ my $opt_libdir = "./";
 use Getopt::Long;
 use DBI;
 use Encode;
+use Syntax::Keyword::Try;
 
 require "$opt_libdir/ConfigReaderSimple.pm";
 do "$opt_libdir/HLstats.plib";
@@ -988,7 +989,7 @@ sub DoGeoIP
 	if ($result->rows > 0)
 	{
 		$useGeoIPBinary = 1;
-		$geoipfile = "$opt_libdir/GeoLiteCity/GeoLiteCity.dat";
+		$geoipfile = "$opt_libdir/GeoLiteCity/GeoLite2-City.mmdb";
 	}
 	else
 	{
@@ -1015,12 +1016,13 @@ sub DoGeoIP
 			unshift @INC, map { $base_module_dir . $_ } @INC;
 		}
 
-		eval {
-		  require Geo::IP::PurePerl;
-		};
-		import Geo::IP::PurePerl;
+		eval "use GeoIP2::Database::Reader";
 		
-		$gi = Geo::IP::PurePerl->open($geoipfile, "GEOIP_STANDARD");
+		$gi = GeoIP2::Database::Reader->new(
+			file    => $geoipfile,
+			locales => [ 'en' ]
+		);
+
 		if ($gi) 
 		{
 			$dogeo = 1;
@@ -1028,7 +1030,7 @@ sub DoGeoIP
 		else
 		{
 			&printEvent("ERROR", "GeoIP method set to binary file lookup but $geoipfile errored while opening.", 1);
-			close($gi->{fh});
+			$gi = undef;
 		}
 	}
 	else
@@ -1073,14 +1075,44 @@ sub DoGeoIP
 				{
 					print "2 ".$pid." ".$address."\n";
 				}
-				my ($country_code, $country_code3, $country_name, $region, $city, $postal_code, $latitude, $longitude, $metro_code, $area_code) = $gi->get_city_record($address);
-				if ($longitude) {
+
+				my $country_code = undef;
+				my $country_name = undef;
+				my $region = undef;
+				my $city = undef;
+				my $lat = undef;
+				my $lng = undef;
+
+				my $geoCity = undef;
+		
+				try { $geoCity = $gi->city( ip => $address ); }
+				catch { $geoCity = undef; }
+
+				if ($geoCity) {
+
+					my $geoCityRec = $geoCity->city();
+					my $geoCountryRec = $geoCity->country();
+					my $geoLocationRec = $geoCity->location();
+					my $geoPostalRec = $geoCity->postal();
+					my $geoMostSpecificSubdivision = $geoCity->most_specific_subdivision();
+
+					$country_code = $geoCountryRec->iso_code();
+					$country_name = $geoCountryRec->name();
+					$region = $geoMostSpecificSubdivision->name();
+					$city = $geoCityRec->name();
+					$postal_code = $geoPostalRec->code();
+					$lat = $geoLocationRec->latitude();
+					$lng = $geoLocationRec->longitude();
+				}	
+
+				if ($lng) {
+
 					$foundflag = encode("utf8",$country_code);
 					$foundcountry = encode("utf8",$country_name);
 					$foundcity = encode("utf8",$city);
 					$foundstate = encode("utf8",$region);
-					$foundlat = $latitude;
-					$foundlng = $longitude;
+					$foundlat = $lat;
+					$foundlng = $lng;
 					$update++;
 				}
 			}
