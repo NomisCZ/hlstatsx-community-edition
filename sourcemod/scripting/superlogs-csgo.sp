@@ -24,14 +24,16 @@
  
 #include <sourcemod>
 #include <sdktools>
+#include <cstrike>
 #include <csgo_items>
 
 #define NAME "SuperLogs: CS:GO"
-#define VERSION "1.3.0"
+#define VERSION "1.4.0"
 
 #define MAX_LOG_WEAPONS 41
 #define IGNORE_SHOTS_START 35
 #define MAX_WEAPON_LEN 32
+#define CLANTAG_LEN 192
 
 
 int g_weapon_stats[MAXPLAYERS+1][MAX_LOG_WEAPONS][15];
@@ -92,13 +94,17 @@ bool g_logheadshots = true;
 bool g_logactions = true;
 bool g_loglocations = true;
 bool g_logktraj = false;
+bool bLate;
+
+float fPlayerLastClanTagChange[MAXPLAYERS+1];
+char sPlayerClanTag[MAXPLAYERS+1][CLANTAG_LEN];
 
 #include <loghelper>
 #include <wstatshelper>
 
 public Plugin myinfo = {
 	name = NAME,
-	author = "psychonic",
+	author = "psychonic & NomisCZ (-N-)",
 	description = "Advanced logging for CS:GO. Generates auxiliary logging for use with log parsers such as HLstatsX and Psychostats",
 	version = VERSION,
 	url = "http://www.hlxcommunity.com"
@@ -112,6 +118,8 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 		strcopy(error, err_max, "This plugin is only supported on CS:GO");
 		return APLRes_Failure;
 	}
+
+	bLate = late;
 	return APLRes_Success;
 }
 
@@ -149,6 +157,8 @@ public void OnPluginStart()
 	CreateTimer(1.0, LogMap);
 	
 	GetTeams();
+
+	if (bLate) for (int i = 1; i <= MaxClients; i++) if (IsClientInGame(i)) OnClientPostAdminCheck(i);
 }
 
 
@@ -195,6 +205,20 @@ void unhook_actions()
 public void OnClientPutInServer(int client)
 {
 	reset_player_stats(client);
+}
+
+public void OnClientPostAdminCheck(int client)
+{
+	if (IsValidClient(client)) {
+		
+		char sClan[CLANTAG_LEN];
+
+		CS_GetClientClanTag(client, sClan, sizeof(sClan));
+		LogPlayerProps(client, "triggered", "clantag", sClan);
+
+		sPlayerClanTag[client] = sClan;
+		fPlayerLastClanTagChange[client] = GetGameTime();
+	}
 }
 
 stock char get_ItemDef(int client)
@@ -533,5 +557,57 @@ public void OnCvarKtrajChange(Handle cvar, const char[] oldVal, const char[] new
 		{
 			UnhookEvent("player_death", Event_PlayerDeath);
 		}
+	}
+}
+
+public Action OnClientCommandKeyValues(int client, KeyValues kv) 
+{ 
+	char sKey[64]; 
+	
+	if (!kv.GetSectionName(sKey, sizeof(sKey)))
+		return Plugin_Continue;
+
+
+	if (StrEqual(sKey, "ClanTagChanged")) {
+		
+		char sClan[CLANTAG_LEN];
+		float fCurTime = GetGameTime();
+		float fNewTime = fCurTime + 10.0;
+
+		kv.GetString("tag", sClan, sizeof(sClan), "");
+
+		// Flood protection 10s + ignore same tag
+		if ((fPlayerLastClanTagChange[client] <= fCurTime) && strcmp(sClan, "") != 0 && !StrEqual(sPlayerClanTag[client], sClan, false)) {
+
+			sPlayerClanTag[client] = sClan;
+			LogPlayerProps(client, "triggered", "clantag", sClan);
+		}
+
+		fPlayerLastClanTagChange[client] = fNewTime;
+	} 
+
+	return Plugin_Continue;
+}
+
+stock bool IsValidClient(int client, bool allowBots = false, bool allowDead = true)
+{
+	if (!(1 <= client <= MaxClients) || !IsClientInGame(client) || (IsFakeClient(client) && !allowBots)
+	|| IsClientSourceTV(client) || IsClientReplay(client) || (!allowDead && !IsPlayerAlive(client))) {
+		return false;
+	}
+	return true;
+}
+
+stock void LogPlayerProps(int client, char[] verb, const char[] event, const char[] properties)
+{
+	if (IsValidClient(client)) {
+
+		char sAuthId[32];
+		char sTeamName[32];
+
+		GetClientAuthId(client, AuthId_Steam2, sAuthId, sizeof(sAuthId));
+		GetTeamName(GetClientTeam(client), sTeamName, sizeof(sTeamName));
+
+		LogToGame("\"%N<%d><%s><%s>\" %s \"%s\" (value \"%s\")", client, GetClientUserId(client), sAuthId, sTeamName, verb, event, properties); 
 	}
 }

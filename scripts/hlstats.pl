@@ -2754,7 +2754,7 @@ while ($loop = &getLine()) {
 			$ev_player = $1;
 			$ev_clantag = $2;
 			
-		#	if ($ev_clantag) {
+			if ($ev_clantag) {
 				my $playerinfo = &getPlayerInfo($ev_player, 1);
 				
 				$ev_type = 600;
@@ -2766,7 +2766,7 @@ while ($loop = &getLine()) {
 						$ev_clantag
 					);
 				}
-		#	}
+			}
 		} elsif ($s_output =~ /^"(.+?(?:<.+?>)*?)"(?:\s\[(-?\d+)\s(-?\d+)\s(-?\d+)\]) ([a-zA-Z,_\s]+) "(.+?)"(.*)$/) {
 			# 4. Suicide for CS:GO
 			$ev_player = $1;
