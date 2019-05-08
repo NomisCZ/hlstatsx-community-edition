@@ -10,12 +10,8 @@ a PHP frontend.
 
 ---
 
-For installation help, please visit AlliedModders forums.
-- https://forums.alliedmods.net/forumdisplay.php?f=156
-
-
----
-
-<p align="center">⚠️ I'm currently working on documentation, so be patient. ⚠️</p>
-
+### :book: Documentation
+* https://github.com/NomisCZ/hlstatsx-community-edition/wiki 🚧 Wiki - work in progress 🚧
+### :speech_balloon: Help
+*  https://forums.alliedmods.net/forumdisplay.php?f=156
 ---
