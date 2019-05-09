@@ -1,10 +1,11 @@
 /*
-:? Reason: CS:GO - add M4A1-S and missing knives
+:? Reason: CS:GO - add M4A1-S, missing knives and revolver
 :i Info: https://github.com/NomisCZ/hlstatsx-community-edition/issues/18
 :! Change: Insert new rows
 */
 INSERT INTO `hlstats_Weapons` (`game`, `code`, `name`, `modifier`) VALUES
 ('csgo', 'm4a1_silencer', 'M4A1 Silencer', 1.00),
+('csgo', 'revolver', 'R8 Revolver', 1.20),
 ('csgo', 'bayonet', 'Bayonet', 2.00),
 ('csgo', 'knife_butterfly', 'Butterfly Knife', 2.00),
 ('csgo', 'knife_falchion', 'Falchion Knife', 2.00),

@@ -7518,6 +7518,7 @@ INSERT INTO `hlstats_Weapons` (`game`, `code`, `name`, `modifier`) VALUES
 ('csgo', 'm4a1_silencer', 'M4A1-S', 1.00),
 ('csgo', 'awp', 'AWP', 1.00),
 ('csgo', 'deagle', 'Desert Eagle', 1.20),
+('csgo', 'revolver', 'R8 Revolver', 1.20),
 ('csgo', 'hkp2000', 'P2000', 1.40),
 ('csgo', 'galilar', 'Galil', 1.10),
 ('csgo', 'glock', 'Glock-18', 1.40),
