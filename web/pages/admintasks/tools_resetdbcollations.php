@@ -58,7 +58,7 @@ if ($auth->userdata['acclevel'] < 80)
 			$rs_tables = $db->query('SHOW TABLES') or die(mysql_error());
 			while ($row_tables = $db->fetch_row($rs_tables))
 			{
-				$table = mysql_real_escape_string($row_tables[0]);
+				$table = mysqli_real_escape_string($row_tables[0]);
 				echo "ALTER TABLE `$table` DEFAULT CHARACTER SET $character_set;<br>";
 				$rs = $db->query("SHOW FULL FIELDS FROM `$table` WHERE collation is not null AND collation <> 'utf8_general_ci'") or die(mysql_error());
 				while ($row=mysql_fetch_assoc($rs))
@@ -74,11 +74,11 @@ if ($auth->userdata['acclevel'] < 80)
 					else if ( $row['Default'] === NULL )
 						$default = ' DEFAULT NULL';
 					else if ($row['Default']!='')
-						$default = " DEFAULT '".mysql_real_escape_string($row['Default'])."'";
+						$default = " DEFAULT '".mysqli_real_escape_string($row['Default'])."'";
 					else
 						$default = '';
 					
-					$field = mysql_real_escape_string($row['Field']);
+					$field = mysqli_real_escape_string($row['Field']);
 					echo "ALTER TABLE `$table` CHANGE `$field` `$field` $row[Type] CHARACTER SET $character_set COLLATE $convert_to $nullable $default;<br>";
 				}
 			}
@@ -91,7 +91,7 @@ if ($auth->userdata['acclevel'] < 80)
 			$rs_tables = $db->query('SHOW TABLES') or die(mysql_error());
 			while ($row_tables = $db->fetch_row($rs_tables))
 			{
-				$table = mysql_real_escape_string($row_tables[0]);
+				$table = mysqli_real_escape_string($row_tables[0]);
 				echo "<li>Converting Table: $table ... ";
 				$db->query("ALTER TABLE `$table` DEFAULT CHARACTER SET $character_set;");
 				echo 'OK';
@@ -109,11 +109,11 @@ if ($auth->userdata['acclevel'] < 80)
 					else if ( $row['Default'] === NULL )
 						$default = ' DEFAULT NULL';
 					else if ($row['Default']!='')
-						$default = " DEFAULT '".mysql_real_escape_string($row['Default'])."'";
+						$default = " DEFAULT '".mysqli_real_escape_string($row['Default'])."'";
 					else
 						$default = '';
 					
-					$field = mysql_real_escape_string($row['Field']);
+					$field = mysqli_real_escape_string($row['Field']);
 					echo "<li>Converting Table: $table   Column: $field ... ";
 					$db->query("ALTER TABLE `$table` CHANGE `$field` `$field` $row[Type] CHARACTER SET $character_set COLLATE $convert_to $nullable $default;");
 					echo 'OK';
