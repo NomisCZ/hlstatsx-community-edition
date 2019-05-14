@@ -62,9 +62,6 @@ For support and installation notes visit http://www.hlxcommunity.com
 				<tr valign="top" >
 					<td>
 						<table width="100%" border=0 cellspacing=1 cellpadding=4>
-                   
-            <?php print_r($this); ?>            
-					
 						<tr valign="middle" class="bg1">
 							<td nowrap width="45%" class="fNormal">Type:</td>
 							<td width="55%">
