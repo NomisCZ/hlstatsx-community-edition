@@ -287,7 +287,7 @@ class DB_mysql
 			"<i>Server Address:</i> $this->db_addr<br />\n" .
 			"<i>Server Username:</i> $this->db_user<br /><br />\n" .
 			"<i>Error Diagnostic:</i><br />\n$message<br /><br />\n" .
-			"<i>Server Error:</i> (" . @mysqli_errno() . ") " . @mysqli_error() . "<br /><br />\n" .
+			"<i>Server Error:</i> (" . @mysqli_errno($this->link) . ") " . @mysqli_error($this->link) . "<br /><br />\n" .
 			"<i>Last SQL Query:</i><br />\n<pre style=\"font-size:2px;\">$this->last_query</pre>",
 			$exit
 		);

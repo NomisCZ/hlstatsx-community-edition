@@ -61,7 +61,7 @@ if ($auth->userdata['acclevel'] < 80)
 				$table = $db->escape($row_tables[0]);
 				echo "ALTER TABLE `$table` DEFAULT CHARACTER SET $character_set;<br>";
 				$rs = $db->query("SHOW FULL FIELDS FROM `$table` WHERE collation is not null AND collation <> 'utf8_general_ci'") or die("DB:> Cannot SHOW FULL FIELDS");
-				while ($row=mysql_fetch_assoc($rs))
+				while ($row=mysqli_fetch_assoc($rs))
 				{
 					if ($row['Collation'] == '')
 						continue;
@@ -96,7 +96,7 @@ if ($auth->userdata['acclevel'] < 80)
 				$db->query("ALTER TABLE `$table` DEFAULT CHARACTER SET $character_set;");
 				echo 'OK';
 				$rs = $db->query("SHOW FULL FIELDS FROM `$table` WHERE collation is not null AND collation <> 'utf8_general_ci'") or die("DB:> Cannot SHOW FULL FIELDS");
-				while ($row=mysql_fetch_assoc($rs))
+				while ($row=mysqli_fetch_assoc($rs))
 				{
 					if ($row['Collation'] == '')
 						continue;
