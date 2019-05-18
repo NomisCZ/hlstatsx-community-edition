@@ -110,7 +110,7 @@ For support and installation notes visit http://www.hlxcommunity.com
 			FROM
 				hlstats_Events_Connects
 			WHERE
-				hostgroup='".mysqli_real_escape_string($hostgroup)."'
+				hostgroup='".$db->escape($hostgroup)."'
 		");
 		
 		list($totalconnects, $numitems) = $db->fetch_row($result);
@@ -123,7 +123,7 @@ For support and installation notes visit http://www.hlxcommunity.com
 			FROM
 				hlstats_Events_Connects
 			WHERE
-				hostgroup='".mysqli_real_escape_String($hostgroup)."'
+				hostgroup='".$db->escape($hostgroup)."'
 			GROUP BY
 				host
 			ORDER BY

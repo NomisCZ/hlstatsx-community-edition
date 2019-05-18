@@ -889,7 +889,7 @@ class PropertyPage
 				SET
 					" . implode(",\n", $setstrings) . "
 				WHERE
-					" . $this->keycol . "='" . mysqli_real_escape_string($this->keyval) . "'
+					" . $this->keycol . "='" . $db->escape($this->keyval) . "'
 			");
 	}
 }
