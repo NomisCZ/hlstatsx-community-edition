@@ -28,7 +28,7 @@
 
 #define PLUGIN_NAME "SuperLogs: CS:GO"
 #define PLUGIN_AUTHOR "psychonic, NomisCZ (-N-)"
-#define PLUGIN_VERSION "1.5.0"
+#define PLUGIN_VERSION "1.7.0"
 
 #define MAX_LOG_WEAPONS 58
 #define IGNORE_SHOTS_START 35

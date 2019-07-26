@@ -2625,7 +2625,7 @@ while ($loop = &getLine()) {
 					);
 				}
 			}
-		} elsif ( $s_output =~ /^(?:\[STATSME\] )?"(.+?(?:<.+?>)*)" triggered "(weaponstats\d{0,1})"(.*)$/ ) {
+		} elsif ($s_output =~ /^(?:\[STATSME\] )?"(.+?(?:<.+?>)*)" triggered "(weaponstats\d{0,1})"(.*)$/ ) {
 			# Prototype: [STATSME] "player" triggered "weaponstats?"[properties]
 			# Matches:
 			# 501. Statsme weaponstats
@@ -2708,7 +2708,7 @@ while ($loop = &getLine()) {
 					}
 				}
 			}
-		} elsif ( $s_output =~ /^(?:\[STATSME\] )?"(.+?(?:<.+?>)*)" triggered "(latency|time)"(.*)$/ ) {
+		} elsif ($s_output =~ /^(?:\[STATSME\] )?"(.+?(?:<.+?>)*)" triggered "(latency|time)"(.*)$/ ) {
 			# Prototype: [STATSME] "player" triggered "latency|time"[properties]
 			# Matches:
 			# 503. Statsme latency
@@ -2765,6 +2765,19 @@ while ($loop = &getLine()) {
 						$playerinfo->{"uniqueid"},
 						$ev_clantag
 					);
+				}
+			}
+		} elsif ($s_output =~ /^"(.+?(?:<.+?>)*?)" api_request "playerinfo" \(value "(.+?)?"\)$/) {
+
+			$ev_player = $1;
+			$ev_queryId = $2;
+			
+			if ($ev_queryId) {
+				my $playerinfo = &getPlayerInfo($ev_player, 1);
+				
+				if ($playerinfo) {
+					$ev_type = 101;
+					$ev_status = &doEvent_ApiReqestPlayerInfo($playerinfo->{"userid"}, $playerinfo->{"uniqueid"}, $ev_queryId);
 				}
 			}
 		} elsif ($s_output =~ /^"(.+?(?:<.+?>)*?)"(?:\s\[(-?\d+)\s(-?\d+)\s(-?\d+)\]) ([a-zA-Z,_\s]+) "(.+?)"(.*)$/) {

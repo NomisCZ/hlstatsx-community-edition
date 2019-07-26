@@ -3169,4 +3169,35 @@ sub doEvent_Kill_Loc
 	return sprintf("KILL LOCATION x=>%s, y=>%s, z=>%s stored for next kill", $g_servers{$s_addr}->{nextkillx}, $g_servers{$s_addr}->{nextkilly}, $g_servers{$s_addr}->{nextkillz});
 }
 
+sub doEvent_ApiReqestPlayerInfo
+{
+	my ($playerId, $playerUniqueId, $queryId) = @_;
+
+	my $desc;
+	my $player = lookupPlayer($s_addr, $playerId, $playerUniqueId);
+	my $playerstr = &getPlayerInfoString($player, $playerId);
+
+	$rcmd = "hlx_api_response";
+
+	if (($player) && ($player->{is_bot} == 0)) {
+
+		my ($skill, $kills, $deaths, $kd, $suicides, $headshots, $hpk, $acc, $connection_time) = get_player_data($player, 0);
+		my $player_rank = $player->getRank();
+		my $p_userid = $g_servers{$s_addr}->format_userid($player->{userid});
+		
+		$player_str = sprintf("%s %s %s %s %s %s %s %s %s %s %s", $player_rank, $skill, &number_format($kills), &number_format($deaths),
+			&number_format($kd), &number_format($suicides), &number_format($headshots), &number_format($hpk), $acc, $connection_time, $player->{flag} 
+		);
+		
+		$cmd_str = sprintf("%s \"101\" %s %s %s", $rcmd, $queryId, $p_userid, $player_str);
+
+		$g_servers{$s_addr}->dorcon($cmd_str);
+
+	} else {
+		$desc = "(IGNORED) NOPLAYERINFO: ";
+	}
+	
+	return $desc . $playerstr . " api_request playerinfo via HLStatsX API module";
+}
+
 1;
