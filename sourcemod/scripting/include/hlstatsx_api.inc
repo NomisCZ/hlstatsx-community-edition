@@ -34,20 +34,3 @@ typedef HLStatsX_Api_StatsCallback = function void(int command, int payload, int
  * @noreturn
  */
 native bool HLStatsX_Api_GetStats(char[] request, int client, HLStatsX_Api_StatsCallback callback, int payload = 0);
-
-/**
-* Check if for a valid client
-*
-*
-* @param client				Client Index
-* @param allowDead			Allow Dead players?
-* @param allowBots			Allow Bots?
-* @noreturn
-*/
-stock bool IsValidClient(int client, bool allowDead = true, bool allowBots = false)
-{
-	if (!(1 <= client <= MaxClients) || !IsClientInGame(client) || (IsFakeClient(client) && !allowBots) || IsClientSourceTV(client) || IsClientReplay(client) || (!allowDead && !IsPlayerAlive(client))) {
-		return false;
-	}
-	return true;
-}

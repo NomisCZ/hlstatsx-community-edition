@@ -253,3 +253,20 @@ public int FindRequestById(int requestId)
 
     return index;
 }
+
+/**
+* Check if for a valid client
+*
+*
+* @param client				Client Index
+* @param allowDead			Allow Dead players?
+* @param allowBots			Allow Bots?
+* @noreturn
+*/
+bool IsValidClient(int client, bool allowDead = true, bool allowBots = false)
+{
+	if (!(1 <= client <= MaxClients) || !IsClientInGame(client) || (IsFakeClient(client) && !allowBots) || IsClientSourceTV(client) || IsClientReplay(client) || (!allowDead && !IsPlayerAlive(client))) {
+		return false;
+	}
+	return true;
+}

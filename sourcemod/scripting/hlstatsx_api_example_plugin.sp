@@ -85,3 +85,20 @@ public void _GetTest_Response(int command, int payload, int client, DataPack &da
 		PrintToConsole(client, "[DONE] API response: Stats > %N (%i): %i, %i, %i, %i, %f", client, client, rank, skill, kills, deaths, kd);
 	}
 }
+
+/**
+* Check if for a valid client
+*
+*
+* @param client				Client Index
+* @param allowDead			Allow Dead players?
+* @param allowBots			Allow Bots?
+* @noreturn
+*/
+bool IsValidClient(int client, bool allowDead = true, bool allowBots = false)
+{
+	if (!(1 <= client <= MaxClients) || !IsClientInGame(client) || (IsFakeClient(client) && !allowBots) || IsClientSourceTV(client) || IsClientReplay(client) || (!allowDead && !IsPlayerAlive(client))) {
+		return false;
+	}
+	return true;
+}
