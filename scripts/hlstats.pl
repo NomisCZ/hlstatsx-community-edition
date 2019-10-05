@@ -671,6 +671,110 @@ sub updatePlayerProfile
 	return 1;
 }
 
+#
+# mixed getClanId (string name)
+#
+# Looks up a player's clan ID from their name. Compares the player's name to tag
+# patterns in hlstats_ClanTags. Patterns look like:  [AXXXXX] (matches 1 to 6
+# letters inside square braces, e.g. [ZOOM]Player)  or  =\*AAXX\*= (matches
+# 2 to 4 letters between an equals sign and an asterisk, e.g.  =*RAGE*=Player).
+#
+# Special characters in the pattern:
+#    A    matches one character  (i.e. a character is required)
+#    X    matches zero or one characters  (i.e. a character is optional)
+#    a    matches literal A or a
+#    x    matches literal X or x
+#
+# If no clan exists for the tag, it will be created. Returns the clan's ID, or
+# 0 if the player is not in a clan.
+#
+
+sub getClanId
+{
+	my ($name) = @_;
+	my $clanTag  = "";
+	my $clanName = "";
+	my $clanId   = 0;
+	my $result = &doQuery("
+		SELECT
+			pattern,
+			position,
+			LENGTH(pattern) AS pattern_length
+		FROM
+			hlstats_ClanTags
+		ORDER BY
+			pattern_length DESC,
+			id
+	");
+	
+	while ( my($pattern, $position) = $result->fetchrow_array) {
+		my $regpattern = quotemeta($pattern);
+		$regpattern =~ s/([A-Za-z0-9]+[A-Za-z0-9_-]*)/\($1\)/; # to find clan name from tag
+		$regpattern =~ s/A/./g;
+		$regpattern =~ s/X/.?/g;
+		
+		if ($g_debug > 2) {
+			&printNotice("regpattern=$regpattern");
+		}
+		
+		if ((($position eq "START" || $position eq "EITHER") && $name =~ /^($regpattern).+/i) ||
+			(($position eq "END"   || $position eq "EITHER") && $name =~ /.+($regpattern)$/i)) {
+			
+			if ($g_debug > 2) {
+				&printNotice("pattern \"$regpattern\" matches \"$name\"! 1=\"$1\" 2=\"$2\"");
+			}
+			
+			$clanTag  = $1;
+			$clanName = $2;
+			last;
+		}
+	}
+	
+	unless ($clanTag) {
+		return 0;
+	}
+
+	my $query = "
+		SELECT
+			clanId
+		FROM
+			hlstats_Clans
+		WHERE
+			tag='" . &quoteSQL($clanTag) . "' AND
+			game='$g_servers{$s_addr}->{game}'
+		";
+	$result = &doQuery($query);
+
+	if ($result->rows) {
+		($clanId) = $result->fetchrow_array;
+		$result->finish;
+		return $clanId;
+	} else {
+		# The clan doesn't exist yet, so we create it.
+		$query = "
+			REPLACE INTO
+				hlstats_Clans
+				(
+					tag,
+					name,
+					game
+				)
+			VALUES
+			(
+				'" . &quoteSQL($clanTag)  . "',
+				'" . &quoteSQL($clanName) . "',
+				'".&quoteSQL($g_servers{$s_addr}->{game})."'
+			)
+		";
+		&execNonQuery($query);
+		
+		$clanId = $db_conn->{'mysql_insertid'};
+
+		&printNotice("Created clan \"$clanName\" <C:$clanId> with tag "
+				. "\"$clanTag\" for player \"$name\"");
+		return $clanId;
+	}
+}
 
 #
 # object getServer (string address, int port)
