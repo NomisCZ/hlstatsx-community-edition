@@ -45,7 +45,7 @@ ConVar g_cvar_locations;
 ConVar g_cvar_ktraj;
 ConVar g_cvar_version;
 
-KeyValues g_kv_gameItems;
+StringMap g_gameItems = null;
 
 int g_weapon_stats[MAXPLAYERS+1][MAX_LOG_WEAPONS][15];
 
@@ -501,7 +501,7 @@ void LoadGameItems()
 		SetFailState("Couldn't load items in %s file.", CSGO_ITEMS_GAME);
 	}
 
-	g_kv_gameItems = new KeyValues("items_game");
+	g_gameItems = new StringMap();
 
 	char sItemId[16];
 	char sItemName[MAX_WEAPON_LEN];
@@ -510,10 +510,7 @@ void LoadGameItems()
 		kv.GetSectionName(sItemId, sizeof(sItemId));
 		kv.GetString("name", sItemName, sizeof(sItemName), "default");
 
-		g_kv_gameItems.JumpToKey("items", true);
-		g_kv_gameItems.JumpToKey(sItemId, true);
-		g_kv_gameItems.SetString("name", sItemName);
-		g_kv_gameItems.Rewind();
+		g_gameItems.SetString(sItemId, sItemName);
 
 		// Ignore non-weapon items 
 		if (StringToInt(sItemId) >= 600) {
@@ -546,32 +543,19 @@ public bool GetClientItemDefName(int client, char[] weaponName, int weaponNameSi
 
 public void GetItemDefNameByIndex(int itemDefinitionIndex, char[] weaponName, int weaponNameSize)
 {
-	if (!IsValidKeyValues(g_kv_gameItems)) {
+	if (!IsValidStringMap(g_gameItems)) {
 		ThrowError("Items not loaded/valid.");
 	}
 
-	if (g_kv_gameItems.JumpToKey("items", false) || !g_kv_gameItems.GotoFirstSubKey(true)) {
-		return;
+	char sItemDefinitionIndex[4];
+	IntToString(itemDefinitionIndex, sItemDefinitionIndex, sizeof(sItemDefinitionIndex));
+
+	if (g_gameItems.GetString(sItemDefinitionIndex, weaponName, weaponNameSize)) {
+		ReplaceString(weaponName, weaponNameSize, "weapon_", "", false);	
 	}
-
-	char sItemId[16];
-
-	do {
-		g_kv_gameItems.GetSectionName(sItemId, sizeof(sItemId));
-
-		if (StringToInt(sItemId) == itemDefinitionIndex) {
-
-			g_kv_gameItems.GetString("name", weaponName, weaponNameSize, "default");
-			ReplaceString(weaponName, weaponNameSize, "weapon_", "", false);
-			break;
-		}
-
-	} while (g_kv_gameItems.GotoNextKey(true));
-
-	g_kv_gameItems.Rewind();
 }
 
-public bool IsValidKeyValues(KeyValues &kv)
+public bool IsValidStringMap(StringMap &stringMap)
 {
-	return (kv != null && kv != INVALID_HANDLE);
+	return (stringMap != null && stringMap != INVALID_HANDLE);
 }
