@@ -28,9 +28,10 @@
 
 #define PLUGIN_NAME "SuperLogs: CS:GO"
 #define PLUGIN_AUTHOR "psychonic, NomisCZ (-N-)"
-#define PLUGIN_VERSION "1.7.0"
+#define PLUGIN_VERSION "1.7.1"
 
-#define MAX_LOG_WEAPONS 58
+#define CSGO_ITEMS_GAME "scripts/items/items_game.txt"
+#define MAX_LOG_WEAPONS 63
 #define IGNORE_SHOTS_START 35
 #define MAX_WEAPON_LEN 32
 #define CLANTAG_LEN 192
@@ -43,6 +44,8 @@ ConVar g_cvar_actions;
 ConVar g_cvar_locations;
 ConVar g_cvar_ktraj;
 ConVar g_cvar_version;
+
+StringMap g_gameItems = null;
 
 int g_weapon_stats[MAXPLAYERS+1][MAX_LOG_WEAPONS][15];
 
@@ -60,8 +63,9 @@ char g_weapon_list[MAX_LOG_WEAPONS][MAX_WEAPON_LEN] = {
 	"glock", "hkp2000", "usp_silencer", "usp_silencer_off", "m249", "m4a1", "m4a1_silencer", "m4a1_silencer_off", "mac10", "mag7",
 	"mp7", "mp9", "negev", "nova", "p250", "cz75a", "p90", "sawedoff", "scar20", "sg556",
 	"ssg08", "taser", "tec9", "ump45", "xm1014", "revolver", "inferno", "incgrenade", "hegrenade", "molotov",
-	"flashbang", "smokegrenade", "decoy", "knife", "bayonet", "knife_butterfly", "knife_falchion", "knife_flip", "knife_gut", "knife_tactical",
-	"knife_karambit", "knife_m9_bayonet", "knife_push", "knife_survival_bowie", "knife_ursus", "knife_gypsy_jackknife", "knife_stiletto", "knife_widowmaker",
+	"flashbang", "smokegrenade", "decoy", "knife", "bayonet", "knife_css", "knife_flip", "knife_gut", "knife_karambit", "knife_m9_bayonet", 
+	"knife_tactical", "knife_falchion", "knife_survival_bowie", "knife_butterfly", "knife_push", "knife_cord", "knife_canis", "knife_ursus", "knife_gypsy_jackknife", "knife_outdoor",
+	"knife_stiletto", "knife_widowmaker", "knife_skeleton",
 };
 char g_sPlayerClanTag[MAXPLAYERS+1][CLANTAG_LEN];
 
@@ -86,6 +90,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 		return APLRes_Failure;
 	}
 
+	LoadGameItems();
 	g_bLate = late;
 	return APLRes_Success;
 }
@@ -192,9 +197,9 @@ public void Event_PlayerShoot(Event event, const char[] name, bool dontBroadcast
 	if (IsValidClient(iClient)) {
 
 		char sPlayerWeapon[MAX_WEAPON_LEN];
-		event.GetString("weapon", sPlayerWeapon, sizeof(sPlayerWeapon));
+		GetClientItemDefName(iClient, sPlayerWeapon, sizeof(sPlayerWeapon));
 
-		int iPlayerWeaponIndex = get_weapon_index(sPlayerWeapon[7]);
+		int iPlayerWeaponIndex = get_weapon_index(sPlayerWeapon);
 
 		if (iPlayerWeaponIndex > -1 && iPlayerWeaponIndex < IGNORE_SHOTS_START) {
 			g_weapon_stats[iClient][iPlayerWeaponIndex][LOG_HIT_SHOTS]++;
@@ -220,9 +225,9 @@ public void Event_PlayerHurt(Event event, const char[] name, bool dontBroadcast)
 	if (IsValidClient(iAttacker) && iAttacker != iVictim) {
 
 		char sPlayerWeapon[MAX_WEAPON_LEN];
-		event.GetString("weapon", sPlayerWeapon, sizeof(sPlayerWeapon));
+		GetClientItemDefName(iAttacker, sPlayerWeapon, sizeof(sPlayerWeapon));
 
-		int iPlayerWeaponIndex = get_weapon_index(sPlayerWeapon[7]);
+		int iPlayerWeaponIndex = get_weapon_index(sPlayerWeapon);
 		
 		if (iPlayerWeaponIndex > -1) {
 
@@ -278,11 +283,11 @@ public void Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast
 	}
 
 	char sPlayerWeapon[MAX_WEAPON_LEN];
-	event.GetString("weapon", sPlayerWeapon, sizeof(sPlayerWeapon));
+	GetClientItemDefName(iAttacker, sPlayerWeapon, sizeof(sPlayerWeapon));
 
 	if (g_logwstats) {
 
-		int iPlayerWeaponIndex = get_weapon_index(sPlayerWeapon[7]);
+		int iPlayerWeaponIndex = get_weapon_index(sPlayerWeapon);
 
 		if (iPlayerWeaponIndex > -1) {
 
@@ -478,4 +483,79 @@ void LogPlayerProps(int client, char[] verb, const char[] event, const char[] pr
 
 		LogToGame("\"%N<%d><%s><%s>\" %s \"%s\" (value \"%s\")", client, GetClientUserId(client), sAuthId, sTeamName, verb, event, properties); 
 	}
+}
+
+void LoadGameItems()
+{
+	if (!FileExists(CSGO_ITEMS_GAME, true)) {
+		SetFailState("Couldn't find %s.", CSGO_ITEMS_GAME);
+	}
+
+	KeyValues kv = new KeyValues("items_game");
+	
+	if (!kv.ImportFromFile(CSGO_ITEMS_GAME)) {
+		SetFailState("Couldn't import %s file.", CSGO_ITEMS_GAME);
+	}
+
+	if (!kv.JumpToKey("items", false) || !kv.GotoFirstSubKey(true)) {
+		SetFailState("Couldn't load items in %s file.", CSGO_ITEMS_GAME);
+	}
+
+	g_gameItems = new StringMap();
+
+	char sItemId[16];
+	char sItemName[MAX_WEAPON_LEN];
+
+	do {
+		kv.GetSectionName(sItemId, sizeof(sItemId));
+		kv.GetString("name", sItemName, sizeof(sItemName), "default");
+
+		g_gameItems.SetString(sItemId, sItemName);
+
+		// Ignore non-weapon items 
+		if (StringToInt(sItemId) >= 600) {
+			break;
+		}
+
+	} while (kv.GotoNextKey(true));
+
+	kv.Rewind();
+	delete kv;
+}
+
+public bool GetClientItemDefName(int client, char[] weaponName, int weaponNameSize)
+{
+	int activeWeapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	int itemDefIndex = GetEntProp(activeWeapon, Prop_Send, "m_iItemDefinitionIndex");
+	bool itemHasSilencer = (!!GetEntProp(activeWeapon, Prop_Send, "m_bSilencerOn"));
+
+	switch (itemDefIndex) {
+
+		case 60: {
+			strcopy(weaponName, weaponNameSize, itemHasSilencer ? "m4a1_silencer" : "m4a1_silencer_off");
+		} case 61: {
+			strcopy(weaponName, weaponNameSize, itemHasSilencer ? "usp_silencer" : "usp_silencer_off");
+		} default: {
+			GetItemDefNameByIndex(itemDefIndex, weaponName, weaponNameSize);
+		}
+	}
+}
+
+public void GetItemDefNameByIndex(int itemDefinitionIndex, char[] weaponName, int weaponNameSize)
+{
+	if (!IsValidStringMap(g_gameItems)) {
+		ThrowError("Items not loaded/valid.");
+	}
+
+	char sItemDefinitionIndex[4];
+	IntToString(itemDefinitionIndex, sItemDefinitionIndex, sizeof(sItemDefinitionIndex));
+
+	if (g_gameItems.GetString(sItemDefinitionIndex, weaponName, weaponNameSize)) {
+		ReplaceString(weaponName, weaponNameSize, "weapon_", "", false);	
+	}
+}
+
+public bool IsValidStringMap(StringMap &stringMap)
+{
+	return (stringMap != null && stringMap != INVALID_HANDLE);
 }
