@@ -19,6 +19,7 @@ Add your HLstatsX MySQL information to sourcemod/configs/databases.cfg
 
 int iRank[MAXPLAYERS+1] = {0,...};
 Database hDatabase = null;
+EngineVersion g_evCurrentVersion;
 
 public Plugin myinfo = 
 {
@@ -31,6 +32,12 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
+	g_evCurrentVersion = GetEngineVersion();
+
+	if (g_evCurrentVersion != Engine_CSGO) {
+		SetFailState("This plugin is only for CS:GO.");
+	}
+
 	RegConsoleCmd("sm_mm", Command_EloMenu);
 	StartSQL();
 }

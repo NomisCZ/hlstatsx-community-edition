@@ -82,14 +82,6 @@ public Plugin myinfo = {
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
-	g_evCurrentVersion = GetEngineVersion();
-
-	if (g_evCurrentVersion != Engine_CSGO) {
-
-		strcopy(error, err_max, "This plugin is only supported on CS:GO");
-		return APLRes_Failure;
-	}
-
 	LoadGameItems();
 	g_bLate = late;
 	return APLRes_Success;
@@ -97,6 +89,12 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 
 public void OnPluginStart()
 {
+	g_evCurrentVersion = GetEngineVersion();
+
+	if (g_evCurrentVersion != Engine_CSGO) {
+		SetFailState("This plugin is only for CS:GO.");
+	}
+
 	CreatePopulateWeaponTrie();
 	
 	g_cvar_version = CreateConVar("superlogs_csgo_version", PLUGIN_VERSION, PLUGIN_NAME, FCVAR_REPLICATED | FCVAR_SPONLY | FCVAR_DONTRECORD | FCVAR_NOTIFY);

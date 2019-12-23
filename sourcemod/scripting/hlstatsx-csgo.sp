@@ -72,20 +72,18 @@ public Plugin:myinfo = {
 	url = "http://www.hlxcommunity.com"
 };
 
-
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
 	g_bLateLoad = late;	
 	return APLRes_Success;
 }
 
-
 public OnPluginStart() 
 {
 	CurrentVersion = GetEngineVersion();
-	if (CurrentVersion != Engine_CSGO)
-	{
-		SetFailState("Only CSGO");
+	
+	if (CurrentVersion != Engine_CSGO) {
+		SetFailState("This plugin is only for CS:GO, please use hlstatsx plugin instead.");
 	}
 
 	CreateHLstatsXMenuMain(HLstatsXMenuMain);
@@ -151,7 +149,6 @@ public OnPluginStart()
 	message_recipients = CreateStack();
 }
 
-
 public OnAllPluginsLoaded()
 {
 	if (LibraryExists("clientprefs"))
@@ -167,7 +164,6 @@ public HLXSettingsMenu(client, CookieMenuAction:action, any:info, String:buffer[
 		DisplayMenu(HLstatsXMenuMain, client, MENU_TIME_FOREVER);
 	}
 }
-
 
 public OnMapStart()
 {
@@ -244,7 +240,6 @@ public OnClientPostAdminCheck(client)
 	}
 }
 
-
 public motdQuery(QueryCookie:cookie, client, ConVarQueryResult:result, const String:cvarName[], const String:cvarValue[])
 {
 	if (result == ConVarQuery_Okay && StringToInt(cvarValue) == 0 || result != ConVarQuery_Okay)
@@ -252,7 +247,6 @@ public motdQuery(QueryCookie:cookie, client, ConVarQueryResult:result, const Str
 		g_bPlyrCanDoMotd[client] = true;
 	}
 }
-
 
 public OnServerTagChange(Handle:cvar, const String:oldVal[], const String:newVal[])
 {
@@ -283,7 +277,6 @@ public OnSVTagsChange(Handle:cvar, const String:oldVal[], const String:newVal[])
 		MyAddServerTag(tag);
 	}
 }
-
 
 public OnProtectAddressChange(Handle:cvar, const String:oldVal[], const String:newVal[])
 {
@@ -362,7 +355,6 @@ public Action:ProtectForwardingChange(args)
 	return Plugin_Continue;
 }
 
-
 public Action:ProtectForwardingDelallChange(args)
 {
 	if (hlx_protect_address != INVALID_HANDLE)
@@ -380,18 +372,15 @@ public Action:ProtectForwardingDelallChange(args)
 	return Plugin_Continue;
 }
 
-
 public OnMessagePrefixChange(Handle:cvar, const String:oldVal[], const String:newVal[])
 {
 	strcopy(message_prefix, sizeof(message_prefix), newVal);
 }
 
-
 public Action:MessagePrefixClear(args)
 {
 	message_prefix = "";
 }
-
 
 find_player_team_slot(team_index) 
 {
@@ -408,7 +397,6 @@ find_player_team_slot(team_index)
 		}
 	}
 }
-
 
 stock validate_team_colors() 
 {
@@ -480,7 +468,6 @@ color_player(color_type, player_index, String: client_message[192])
 	return color_player_index;
 }
 
-
 color_all_players(String: message[192]) 
 {
 	new color_index = -1;
@@ -540,8 +527,6 @@ color_all_players(String: message[192])
 	return color_index;
 }
 
-
-
 color_team_entities(String:message[192])
 {
 	if (strcmp(message, "") != 0)
@@ -564,7 +549,6 @@ color_team_entities(String:message[192])
 	return -1;
 }
 
-
 display_menu(player_index, time, String: full_message[1024], need_handler = 0)
 {
 	ReplaceString(full_message, sizeof(full_message), "\\n", "\10");
@@ -577,7 +561,6 @@ display_menu(player_index, time, String: full_message[1024], need_handler = 0)
 		InternalShowMenu(player_index, full_message, time, (1<<0)|(1<<1)|(1<<2)|(1<<3)|(1<<4)|(1<<5)|(1<<6)|(1<<7)|(1<<8)|(1<<9), InternalMenuHandler);
 	}
 }
-
 
 public InternalMenuHandler(Handle:menu, MenuAction:action, param1, param2)
 {
@@ -596,7 +579,6 @@ public InternalMenuHandler(Handle:menu, MenuAction:action, param1, param2)
 		}
 	}
 }
-
 
 public Action:hlx_sm_psay(args)
 {
@@ -696,7 +678,6 @@ public Action:hlx_sm_psay(args)
 	return Plugin_Handled;
 }
 
-
 public Action:hlx_sm_psay2(args)
 {
 	if (args < 2)
@@ -755,7 +736,6 @@ public Action:hlx_sm_psay2(args)
 	return Plugin_Handled;
 }
 
-
 public Action:hlx_sm_csay(args)
 {
 	if (args < 1)
@@ -773,7 +753,6 @@ public Action:hlx_sm_csay(args)
 	}		
 	return Plugin_Handled;
 }
-
 
 public Action:hlx_sm_msay(args)
 {
@@ -857,7 +836,6 @@ public Action:hlx_sm_tsay(args)
 	return Plugin_Handled;
 }
 
-
 public Action:hlx_sm_hint(args)
 {
 	if (args < 2)
@@ -889,7 +867,6 @@ public Action:hlx_sm_hint(args)
 	}
 	return Plugin_Handled;
 }
-
 
 public Action:hlx_sm_browse(args)
 {
@@ -939,7 +916,6 @@ public Action:hlx_sm_browse(args)
 	return Plugin_Handled;
 }
 
-
 public Action:hlx_sm_swap(args)
 {
 	if (args < 1)
@@ -962,7 +938,6 @@ public Action:hlx_sm_swap(args)
 	}
 	return Plugin_Handled;
 }
-
 
 public Action:hlx_sm_redirect(args)
 {
@@ -1012,7 +987,6 @@ public Action:hlx_sm_redirect(args)
 	return Plugin_Handled;
 }
 
-
 public Action:hlx_sm_player_action(args)
 {
 	if (args < 2)
@@ -1034,7 +1008,6 @@ public Action:hlx_sm_player_action(args)
 	return Plugin_Handled;
 }
 
-
 public Action:hlx_sm_team_action(args)
 {
 	if (args < 2)
@@ -1054,7 +1027,6 @@ public Action:hlx_sm_team_action(args)
 	return Plugin_Handled;
 }
 
-
 public Action:hlx_sm_world_action(args)
 {
 	if (args < 1)
@@ -1070,7 +1042,6 @@ public Action:hlx_sm_world_action(args)
 
 	return Plugin_Handled;
 }
-
 
 is_command_blocked(String: command[])
 {
@@ -1090,7 +1061,6 @@ is_command_blocked(String: command[])
 	}
 	return 0;
 }
-
 
 public Action:hlx_block_commands(client, const String:command[], args)
 {
@@ -1166,7 +1136,6 @@ public Action:hlx_block_commands(client, const String:command[], args)
 	return Plugin_Continue;
 }
 
-
 public Action: HLstatsX_Event_PlyTeamChange(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	new client = GetClientOfUserId(GetEventInt(event, "userid"));
@@ -1187,8 +1156,6 @@ public Action: HLstatsX_Event_PlyTeamChange(Handle:event, const String:name[], b
 
 	return Plugin_Continue;
 }
-
-
 
 swap_player(player_index)
 {
@@ -1223,7 +1190,6 @@ swap_player(player_index)
 		}
 	}
 }
-
 
 public CreateHLstatsXMenuMain(&Handle: MenuHandle)
 {
@@ -1262,7 +1228,6 @@ public CreateHLstatsXMenuMain(&Handle: MenuHandle)
 	SetMenuPagination(MenuHandle, 8);
 }
 
-
 public CreateHLstatsXMenuAuto(&Handle: MenuHandle)
 {
 	MenuHandle = CreateMenu(HLstatsXAutoCommandHandler, MenuAction_Select|MenuAction_Cancel);
@@ -1289,12 +1254,10 @@ public CreateHLstatsXMenuEvents(&Handle: MenuHandle)
 	SetMenuPagination(MenuHandle, 8);
 }
 
-
 make_player_command(client, String: player_command[192]) 
 {
 	LogPlayerEvent(client, "say", player_command);
 }
-
 
 public HLstatsXMainCommandHandler(Handle:menu, MenuAction:action, param1, param2)
 {
@@ -1359,7 +1322,6 @@ public HLstatsXMainCommandHandler(Handle:menu, MenuAction:action, param1, param2
 		}
 	}
 }
-
 
 public HLstatsXAutoCommandHandler(Handle:menu, MenuAction:action, param1, param2)
 {

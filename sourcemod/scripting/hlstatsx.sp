@@ -144,6 +144,12 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 
 public OnPluginStart() 
 {
+	g_evEngineVersion = GetEngineVersion();
+
+	if (g_evEngineVersion == Engine_CSGO) {
+		SetFailState("This plugin is not for CS:GO, please use hlstatsx-csgo plugin instead.");
+	}
+
 	get_server_mod();
 
 	CreateHLstatsXMenuMain(HLstatsXMenuMain);
@@ -215,8 +221,7 @@ public OnPluginStart()
 	
 	g_hCustomTags = CreateArray(SVTAGSIZE);
 	sv_tags = FindConVar("sv_tags");
-	g_evEngineVersion = GetEngineVersion();
-	
+
 	if (g_bLateLoad)
 	{
 		GetConVarString(hlx_message_prefix, message_prefix, sizeof(message_prefix));
