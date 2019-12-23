@@ -28,7 +28,7 @@
 
 #define PLUGIN_NAME "SuperLogs: CS:GO"
 #define PLUGIN_AUTHOR "psychonic, NomisCZ (-N-)"
-#define PLUGIN_VERSION "1.7.1"
+#define PLUGIN_VERSION "1.7.2"
 
 #define CSGO_ITEMS_GAME "scripts/items/items_game.txt"
 #define MAX_LOG_WEAPONS 63
@@ -259,7 +259,7 @@ public Action Event_PlayerDeathPre(Event event, const char[] name, bool dontBroa
 
 		if (g_logheadshots && GetEventBool(event, "headshot")) {
 			LogPlayerEvent(iAttacker, "triggered", "headshot");
-		}
+		}		
 	}
 }
 
@@ -460,12 +460,12 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 	return Plugin_Continue;
 }
 
-bool IsValidClient(int client, bool allowBots = true)
+bool IsValidClient(int client, bool allowBots = true, bool allowDead = true)
 {
-	if (!(1 <= client <= MaxClients) || !IsClientInGame(client) || (IsFakeClient(client) && !allowBots)
-	|| IsClientSourceTV(client) || IsClientReplay(client) ) {
+	if (!(1 <= client <= MaxClients) || !IsClientInGame(client) || (IsFakeClient(client) && !allowBots) || IsClientSourceTV(client) || IsClientReplay(client) || (!allowDead && !IsPlayerAlive(client))) {
 		return false;
 	}
+
 	return true;
 }
 
@@ -523,6 +523,10 @@ void LoadGameItems()
 
 public bool GetClientItemDefName(int client, char[] weaponName, int weaponNameSize)
 {
+	if (!IsValidClient(client, true, false)) {
+		return;
+	}
+
 	int activeWeapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	int itemDefIndex = GetEntProp(activeWeapon, Prop_Send, "m_iItemDefinitionIndex");
 	bool itemHasSilencer = (!!GetEntProp(activeWeapon, Prop_Send, "m_bSilencerOn"));
