@@ -34,25 +34,36 @@
 #
 # For support and installation notes visit http://www.hlxcommunity.com
 
-# *** You should not need to configure anything in this script. ***
-# URL is the location to download the GeoLiteCity.dat.gz file from.
-URL=https://geolite.maxmind.com/download/geoip/database/
-
-# File is the file to download from the server above, as well as what to store it as locally.
-FILE=GeoLite2-City.tar.gz
-FILE_BASE=$(basename $FILE .tar.gz)
+API_KEY="<YOUR_API_KEY>"
 
 # ***** NOTHING TO CONFIGURE BELOW HERE *****
+
+API_URL="https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=$API_KEY&suffix=tar.gz"
+
+FILE=GeoLite2-City
+FILE_EXT=.tar.gz
 
 # Change to directory where installer is
 cd `dirname $0`
 
-echo Downloading a new copy of GeoLiteCity, if needed.
-wget -N -q $URL$FILE
-echo Uncompressing database
-tar -zxvf $FILE
-mv ./${FILE_BASE}_*/${FILE_BASE}.mmdb ./
-rm -R ./${FILE_BASE}_*
-rm $FILE
+if [[ $API_KEY =~ "<YOUR_API_KEY>" ]]; then
+  echo "----------------------------------------------------------"
+  echo "[!] You probably forgot to set yours MaxMind account API key!"
+  echo "[i] Please check installation instructions > 2.4. Prepare GeoIP2 (optional) > https://github.com/NomisCZ/hlstatsx-community-edition/wiki/Installation#2-installation"
+  echo "----------------------------------------------------------"
+  exit 3
+fi
+
+echo "[>>] Downloading GeoLite2-City database"
+wget -N -q $API_URL -O $FILE$FILE_EXT
+
+echo "[<<] Uncompressing $FILE$FILE_EXT"
+tar -zxvf $FILE$FILE_EXT
+
+echo "[->] Moving $FILE.mmdb file to $PWD"
+mv ./${FILE}_*/${FILE}.mmdb ./
+rm -R ./${FILE}_*
+rm $FILE$FILE_EXT
+
 chmod 777 GeoLite2-City.mmdb
-echo Done
+echo "[✓] Done"
