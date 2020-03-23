@@ -42,19 +42,19 @@ if ( !defined('IN_HLSTATS') ) { die('Do not access this file directly'); }
 //           (You might also try setting this to e.g. ":/tmp/mysql.sock" to
 //           use a Unix domain socket, if your mysqld is on the same box as
 //           your web server.)
-define("DB_ADDR", "localhost");
+define("DB_ADDR", 'localhost');
 
 // DB_USER - The username to connect to the database as
-define("DB_USER", "");
+define("DB_USER", '');
 
 // DB_PASS - The password for DB_USER
-define("DB_PASS", "");
+define("DB_PASS", '');
 
 // DB_NAME - The name of the database
-define("DB_NAME", "");
+define("DB_NAME", '');
 
 // DB_TYPE - The database server type. Only "mysql" is supported currently
-define("DB_TYPE", "mysql");
+define("DB_TYPE", 'mysql');
 
 // DB_PCONNECT - Set to 1 to use persistent database connections. Persistent
 //               connections can give better performance, but may overload
@@ -67,7 +67,7 @@ define("DB_PCONNECT", 0);
 //
 //                Under Windows, make sure you use forward slash (/) instead
 //                of back slash (\) and use absolute paths if you are having any issue.
-define("INCLUDE_PATH", "./includes");
+define("INCLUDE_PATH", './includes');
 
 
 // PAGE_PATH - Filesystem path to the pages directory, relative to hlstats.php. This must be specified
@@ -75,7 +75,7 @@ define("INCLUDE_PATH", "./includes");
 //
 //                Under Windows, make sure you use forward slash (/) instead
 //                of back slash (\) and use absolute paths if you are having any issue.
-define("PAGE_PATH", "./pages");
+define("PAGE_PATH", './pages');
 
 
 // PAGE_PATH - Filesystem path to the hlstatsimg directory, relative to hlstats.php. This must be specified
@@ -85,7 +85,7 @@ define("PAGE_PATH", "./pages");
 //                of back slash (\) and use absolute paths if you are having any issue.
 //
 // 		Note: the progress directory under hlstatsimg must be writable!!
-define("IMAGE_PATH", "./hlstatsimg");
+define("IMAGE_PATH", './hlstatsimg');
 
 // How often dynamicly generated images are updated (in seconds)
 define("IMAGE_UPDATE_INTERVAL", 300);
