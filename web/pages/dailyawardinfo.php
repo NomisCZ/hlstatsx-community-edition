@@ -142,7 +142,7 @@ For support and installation notes visit http://www.hlxcommunity.com
 			awardid=$award	
 	");
 
-	$numitems = mysql_num_rows($resultCount);
+	$numitems = mysqli_num_rows($resultCount);
 
 ?>
 
