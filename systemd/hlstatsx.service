@@ -1,0 +1,18 @@
+[Unit]
+Description=hlstatsx statistics server
+After=cssource.service
+After=csgo.service
+After=teamfortress2.service
+
+[Service]
+ExecStart=/opt/hlstatsx/scripts/hlstats.pl --configfile=hlstats.conf --port=27500
+User=hlstatsx
+WorkingDirectory=/opt/hlstatsx/scripts
+SyslogIdentifier=hlstatsx
+
+Restart=always
+StartLimitBurst=3
+StartLimitBurstInterval=30
+
+[Install]
+WantedBy=multi-user.target
