@@ -202,10 +202,8 @@ CREATE TABLE IF NOT EXISTS `hlstats_Actions` (
 -- Dumping data for table `hlstats_Actions`
 --
 
-INSERT INTO `hlstats_Actions` 
-varchar(32) varchar(64)       int(11)          int(11)      varchar(64)  varchar(128)      enum('0','1')        enum('0','1')              enum('0','1')      enum('0','1')                                     
-(`game`, `code`,              `reward_player`, `reward_team`, `team`, `description`,      `for_PlayerActions`, `for_PlayerPlayerActions`, `for_TeamActions`, `for_WorldActions`) VALUES
-('tf', '  flagevent_defended', 1,               0,             CT,    'Defended the flag', '1',                 '0',                      '0',               '0'),
+INSERT INTO `hlstats_Actions` (`game`, `code`, `reward_player`, `reward_team`, `team`, `description`, `for_PlayerActions`, `for_PlayerPlayerActions`, `for_TeamActions`, `for_WorldActions`) VALUES
+('tf', 'flagevent_defended', 1, 0, '', 'Defended the flag', '1', '0', '0', '0'),
 ('tf', 'flagevent_captured', 5, 1, '', 'Captured the flag', '1', '0', '0', '0'),
 ('tf', 'flagevent_dropped', -2, 0, '', 'Dropped the flag (while alive)', '1', '0', '0', '0'),
 ('tf', 'flagevent_dropped_death', 0, 0, '', 'Dropped the flag (on death)', '1', '0', '0', '0'),
