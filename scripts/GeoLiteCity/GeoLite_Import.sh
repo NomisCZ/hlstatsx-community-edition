@@ -53,9 +53,6 @@ API_URL="https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Cit
 
 FILE="GeoLiteCity-CSV.zip"
 
-#Change to directory where installer is
-cd `dirname $0`
-
 #Error check for API Key
 if [[ $API_KEY =~ "<MAXMINDAPIKEYHERE>" ]]; then
   echo "----------------------------------------------------------"
