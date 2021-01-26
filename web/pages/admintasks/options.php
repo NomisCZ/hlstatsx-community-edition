@@ -225,7 +225,7 @@ RewriteRule sig-(.*)-(.*).png$ sig.php?player_id=$1&background=$2 [L]</textarea>
 	$optiongroups[1]->options[] = new Option('show_google_map', 'Show Google worldmap', 'select');
 	$optiongroups[1]->options[] = new Option('google_map_region', 'Google Maps Region', 'select');
 	$optiongroups[1]->options[] = new Option('google_map_type', 'Google Maps Type', 'select');
-	$optiongroups[1]->options[] = new Option('UseGeoIPBinary', '*Choose whether to use GeoCityLite data loaded into mysql database or from binary file. (If binary, GeoLiteCity.dat goes in perl/GeoLiteCity and Geo::IP::PurePerl module is required', 'select');
+	$optiongroups[1]->options[] = new Option('UseGeoIPBinary', '*Choose whether to use GeoCityLite data loaded into mysql database or from binary file. (If binary, GeoIP V2 is required, see https://github.com/NomisCZ/hlstatsx-community-edition/wiki/Installation', 'select');
 
 	$optiongroups[2] = new OptionGroup('Awards settings');
 	$optiongroups[2]->options[] = new Option('gamehome_show_awards', 'Show daily award winners on Game Frontpage', 'select');
