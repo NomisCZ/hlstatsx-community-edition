@@ -115,7 +115,7 @@ echo "[<<] Importing complete"
 # Cleanup
 echo "[>>] Cleanup"
 cd `dirname $0`
-rm -f *.csv
-rm -f *.txt
+rm -f ./*.csv
+rm -f ./*.txt
 rm -f $FILE
 echo "[<<] Cleanup complete"
