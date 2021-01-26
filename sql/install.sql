@@ -2,36 +2,176 @@
 
 -- This file is only needed for new installations.
 
-SET @DBVERSION="80";
+SET @DBVERSION="81";
 SET @VERSION="1.7.0";
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `geoLiteCity_Blocks`
+-- Table structure for table `geoLite2_City_Blocks_IPv4`
 --
 
-CREATE TABLE IF NOT EXISTS `geoLiteCity_Blocks` (
-  `startIpNum` bigint(11) unsigned NOT NULL default '0',
-  `endIpNum` bigint(11) unsigned NOT NULL default '0',
-  `locId` bigint(11) unsigned NOT NULL default '0'
+CREATE TABLE IF NOT EXISTS `geoLite2_City_Blocks_IPv4` (
+  `network` varchar(24) NOT NULL default '0',
+  `geoname_id` mediumint NOT NULL default '0',
+  `registered_country_geoname_id` mediumint NOT NULL default '0',
+  `represented_country_geoname_id,` mediumint default NULL,
+  `is_anonymous_proxy` tinyint NOT NULL default '0',
+  `is_satellite_provider` tinyint NOT NULL default '0',
+  `postal_code` varchar(8) default NULL,
+  `latitude` decimal(14,4) unsigned NOT NULL default '0',
+  `longitude` decimal(14,4) unsigned NOT NULL default '0',
+  `accuracy_radius` smallint NOT NULL default '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `geoLiteCity_Location`
+-- Table structure for table `geoLite2_City_Locations`
 --
 
-CREATE TABLE IF NOT EXISTS `geoLiteCity_Location` (
-  `locId` bigint(11) unsigned NOT NULL default '0',
-  `country` varchar(2) NOT NULL,
-  `region` varchar(50) default NULL,
-  `city` varchar(50) default NULL,
-  `postalCode` varchar(10) default NULL,
-  `latitude` decimal(14,4) default NULL,
-  `longitude` decimal(14,4) default NULL,
-  PRIMARY KEY  (`locId`)
+CREATE TABLE IF NOT EXISTS `geoLite2_City_Location_de` (
+  `geoname_id` int NOT NULL,
+  `locale_code` varchar(2) NOT NULL,
+  `continent_code` varchar(2) default NULL,
+  `continent_name` varchar(20) default NULL,
+  `country_iso_code` varchar(2) default NULL,
+  `country_name` varchar(50) default NULL,
+  `subdivision_1_iso_code` varchar(3) default NULL,
+  `subdivision_1_name` varchar(50) default NULL,
+  `subdivision_2_iso_code` varchar(3) default NULL,
+  `subdivision_2_name` varchar(50) default NULL,
+  `city_name` varchar(50) default NULL,
+  `metro_code` mediumint default NULL,
+  `time_zone` varchar(20) NOT NULL,
+  `is_in_european_union` tinyint NOT NULL default '0',
+  PRIMARY KEY  (`geoname_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `geoLite2_City_Location_en` (
+  `geoname_id` int NOT NULL,
+  `locale_code` varchar(2) NOT NULL,
+  `continent_code` varchar(2) default NULL,
+  `continent_name` varchar(20) default NULL,
+  `country_iso_code` varchar(2) default NULL,
+  `country_name` varchar(50) default NULL,
+  `subdivision_1_iso_code` varchar(3) default NULL,
+  `subdivision_1_name` varchar(50) default NULL,
+  `subdivision_2_iso_code` varchar(3) default NULL,
+  `subdivision_2_name` varchar(50) default NULL,
+  `city_name` varchar(50) default NULL,
+  `metro_code` mediumint default NULL,
+  `time_zone` varchar(20) NOT NULL,
+  `is_in_european_union` tinyint NOT NULL default '0',
+  PRIMARY KEY  (`geoname_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `geoLite2_City_Location_es` (
+  `geoname_id` int NOT NULL,
+  `locale_code` varchar(2) NOT NULL,
+  `continent_code` varchar(2) default NULL,
+  `continent_name` varchar(20) default NULL,
+  `country_iso_code` varchar(2) default NULL,
+  `country_name` varchar(50) default NULL,
+  `subdivision_1_iso_code` varchar(3) default NULL,
+  `subdivision_1_name` varchar(50) default NULL,
+  `subdivision_2_iso_code` varchar(3) default NULL,
+  `subdivision_2_name` varchar(50) default NULL,
+  `city_name` varchar(50) default NULL,
+  `metro_code` mediumint default NULL,
+  `time_zone` varchar(20) NOT NULL,
+  `is_in_european_union` tinyint NOT NULL default '0',
+  PRIMARY KEY  (`geoname_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `geoLite2_City_Location_fr` (
+  `geoname_id` int NOT NULL,
+  `locale_code` varchar(2) NOT NULL,
+  `continent_code` varchar(2) default NULL,
+  `continent_name` varchar(20) default NULL,
+  `country_iso_code` varchar(2) default NULL,
+  `country_name` varchar(50) default NULL,
+  `subdivision_1_iso_code` varchar(3) default NULL,
+  `subdivision_1_name` varchar(50) default NULL,
+  `subdivision_2_iso_code` varchar(3) default NULL,
+  `subdivision_2_name` varchar(50) default NULL,
+  `city_name` varchar(50) default NULL,
+  `metro_code` mediumint default NULL,
+  `time_zone` varchar(20) NOT NULL,
+  `is_in_european_union` tinyint NOT NULL default '0',
+  PRIMARY KEY  (`geoname_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `geoLite2_City_Location_ja` (
+  `geoname_id` int NOT NULL,
+  `locale_code` varchar(2) NOT NULL,
+  `continent_code` varchar(2) default NULL,
+  `continent_name` varchar(20) default NULL,
+  `country_iso_code` varchar(2) default NULL,
+  `country_name` varchar(50) default NULL,
+  `subdivision_1_iso_code` varchar(3) default NULL,
+  `subdivision_1_name` varchar(50) default NULL,
+  `subdivision_2_iso_code` varchar(3) default NULL,
+  `subdivision_2_name` varchar(50) default NULL,
+  `city_name` varchar(50) default NULL,
+  `metro_code` mediumint default NULL,
+  `time_zone` varchar(20) NOT NULL,
+  `is_in_european_union` tinyint NOT NULL default '0',
+  PRIMARY KEY  (`geoname_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `geoLite2_City_Location_pt_BR` (
+  `geoname_id` int NOT NULL,
+  `locale_code` varchar(2) NOT NULL,
+  `continent_code` varchar(2) default NULL,
+  `continent_name` varchar(20) default NULL,
+  `country_iso_code` varchar(2) default NULL,
+  `country_name` varchar(50) default NULL,
+  `subdivision_1_iso_code` varchar(3) default NULL,
+  `subdivision_1_name` varchar(50) default NULL,
+  `subdivision_2_iso_code` varchar(3) default NULL,
+  `subdivision_2_name` varchar(50) default NULL,
+  `city_name` varchar(50) default NULL,
+  `metro_code` mediumint default NULL,
+  `time_zone` varchar(20) NOT NULL,
+  `is_in_european_union` tinyint NOT NULL default '0',
+  PRIMARY KEY  (`geoname_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `geoLite2_City_Location_ru` (
+  `geoname_id` int NOT NULL,
+  `locale_code` varchar(2) NOT NULL,
+  `continent_code` varchar(2) default NULL,
+  `continent_name` varchar(20) default NULL,
+  `country_iso_code` varchar(2) default NULL,
+  `country_name` varchar(50) default NULL,
+  `subdivision_1_iso_code` varchar(3) default NULL,
+  `subdivision_1_name` varchar(50) default NULL,
+  `subdivision_2_iso_code` varchar(3) default NULL,
+  `subdivision_2_name` varchar(50) default NULL,
+  `city_name` varchar(50) default NULL,
+  `metro_code` mediumint default NULL,
+  `time_zone` varchar(20) NOT NULL,
+  `is_in_european_union` tinyint NOT NULL default '0',
+  PRIMARY KEY  (`geoname_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `geoLite2_City_Location_zh_CN` (
+  `geoname_id` int NOT NULL,
+  `locale_code` varchar(2) NOT NULL,
+  `continent_code` varchar(2) default NULL,
+  `continent_name` varchar(20) default NULL,
+  `country_iso_code` varchar(2) default NULL,
+  `country_name` varchar(50) default NULL,
+  `subdivision_1_iso_code` varchar(3) default NULL,
+  `subdivision_1_name` varchar(50) default NULL,
+  `subdivision_2_iso_code` varchar(3) default NULL,
+  `subdivision_2_name` varchar(50) default NULL,
+  `city_name` varchar(50) default NULL,
+  `metro_code` mediumint default NULL,
+  `time_zone` varchar(20) NOT NULL,
+  `is_in_european_union` tinyint NOT NULL default '0',
+  PRIMARY KEY  (`geoname_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -4061,6 +4201,7 @@ INSERT INTO `hlstats_Options_Choices` (`keyname`, `value`, `text`, `isDefault`) 
 ('display_gamelist', '0', 'No', 0),
 ('display_style_selector', '1', 'Yes', 0),
 ('display_style_selector', '0', 'No', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -4082,6 +4223,8 @@ CREATE TABLE IF NOT EXISTS `hlstats_PlayerNames` (
   PRIMARY KEY  (`playerId`,`name`),
   KEY `name16` (`name`(16))
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `hlstats_Players`
