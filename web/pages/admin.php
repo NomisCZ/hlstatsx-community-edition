@@ -142,7 +142,6 @@ class Auth
 
 			$this->userdata = $db->fetch_array();
 			$db->free_result();
-			
 			if (hash("ripemd128", $this->password) == $this->userdata["password"])
 			{
 				// The username and the password are OK
@@ -371,8 +370,6 @@ class EditList
 					
 					if ($col->type == 'password' && $col->name != 'rcon_password')
 					{
-					
-						
 						$value = hash("ripemd128", $value, );
 					}
 					$qvals .= "'" . $db->escape($value) . "'";
