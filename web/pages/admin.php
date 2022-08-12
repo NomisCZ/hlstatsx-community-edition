@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 For support and installation notes visit http://www.hlxcommunity.com
 */
 
+
 if (!defined('IN_HLSTATS'))
 {
 	die('Do not access this file directly.');
@@ -141,8 +142,7 @@ class Auth
 
 			$this->userdata = $db->fetch_array();
 			$db->free_result();
-
-			if (md5($this->password) == $this->userdata["password"])
+			if (hash("ripemd128", $this->password) == $this->userdata["password"])
 			{
 				// The username and the password are OK
 
@@ -367,10 +367,10 @@ class EditList
 					{
 						$qvals .= ', ';
 					}
-
+					
 					if ($col->type == 'password' && $col->name != 'rcon_password')
 					{
-						$value = md5($value);
+						$value = hash("ripemd128", $value, );
 					}
 					$qvals .= "'" . $db->escape($value) . "'";
 
@@ -480,7 +480,7 @@ class EditList
 
 					if ($col->type == 'password' && $col->name != 'rcon_password')
 					{
-						$query .= $col->name . "='" . md5($value) . "'";
+						$query .= $col->name . "='" . hash("ripemd128",$value) . "'";
 					}
 					else
 					{
