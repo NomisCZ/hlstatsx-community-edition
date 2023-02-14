@@ -94,10 +94,7 @@ function valid_request($str, $numeric = false)
 	$str = preg_replace($search_pattern, $replace_pattern, $str);
 	if ( $numeric == false )
 	{
-		if ( get_magic_quotes_gpc() )
-			return $str = htmlspecialchars(stripslashes($str), ENT_QUOTES);
-		else
-			return $str = htmlspecialchars($str, ENT_QUOTES);
+		return $str;
 	}
 	else
 	{
