@@ -90,7 +90,6 @@ class DB_mysql
 		if ( $this->link )
 		{
 			$q = @mysqli_query($this->link, "SET NAMES 'utf8mb4'");
-			@mysqli_free_result($q);
 
 			if ( $db_name != '' )
 			{
